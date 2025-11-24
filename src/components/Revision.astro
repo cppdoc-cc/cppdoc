@@ -1,0 +1,37 @@
+---
+type CppRevision =
+  | "C++98"
+  | "C++11"
+  | "C++14"
+  | "C++17"
+  | "C++20"
+  | "C++23"
+  | "C++26";
+type CRevision = "C89" | "C99" | "C11" | "C17" | "C23";
+
+interface Props {
+  since?: CppRevision | CRevision;
+  until?: CppRevision | CRevision;
+}
+
+const { since, until } = Astro.props;
+---
+
+<span class="revision">
+  <slot />
+  {since && <span class="revision-tag"> (since {since})</span>}
+  {until && <span class="revision-tag"> (until {until})</span>}
+</span>
+
+<style>
+  .revision {
+    border: 1px solid var(--sl-color-gray-4);
+    padding: 2px;
+    border-radius: 4px;
+  }
+
+  .revision-tag {
+    font-size: 0.8em;
+    color: var(--sl-color-green);
+  }
+</style>

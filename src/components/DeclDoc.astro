@@ -1,0 +1,23 @@
+---
+---
+
+<div class="decl-doc">
+  <div class="decl">
+    <slot name="decl" />
+  </div>
+  <div class="doc">
+    <slot name="doc" />
+  </div>
+</div>
+
+<style>
+  .decl-doc {
+    border: var(--ec-brdWd) solid var(--ec-brdCol);
+    border-top-left-radius: calc(var(--ec-brdRad) + var(--ec-brdWd));
+    border-top-right-radius: calc(var(--ec-brdRad) + var(--ec-brdWd));
+  }
+
+  .decl-doc > .doc {
+    margin: var(--sl-content-gap-y);
+  }
+</style>

@@ -1,0 +1,10 @@
+---
+interface Props {
+  id: number;
+}
+
+const { id } = Astro.props;
+const url = `https://cplusplus.github.io/CWG/issues/${id}.html`;
+---
+
+<a href={url} target="_blank">CWG {id}</a>

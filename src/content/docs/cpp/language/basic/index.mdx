@@ -1,0 +1,24 @@
+---
+title: Overview
+order: 1
+---
+
+import Missing from "@components/Missing.astro";
+
+This section provides definitions for the specific terminology and the concepts used when describing the C++ programming language.
+
+A C++ program is a sequence of text files (typically header and source files) that contain <Missing>declarations</Missing>. They undergo <Missing>translation</Missing> to become an executable program, which is executed when the C++ implementation calls its [main function](./main_function).
+
+Certain words in a C++ program have special meaning, and these are known as <Missing>keywords</Missing>. Others can be used as <Missing>identifiers</Missing>. <Missing>Comments</Missing> are ignored during translation. C++ programs also contain <Missing>literals</Missing>, the values of characters inside them are determined by <Missing>character sets and encodings</Missing>. Certain characters in the program have to be represented with <Missing>escape sequences</Missing>.
+
+The _entities_ of a C++ program are values, <Missing>objects</Missing>, <Missing>references</Missing>, <Missing>structured bindings</Missing>, <Missing>result bindings</Missing>, <Missing>functions</Missing>, <Missing>enumerators</Missing>, <Missing>types</Missing>, class members, <Missing>templates</Missing>, <Missing>template specializations</Missing>, <Missing>packs</Missing>, and <Missing>namespaces</Missing>. Preprocessor <Missing>macros</Missing> are not C++ entities.
+
+<Missing>Declarations</Missing> may introduce entities, associate them with <Missing>names</Missing> and define their properties. The declarations that define all properties required to use an entity are <Missing>definitions</Missing>. A program must contain only one definition of any non-inline function or variable that is <Missing>odr-used</Missing>.
+
+Definitions of functions usually include sequences of <Missing>statements</Missing>, some of which include <Missing>expressions</Missing>, which specify the computations to be performed by the program.
+
+Names encountered in a program are associated with the declarations that introduced them using <Missing>name lookup</Missing>. Each name is only valid within a part of the program called its <Missing>scope</Missing>. Some names have <Missing>linkage</Missing> which makes them refer to the same entities when they appear in different scopes or translation units.
+
+Each object, reference, function, expression in C++ is associated with a <Missing>type</Missing>, which may be <Missing>fundamental</Missing>, compound, or <Missing>user-defined</Missing>, complete or <Missing>incomplete</Missing>, etc.
+
+Declared objects and declared references that are not <Missing>non-static data members</Missing> are _variables_. 
