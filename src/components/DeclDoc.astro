@@ -13,12 +13,32 @@
 
 <style>
   .decl-doc {
-    border: var(--ec-brdWd) solid var(--ec-brdCol);
-    border-top-left-radius: calc(var(--ec-brdRad) + var(--ec-brdWd));
-    border-top-right-radius: calc(var(--ec-brdRad) + var(--ec-brdWd));
+    border: 2px solid var(--sl-color-gray-5);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    overflow: hidden;
+  }
+
+  .decl-doc > .decl {
+    background-color: var(--sl-color-gray-6);
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    overflow: hidden;
   }
 
   .decl-doc > .doc {
     margin: var(--sl-content-gap-y);
+  }
+</style>
+
+<style is:global>
+  .decl-doc > .decl .expressive-code pre {
+    border: none;
+    background-color: transparent;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .decl-doc > .decl .expressive-code .copy {
+    display: none;
   }
 </style>
