@@ -13,6 +13,8 @@
   --cppdoc-color-undef: var(--sl-color-red);
   --cppdoc-color-ill-formed: var(--sl-color-red);
   --cppdoc-color-ifndr: var(--sl-color-red);
+
+  --sl-sidebar-width: 22rem;
 }
 
 .sl-markdown-content code {

@@ -7,7 +7,7 @@ cppdoc:
 import Code from "@astrojs/starlight/components";
 
 import Behavior from "@components/Behavior.astro";
-import DeclDoc from "@components/DeclDoc.astro";
+import { Decl, DeclDoc } from "@components/decl-doc";
 import { DR, DRList } from "@components/defect-report";
 import Missing from "@components/Missing.astro";
 import { ParamDoc, ParamDocList } from "@components/param-doc";
@@ -17,38 +17,35 @@ import WG21PaperLink from "@components/WG21PaperLink.astro";
 A program shall contain a global namespace function named `main`, which is the designated start of the program in hosted environment. It shall have one of the following forms:
 
 <DeclDoc>
-  <Fragment slot="decl">
+  <Decl slot="decl">
     ```cpp
     int main() { /* body */ }
     ```
-  </Fragment>
-  <Fragment slot="doc">
-    A `main` function running independently of environment-provided arguments.
-  </Fragment>
+  </Decl>
+
+  A `main` function running independently of environment-provided arguments.
 </DeclDoc>
 
 <DeclDoc>
-  <Fragment slot="decl">
+  <Decl slot="decl">
     ```cpp
     int main(int argc, char *argv[]) { /* body */ }
     ```
-  </Fragment>
-  <Fragment slot="doc">
-    A `main` function accepting environment-provided arguments.
+  </Decl>
 
-    The names of `argc` and `argv` are arbitrary, as well as the representation of the types of the parameters: `int main(int ac, char** av)` is equally valid.
-  </Fragment>
+  A `main` function accepting environment-provided arguments.
+
+  The names of `argc` and `argv` are arbitrary, as well as the representation of the types of the parameters: `int main(int ac, char** av)` is equally valid.
 </DeclDoc>
 
 <DeclDoc>
-  <Fragment slot="decl">
+  <Decl slot="decl">
     ```cpp
     int main(/* implementation-defined */) { /* body */ }
     ```
-  </Fragment>
-  <Fragment slot="doc">
-    A main function of implement-defined type, returning `int`.
-  </Fragment>
+  </Decl>
+
+  A main function of implement-defined type, returning `int`.
 </DeclDoc>
 
 The C++ standard recommends implementation-defined main functions to place the extra (optional) parameters after `argv`.
