@@ -1,0 +1,41 @@
+---
+title: std::formatter<std::chrono::day>
+cppdoc:
+  keys: ["cpp.chrono.day.formatter"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT >
+      struct formatter<std::chrono::day, CharT>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Specialization of <Missing>`std::formatter`</Missing> that defines formatting rules for a <Missing>`std::chrono::day`</Missing>.
+
+  The <Missing>`std::formatter`</Missing> specialization is usually not directly accessed, but is used through formatting functions.
+</DeclDoc>
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::format`</Missing></RevisionBlock>
+    </Fragment>
+    stores formatted representation of the arguments in a new string
+  </Desc>
+</DescList>

@@ -1,0 +1,72 @@
+---
+title: std::chrono::duration::count
+cppdoc:
+  keys: ["cpp.chrono.duration.count"]
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      constexpr rep count() const;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the number of ticks for this duration.
+</DeclDoc>
+
+## Parameters
+
+(none)
+
+## Return value
+
+The number of ticks for this duration.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    std::chrono::milliseconds ms{3}; // 3 milliseconds
+    // 6000 microseconds constructed from 3 milliseconds
+    std::chrono::microseconds us = 2 * ms;
+    // 30Hz clock using fractional ticks
+    std::chrono::duration<double, std::ratio<1, 30>> hz30(3.5);
+
+    std::cout << "3 ms duration has " << ms.count() << " ticks\n"
+              << "6000 us duration has " << us.count() << " ticks\n"
+              << "3.5 30Hz duration has " << hz30.count() << " ticks\n";       
+}
+```
+
+**Output:**
+
+```
+3 ms duration has 3 ticks
+6000 us duration has 6000 ticks
+3.5 30Hz duration has 3.5 ticks
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`duration_cast`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, with a different tick interval
+  </Desc>
+</DescList>

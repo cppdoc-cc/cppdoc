@@ -1,0 +1,115 @@
+---
+title: std::chrono::month::operator++, operator--
+cppdoc:
+  keys: ["cpp.chrono.month.operator_inc_dec"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month& operator++() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month operator++( int ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month& operator--() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month operator--( int ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Adds or subtracts 1 from the month value, reducing the result modulo 12 to an integer in the range \[1, 12\].
+  
+  1,2) Performs `*this += std::chrono::months{1};`.
+  3,4) Performs `*this -= std::chrono::months{1};`.
+</DeclDoc>
+
+## Parameters
+
+(none)
+
+## Return value
+
+1,3) A reference to this `month` after modification.
+2,4) A copy of the `month` made before modification.
+
+## Notes
+
+After a call to one of these functions, `ok()` is always `true`.
+
+## Example
+
+```cpp
+#include <cassert>
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    std::chrono::month m{6};
+
+    ++m;
+    assert(m == std::chrono::month(7));
+
+    --m;
+    assert(m == std::chrono::month(6));
+
+    m = std::chrono::December;
+    m++; // rounds up to January
+    assert(m.ok());
+    std::cout << unsigned(m) << '\n';
+
+    m = std::chrono::January;
+    m--; // rounds down to December
+    assert(m.ok());
+    std::cout << unsigned(m) << '\n';
+}
+```
+
+**Output:**
+
+```
+1
+12
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+=` / `operator-=`</Missing></RevisionBlock>
+    </Fragment>
+    adds or subtracts a number of months
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    performs arithmetic on `month`s
+  </Desc>
+</DescList>

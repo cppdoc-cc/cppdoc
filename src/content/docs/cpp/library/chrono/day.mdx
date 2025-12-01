@@ -1,0 +1,124 @@
+---
+title: std::chrono::day
+cppdoc:
+  keys: ["cpp.chrono.day"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      class day;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The class `day` represents a day in a month. Its normal range is \[1, 31\], but it may hold any number in \[0, 255\].
+
+  `day` is a *TriviallyCopyable* *StandardLayoutType*.
+</DeclDoc>
+
+## Member functions
+
+<DescList>
+  <Desc kind="constructor" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`(constructor)`</Missing></RevisionBlock>
+    </Fragment>
+    constructs a `day`
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator++` / `operator--`</Missing></RevisionBlock>
+    </Fragment>
+    increments or decrements the day
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+=` / `operator-=`</Missing></RevisionBlock>
+    </Fragment>
+    adds or subtracts a number of days
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator unsigned`</Missing></RevisionBlock>
+    </Fragment>
+    retrieves the stored day value
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`ok`</Missing></RevisionBlock>
+    </Fragment>
+    checks if the stored day value is in the normal range
+  </Desc>
+</DescList>
+
+## Non-member functions
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator==` / `operator<=>`</Missing></RevisionBlock>
+    </Fragment>
+    compares two `day` values
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    performs arithmetic on `day`s
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator<<`</Missing></RevisionBlock>
+    </Fragment>
+    outputs a `day` into a stream
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`from_stream`</Missing></RevisionBlock>
+    </Fragment>
+    parses a `day` from a stream according to the provided format
+  </Desc>
+</DescList>
+
+## Helper classes
+
+<DescList>
+  <Desc kind="class template specialization" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::formatter<std::chrono::day>`</Missing></RevisionBlock>
+    </Fragment>
+    formatting support for `day`
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++26">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++26" dir="v"><Missing>`std::hash<std::chrono::day>`</Missing></RevisionBlock>
+    </Fragment>
+    hash support for `std::chrono::day`
+  </Desc>
+</DescList>
+
+## Literals
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in inline namespace `std::literals::chrono_literals`</Fragment>
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator""d`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::day` literal representing a day of a month
+  </Desc>
+</DescList>

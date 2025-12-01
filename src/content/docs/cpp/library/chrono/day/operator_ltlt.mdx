@@ -1,0 +1,85 @@
+---
+title: operator<< (std::chrono::day)
+cppdoc:
+  keys: ["cpp.chrono.day.operator_ltlt"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits >
+      std::basic_ostream<CharT, Traits>&
+          operator<<( std::basic_ostream<CharT, Traits>& os, const std::chrono::day& d );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Forms a `std::basic_string<CharT>` `s` consisting of the day value stored in `d` formatted as a decimal number, with a leading zero if the result would otherwise be a single decimal digit. Then, if `!d.ok()`, append `" is not a valid day"` to the formatted string. Inserts that string into `os`.
+
+  Equivalent to
+
+  ```cpp
+  return os << (d.ok() ?
+      std::format(STATICALLY_WIDEN<CharT>("{:%d}"), d) :
+      std::format(STATICALLY_WIDEN<CharT>("{:%d} is not a valid day"), d));
+  ```
+
+  where `STATICALLY_WIDEN<CharT>("...")` is `"..."` if `CharT` is `char`, and `L"..."` if `CharT` is `wchar_t`.
+</DeclDoc>
+
+## Return value
+
+`os`
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    constexpr std::chrono::day d1{31}, d2{7}, d3{42}, d4{};
+    std::cout << d1 << '\n'
+              << d2 << '\n'
+              << d3 << '\n'
+              << d4 << '\n';
+}
+```
+
+**Possible output:**
+
+```
+31
+07
+42 is not a valid day
+00 is not a valid day
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::format`</Missing></RevisionBlock>
+    </Fragment>
+    stores formatted representation of the arguments in a new string
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::formatter<std::chrono::day>`</Missing></RevisionBlock>
+    </Fragment>
+    formatting support for `day`
+  </Desc>
+</DescList>

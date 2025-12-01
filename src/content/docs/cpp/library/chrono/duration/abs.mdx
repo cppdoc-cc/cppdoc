@@ -1,0 +1,92 @@
+---
+title: std::chrono::abs (std::chrono::duration)
+cppdoc:
+  keys: ["cpp.chrono.duration.abs"]
+  revision:
+    since: C++17
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++17" noborder>
+      ```cpp
+      template< class Rep, class Period >
+      constexpr std::chrono::duration<Rep, Period> abs( std::chrono::duration<Rep, Period> d );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the absolute value of the duration `d`. Specifically, if `d >= d.zero()`, return `d`, otherwise return `-d`.
+
+  The function does not participate in the overload resolution unless `std::numeric_limits<Rep>::is_signed` is `true`.
+</DeclDoc>
+
+## Parameters
+
+| Parameter | Description |
+|---|---|
+| `d` | duration |
+
+## Return value
+
+Absolute value of `d`.
+
+## Possible implementation
+
+```cpp
+template<class Rep, class Period,
+    class = std::enable_if_t<std::numeric_limits<Rep>::is_signed>>
+constexpr std::chrono::duration<Rep, Period> abs(std::chrono::duration<Rep, Period> d)
+{
+    return d >= d.zero() ? +d : -d;
+}
+```
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    using namespace std::chrono;
+
+    static_assert(abs(-42s) == std::chrono::abs(42s));
+
+    std::cout << "abs(+3min) = " << abs(3min).count() << '\n'
+              << "abs(-3min) = " << abs(-3min).count() << '\n';
+}
+```
+
+**Output:**
+
+```
+abs(+3min) = 3
+abs(-3min) = 3
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    implements unary + and unary -
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::abs` / `std::labs` / `std::llabs`</Missing></RevisionBlock>
+    </Fragment>
+    computes absolute value of an integral value
+  </Desc>
+</DescList>

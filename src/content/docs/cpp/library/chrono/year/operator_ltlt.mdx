@@ -1,0 +1,83 @@
+---
+title: operator<< (std::chrono::year)
+cppdoc:
+  keys: ["cpp.chrono.year.operator_ltlt"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits >
+      std::basic_ostream<CharT, Traits>&
+          operator<<( std::basic_ostream<CharT, Traits>& os, const std::chrono::year& y );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Forms a `std::basic_string<CharT>` `s` consisting of the year value stored in `y` formatted as a decimal number, left-padded with `0` to four digits if the result would otherwise be less than four digits. Then, if `!y.ok()`, append `" is not a valid year"` to the formatted string. Inserts that string into `os`.
+
+  Equivalent to
+
+  ```cpp
+  return os << (y.ok() ?
+      std::format(STATICALLY_WIDEN<CharT>("{:%Y}"), y) :
+      std::format(STATICALLY_WIDEN<CharT>("{:%Y} is not a valid year"), y));
+  ```
+
+  where `STATICALLY_WIDEN<CharT>("...")` is `"..."` if `CharT` is `char`, and `L"..."` if `CharT` is `wchar_t`.
+</DeclDoc>
+
+## Return value
+
+`os`
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+ 
+int main()
+{
+    constexpr std::chrono::year y1{2020}, y2{-020}, y3{98304};
+    std::cout << y1 << '\n'
+              << y2 << '\n'
+              << y3 << '\n';
+}
+```
+
+**Possible output:**
+
+```
+2020
+-0016
+-32768 is not a valid year
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::format`</Missing></RevisionBlock>
+    </Fragment>
+    stores formatted representation of the arguments in a new string
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::formatter<std::chrono::year>`</Missing></RevisionBlock>
+    </Fragment>
+    formatting support for `year`
+  </Desc>
+</DescList>

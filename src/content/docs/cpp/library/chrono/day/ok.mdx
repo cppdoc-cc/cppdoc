@@ -1,0 +1,60 @@
+---
+title: std::chrono::day::ok
+cppdoc:
+  keys: ["cpp.chrono.day.ok"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr bool ok() const noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Checks if the day value stored in `*this` is in the valid range, i.e., \[1, 31\].
+</DeclDoc>
+
+## Return value
+
+`true` if the day value stored in `*this` is in the range \[1, 31\]. Otherwise `false`.
+
+## Example
+
+```cpp
+#include <chrono>
+using namespace std::chrono_literals;
+
+constexpr std::chrono::day d0{00};
+constexpr std::chrono::day d1{13};
+constexpr std::chrono::day d2{42};
+
+static_assert
+(
+    d0 == 0d && !d0.ok() &&
+    d1 == 13d && d1.ok() &&
+    d2 == 42d && !d2.ok()
+);
+
+int main() {}
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator unsigned`</Missing></RevisionBlock>
+    </Fragment>
+    retrieves the stored day value
+  </Desc>
+</DescList>

@@ -1,0 +1,35 @@
+---
+title: std::chrono::day::day
+cppdoc:
+  keys: ["cpp.chrono.day.day"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      day() = default;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr explicit day( unsigned d ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Constructs a `day` object.
+
+  1. Default constructor leaves the day value uninitialized.
+  2. If `d <= 255`, constructs a `day` object holding the day value `d`. Otherwise the value held is unspecified.
+</DeclDoc>

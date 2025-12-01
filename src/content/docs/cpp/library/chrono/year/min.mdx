@@ -1,0 +1,47 @@
+---
+title: std::chrono::year::min
+cppdoc:
+  keys: ["cpp.chrono.year.min"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      static constexpr std::chrono::year min() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the smallest possible `year`, that is, `std::chrono::year(-32767)`.
+</DeclDoc>
+
+## Return value
+
+`std::chrono::year(-32767)`
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    std::cout << "The minimum year is: " << (int)std::chrono::year::min() << '\n';
+}
+```
+
+**Output:**
+
+```
+The minimum year is: -32767
+```

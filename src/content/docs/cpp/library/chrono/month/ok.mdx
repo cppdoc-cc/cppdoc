@@ -1,0 +1,55 @@
+---
+title: std::chrono::month::ok
+cppdoc:
+  keys: ["cpp.chrono.month.ok"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr bool ok() const noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Checks if the month value stored in `*this` is in the valid range, i.e., \[1, 12\].
+</DeclDoc>
+
+## Return value
+
+`true` if the month value stored in `*this` is in the range \[1, 12\]. Otherwise `false`.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+ 
+int main()
+{
+    for (const unsigned mm : {6u, 0u, 16U})
+    {
+        std::cout << mm << ": ";
+        const std::chrono::month m{mm};
+        m.ok() ? std::cout << "month is valid\n"
+               : std::cout << "month is invalid\n";
+    }
+}
+```
+
+**Output:**
+
+```
+6: month is valid
+0: month is invalid
+16: month is invalid
+```

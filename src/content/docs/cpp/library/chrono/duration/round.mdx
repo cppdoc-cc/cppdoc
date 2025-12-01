@@ -1,0 +1,106 @@
+---
+title: std::chrono::round (std::chrono::duration)
+cppdoc:
+  keys: ["cpp.chrono.duration.round"]
+  revision:
+    since: C++17
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++17" noborder>
+      ```cpp
+      template< class ToDuration, class Rep, class Period >
+      constexpr ToDuration round( const std::chrono::duration<Rep, Period>& d );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the value `t` representable in `ToDuration` that is the closest to `d`. If there are two such values, returns the even value (that is, the value `t` such that `t % 2 == 0`).
+
+  The function does not participate in the overload resolution unless `ToDuration` is a specialization of <Missing>`std::chrono::duration`</Missing> and `std::chrono::treat_as_floating_point_v<typename ToDuration::rep>` is `false`.
+</DeclDoc>
+
+## Parameters
+
+| Parameter | Description |
+|---|---|
+| `d` | duration to convert |
+
+## Return value
+
+`d` rounded to the nearest duration of type `ToDuration`, rounding to even in halfway cases.
+
+## Possible implementation
+
+```cpp
+namespace detail
+{
+    template<class> inline constexpr bool is_duration_v = false;
+    template<class Rep, class Period> inline constexpr bool is_duration_v<
+        std::chrono::duration<Rep, Period>> = true;
+}
+
+template<class To, class Rep, class Period,
+         class = std::enable_if_t<detail::is_duration_v<To> &&
+                !std::chrono::treat_as_floating_point_v<typename To::rep>>>
+constexpr To round(const std::chrono::duration<Rep, Period>& d)
+{
+    To t0 = std::chrono::floor<To>(d);
+    To t1 = t0 + To{1};
+    auto diff0 = d - t0;
+    auto diff1 = t1 - d;
+    if (diff0 == diff1)
+    {
+        if (t0.count() & 1)
+            return t1;
+        return t0;
+    }
+    else if (diff0 < diff1)
+        return t0;
+    return t1;
+}
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`duration_cast`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, with a different tick interval
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`floor`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding down
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`ceil`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding up
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`round` (time_point)</Missing></RevisionBlock>
+    </Fragment>
+    converts a time_point to another, rounding to nearest, ties to even
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::round`</Missing></RevisionBlock>
+    </Fragment>
+    nearest integer, rounding away from zero in halfway cases
+  </Desc>
+</DescList>

@@ -1,0 +1,112 @@
+---
+title: std::literals::chrono_literals::operator""us
+cppdoc:
+  keys: ["cpp.chrono.operator_us"]
+  revision:
+    since: C++14
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++14" noborder>
+      ```cpp
+      constexpr std::chrono::microseconds
+          operator""us( unsigned long long us );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Integer literal, returns exactly `std::chrono::microseconds(us)`.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++14" noborder>
+      ```cpp
+      constexpr std::chrono::duration</*unspecified*/, std::micro>
+          operator""us( long double us );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Floating-point literal, returns a floating-point duration equivalent to <Missing>`std::chrono::microseconds`</Missing>.
+</DeclDoc>
+
+Forms a <Missing>`std::chrono::duration`</Missing> literal representing microseconds.
+
+## Parameters
+
+<ParamDocList>
+  <ParamDoc name="us">
+    the number of microseconds
+  </ParamDoc>
+</ParamDocList>
+
+## Return value
+
+The <Missing>`std::chrono::duration`</Missing> literal.
+
+## Possible implementation
+
+```cpp
+constexpr std::chrono::microseconds operator""us(unsigned long long us)
+{
+    return std::chrono::microseconds(us);
+}
+constexpr std::chrono::duration<long double, std::micro> operator""us(long double us)
+{
+    return std::chrono::duration<long double, std::micro>(us);
+}
+```
+
+## Notes
+
+This operator is declared in the namespace `std::literals::chrono_literals`, where both `literals` and `chrono_literals` are inline namespaces. Access to this operator can be gained with:
+- `using namespace std::literals`,
+- `using namespace std::chrono_literals`, or
+- `using namespace std::literals::chrono_literals`.
+
+In addition, within the namespace `std::chrono`, the directive `using namespace literals::chrono_literals;` is provided by the standard library, so that if a programmer uses `using namespace std::chrono;` to gain access to the classes in the chrono library, the corresponding literal operators become visible as well.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    using namespace std::chrono_literals;
+    auto d1 = 250us;
+    std::chrono::microseconds d2 = 1ms;
+    std::cout << d1 << " = " << d1.count() << " microseconds\n"
+              << 1ms << " = " << d2.count() << " microseconds\n";
+}
+```
+
+Output:
+
+```
+250us = 250 microseconds
+1ms = 1000 microseconds
+```
+
+## See also
+
+<DescList>
+  <Desc kind="constructor" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`duration::duration`</Missing></RevisionBlock>
+    </Fragment>
+    constructs new duration
+  </Desc>
+</DescList>

@@ -1,0 +1,57 @@
+---
+title: std::chrono::duration::min
+cppdoc:
+  keys: ["cpp.chrono.duration.min"]
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock until="C++20" noborder>
+      ```cpp
+      static constexpr duration min();
+      ```
+    </RevisionBlock>
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      static constexpr duration min() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns a duration with the lowest possible value.
+
+  If the representation `rep` of the duration requires some other implementation to return a minimum-length duration, <Missing>`std::chrono::duration_values`</Missing> can be specialized to return the desired value.
+</DeclDoc>
+
+## Parameters
+
+(none)
+
+## Return value
+
+`duration(std::chrono::duration_values<rep>::min())`
+
+## See also
+
+<DescList>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`zero`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value zero
+  </Desc>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`max`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value max
+  </Desc>
+</DescList>

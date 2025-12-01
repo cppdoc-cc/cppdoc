@@ -1,0 +1,331 @@
+---
+title: std::chrono::duration
+cppdoc:
+  keys: ["cpp.chrono.duration"]
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList, DescItem } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      template<
+          class Rep,
+          class Period = std::ratio<1>
+      > class duration;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Class template `std::chrono::duration` represents a time interval.
+
+  It consists of a count of ticks of type `Rep` and a tick period, where the tick period is a compile-time rational fraction representing the time in seconds from one tick to the next.
+
+  The only data stored in a `duration` is a tick count of type `Rep`. If `Rep` is floating point, then the `duration` can represent fractions of ticks. `Period` is included as part of the duration's type, and is only used when converting between different durations.
+</DeclDoc>
+
+## Member types
+
+| Member type | Definition |
+|---|---|
+| `rep` | `Rep`, an arithmetic type, or a class emulating an arithmetic type, representing the number of ticks |
+| `period` | <Revision noborder until="C++17">`Period`</Revision><Revision noborder since="C++17">`typename Period::type`</Revision>, a <Missing>`std::ratio`</Missing> representing the tick period (i.e. the number of second's fractions per tick) |
+
+## Member functions
+
+<DescList>
+  <Desc kind="constructor" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`(constructor)`</Missing></RevisionBlock>
+    </Fragment>
+    constructs new duration
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator=`</Missing></RevisionBlock>
+    </Fragment>
+    assigns the contents
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`count`</Missing></RevisionBlock>
+    </Fragment>
+    returns the count of ticks
+  </Desc>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`zero`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value zero
+  </Desc>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`min`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value min
+  </Desc>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`max`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value max
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    implements unary + and unary -
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator++` / `operator--`</Missing></RevisionBlock>
+    </Fragment>
+    increments or decrements the tick count
+  </Desc>
+  <Desc kind="function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator+=` / `operator-=` / `operator*=` / `operator/=` / `operator%=`</Missing></RevisionBlock>
+    </Fragment>
+    implements compound assignment between two durations
+  </Desc>
+</DescList>
+
+## Non-member functions
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator+` / `operator-` / `operator*` / `operator/` / `operator%`</Missing></RevisionBlock>
+    </Fragment>
+    implements arithmetic operations with durations as arguments
+  </Desc>
+  <Desc kind="function template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`operator==` / `operator!=` / `operator<` / `operator<=` / `operator>` / `operator>=` / `operator<=>`</Missing></RevisionBlock>
+    </Fragment>
+    compares two durations
+  </Desc>
+  <Desc kind="function template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`duration_cast`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, with a different tick interval
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`floor`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding down
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`ceil`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding up
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`round`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding to nearest, ties to even
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`abs`</Missing></RevisionBlock>
+    </Fragment>
+    obtains the absolute value of the duration
+  </Desc>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator<<`</Missing></RevisionBlock>
+    </Fragment>
+    performs stream output on a duration
+  </Desc>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`from_stream`</Missing></RevisionBlock>
+    </Fragment>
+    parses a duration from a stream according to the provided format
+  </Desc>
+</DescList>
+
+## Helper types
+
+A type `/* intXX */` used in the table below means a signed integer type of at least XX bits.
+
+| Type | Definition |
+|---|---|
+| **`std::chrono::nanoseconds`** | `std::chrono::duration</* int64 */, std::nano>` |
+| **`std::chrono::microseconds`** | `std::chrono::duration</* int55 */, std::micro>` |
+| **`std::chrono::milliseconds`** | `std::chrono::duration</* int45 */, std::milli>` |
+| **`std::chrono::seconds`** | `std::chrono::duration</* int35 */>` |
+| **`std::chrono::minutes`** | `std::chrono::duration</* int29 */, std::ratio<60>>` |
+| **`std::chrono::hours`** | `std::chrono::duration</* int23 */, std::ratio<3600>>` |
+| **`std::chrono::days`** <Revision since="C++20" noborder /> | `std::chrono::duration</* int25 */, std::ratio<86400>>` |
+| **`std::chrono::weeks`** <Revision since="C++20" noborder /> | `std::chrono::duration</* int22 */, std::ratio<604800>>` |
+| **`std::chrono::months`** <Revision since="C++20" noborder /> | `std::chrono::duration</* int20 */, std::ratio<2629746>>` |
+| **`std::chrono::years`** <Revision since="C++20" noborder /> | `std::chrono::duration</* int17 */, std::ratio<31556952>>` |
+
+Note: each of the predefined duration types up to `hours` covers a range of at least ±292 years.
+
+<RevisionBlock since="C++20">
+Each of the predefined duration types `days`, `weeks`, `months` and `years` covers a range of at least ±40000 years. `years` is equal to 365.2425 `days` (the average length of a Gregorian year). `months` is equal to 30.436875 `days` (exactly 1/12 of `years`).
+</RevisionBlock>
+
+## Helper classes
+
+<DescList>
+  <Desc kind="class template specialization" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::common_type<std::chrono::duration>`</Missing></RevisionBlock>
+    </Fragment>
+    specializes the `std::common_type` trait
+  </Desc>
+  <Desc kind="class template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::chrono::treat_as_floating_point`</Missing></RevisionBlock>
+    </Fragment>
+    indicates that a duration is convertible to duration with different tick period
+  </Desc>
+  <Desc kind="class template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::chrono::duration_values`</Missing></RevisionBlock>
+    </Fragment>
+    constructs zero, min, and max values of a tick count type
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::formatter<std::chrono::duration>`</Missing></RevisionBlock>
+    </Fragment>
+    formatting support for `duration`
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++26">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++26" dir="v"><Missing>`std::hash<std::chrono::duration>`</Missing></RevisionBlock>
+    </Fragment>
+    hash support for `std::chrono::duration`
+  </Desc>
+</DescList>
+
+## Literals
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in inline namespace `std::literals::chrono_literals`</Fragment>
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""h`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing hours
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""min`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing minutes
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""s`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing seconds
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""ms`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing milliseconds
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""us`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing microseconds
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""ns`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing nanoseconds
+  </Desc>
+</DescList>
+
+<RevisionBlock since="C++20">
+Note: the literal suffixes `d` and `y` do not refer to `days` and `years` but to <Missing>`std::chrono::day`</Missing> and <Missing>`std::chrono::year`</Missing>, respectively.
+</RevisionBlock>
+
+## Notes
+
+The actual time interval (in seconds) that is held by a duration object `d` is roughly equal to `d.count() * D::period::num / D::period::den`, where `D` is of type `chrono::duration<>` and `d` is an object of such type.
+
+<FeatureTestMacro>
+  <FeatureTestMacroValue name="__cpp_lib_chrono_udls" value="201304L" std="C++14">
+    User-defined literals for time types
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## Example
+
+This example shows how to define several custom duration types and convert between types:
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+using namespace std::chrono_literals;
+
+template<typename T1, typename T2>
+using mul = std::ratio_multiply<T1, T2>;
+
+int main()
+{
+    using microfortnights = std::chrono::duration<float,
+        mul<mul<std::ratio<2>, std::chrono::weeks::period>, std::micro>>;
+    using nanocenturies = std::chrono::duration<float,
+        mul<mul<std::hecto, std::chrono::years::period>, std::nano>>;
+    using fps_24 = std::chrono::duration<double, std::ratio<1, 24>>;
+    
+    std::cout << "1 second is:\n";
+    
+    // integer scale conversion with no precision loss: no cast
+    std::cout << std::chrono::milliseconds(1s).count() << " milliseconds\n"
+              << std::chrono::microseconds(1s).count() << " microseconds\n"
+              << std::chrono::nanoseconds(1s).count() << " nanoseconds\n";
+    
+    // integer scale conversion with precision loss: requires a cast
+    std::cout << std::chrono::duration_cast<std::chrono::minutes>(1s).count()
+              << " minutes\n";
+    // alternative to duration_cast:
+    std::cout << 1s / 1min << " minutes\n";
+    
+    // floating-point scale conversion: no cast
+    std::cout << microfortnights(1s).count() << " microfortnights\n"
+              << nanocenturies(1s).count() << " nanocenturies\n"
+              << fps_24(1s).count() << " frames at 24fps\n";
+}
+```
+
+**Output:**
+
+```
+1 second is:
+1000 milliseconds
+1000000 microseconds
+1000000000 nanoseconds
+0 minutes
+0 minutes
+0.82672 microfortnights
+0.316887 nanocenturies
+24 frames at 24fps
+```

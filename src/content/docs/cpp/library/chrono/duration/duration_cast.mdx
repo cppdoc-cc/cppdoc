@@ -1,0 +1,126 @@
+---
+title: std::chrono::duration_cast
+cppdoc:
+  keys: ["cpp.chrono.duration.duration_cast"]
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      template< class ToDuration, class Rep, class Period >
+      constexpr ToDuration duration_cast( const std::chrono::duration<Rep, Period>& d );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Converts a <Missing>`std::chrono::duration`</Missing> to a duration of different type `ToDuration`.
+
+  The function only participates in overload resolution if `ToDuration` is a specialization of <Missing>`std::chrono::duration`</Missing>.
+</DeclDoc>
+
+## Parameters
+
+| Parameter | Description |
+|---|---|
+| `d` | duration to convert |
+
+## Return value
+
+`d` converted to a duration of type `ToDuration`.
+
+## Notes
+
+No implicit conversions are used. Multiplications and divisions are avoided where possible, if it is known at compile time that one or more parameters are `1`. Computations are done in the widest type available and converted, as if by `static_cast`, to the result type only when finished.
+
+Casting between integer durations where the source period is exactly divisible by the target period (e.g. hours to minutes) or between floating-point durations can be performed with ordinary casts or implicitly via `std::chrono::duration` constructors, no `duration_cast` is needed.
+
+Casting from a floating-point duration to an integer duration is subject to undefined behavior when the floating-point value is NaN, infinity, or too large to be representable by the target's integer type. Otherwise, casting to an integer duration is subject to truncation as with any `static_cast` to an integer type.
+
+## Example
+
+This example measures the execution time of a function.
+
+```cpp
+#include <chrono>
+#include <iostream>
+#include <ratio>
+#include <thread>
+
+void f()
+{
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+int main()
+{
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    f();
+    const auto t2 = std::chrono::high_resolution_clock::now();
+    
+    // floating-point duration: no duration_cast needed
+    const std::chrono::duration<double, std::milli> fp_ms = t2 - t1;
+    
+    // integral duration: requires duration_cast
+    const auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+    
+    // converting integral duration to integral duration of
+    // shorter divisible time unit: no duration_cast needed
+    const std::chrono::duration<long, std::micro> int_usec = int_ms;
+    
+    std::cout << "f() took " << fp_ms << ", or "
+              << int_ms << " (whole milliseconds), or "
+              << int_usec << " (whole microseconds)\n";
+}
+```
+
+**Possible output:**
+
+```
+f() took 1000.14ms, or 1000ms (whole milliseconds), or 1000000us (whole microseconds)
+```
+
+## See also
+
+<DescList>
+  <Desc kind="class template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::chrono::duration`</Missing></RevisionBlock>
+    </Fragment>
+    a time interval
+  </Desc>
+  <Desc kind="function template" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`time_point_cast`</Missing></RevisionBlock>
+    </Fragment>
+    converts a time point to another time point on the same clock, with a different duration
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`floor`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding down
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`ceil`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding up
+  </Desc>
+  <Desc kind="function template" autorevSince="C++17">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++17" dir="v"><Missing>`round`</Missing></RevisionBlock>
+    </Fragment>
+    converts a duration to another, rounding to nearest, ties to even
+  </Desc>
+</DescList>

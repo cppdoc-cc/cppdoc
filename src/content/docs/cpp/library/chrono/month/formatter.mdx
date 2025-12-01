@@ -1,0 +1,49 @@
+---
+title: std::formatter<std::chrono::month>
+cppdoc:
+  keys: ["cpp.chrono.month.formatter"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT >
+      struct formatter<std::chrono::month, CharT>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Specialization of <Missing>`std::formatter`</Missing> that defines formatting rules for a <Missing>`std::chrono::month`</Missing>.
+
+  The <Missing>`std::formatter`</Missing> specialization is usually not directly accessed, but is used through formatting functions.
+</DeclDoc>
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+| DR | Applied to | Behavior as published | Correct behavior |
+|---|---|---|---|
+| P2372R3 | C++20 | `formatter` used the global locale or passed locale | default `"C"` locale is used when **L** is absent |
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::format`</Missing></RevisionBlock>
+    </Fragment>
+    stores formatted representation of the arguments in a new string
+  </Desc>
+</DescList>

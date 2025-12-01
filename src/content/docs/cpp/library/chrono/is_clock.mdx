@@ -1,0 +1,126 @@
+---
+title: std::chrono::is_clock
+cppdoc:
+  keys: ["cpp.chrono.is_clock"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class T >
+      struct is_clock;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  If `T` satisfies the <Missing>Clock</Missing> requirements, provides the member constant `value` equal `true`. For any other type, `value` is `false`.
+
+  For the purpose of this trait, the extent to which an implementation determines that a type cannot meet the <Missing>Clock</Missing> requirements is unspecified, except that a minimum `T` shall not qualify as a Clock unless it meets all following conditions:
+  - Each of the following qualified identifiers is valid and denotes a type:
+    - `T::rep`
+    - `T::period`
+    - `T::duration`
+    - `T::time_point`
+  - Each of the following expressions is well-formed when treated as an unevaluated operand:
+    - `T::is_steady`
+    - `T::now()`
+
+  If the program adds specializations for `is_clock` or `is_clock_v`, the behavior is undefined.
+</DeclDoc>
+
+## Template parameters
+
+<ParamDocList>
+  <ParamDoc name="T">
+    a type to check
+  </ParamDoc>
+</ParamDocList>
+
+## Helper variable template
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class T >
+      constexpr bool is_clock_v = is_clock<T>::value;
+      ```
+    </RevisionBlock>
+  </Decl>
+</DeclDoc>
+
+## Inherited from std::integral_constant
+
+<DescList>
+  <Desc kind="member constant">
+    <Fragment slot="item">`value`</Fragment>
+    `true` if `T` satisfies the Clock requirements, `false` otherwise
+  </Desc>
+  <Desc kind="member function">
+    <Fragment slot="item">`operator bool`</Fragment>
+    converts the object to `bool`, returns `value`
+  </Desc>
+  <Desc kind="member function">
+    <Fragment slot="item">`operator()`</Fragment>
+    returns `value`
+  </Desc>
+  <Desc kind="member type">
+    <Fragment slot="item">`value_type`</Fragment>
+    `bool`
+  </Desc>
+  <Desc kind="member type">
+    <Fragment slot="item">`type`</Fragment>
+    `std::integral_constant<bool, value>`
+  </Desc>
+</DescList>
+
+## Possible implementation
+
+```cpp
+template<class>
+struct is_clock : std::false_type {};
+
+template<class T>
+    requires
+        requires
+        {
+            typename T::rep;
+            typename T::period;
+            typename T::duration;
+            typename T::time_point;
+            T::is_steady; // type is not checked
+            T::now();     // return type is not checked
+        }
+struct is_clock<T> : std::true_type {};
+```
+
+## Notes
+
+If `T` otherwise meets the Clock requirements, but `T::is_steady` is not of type `const bool`, or `T::now()` is not of type `T::time_point`, the result of `is_clock_v<T>` is unspecified.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <ratio>
+
+static_assert
+(
+    std::chrono::is_clock_v<std::chrono::utc_clock> and
+    not std::chrono::is_clock_v<std::chrono::duration<int, std::exa>>
+);
+
+int main() {}
+```

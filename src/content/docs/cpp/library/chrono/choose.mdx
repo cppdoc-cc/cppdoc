@@ -1,0 +1,49 @@
+---
+title: std::chrono::choose
+cppdoc:
+  keys: ["cpp.chrono.choose"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      enum class choose {
+          earliest,
+          latest
+      };
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The scoped enumeration `choose` can be passed to certain member functions of <Missing>`std::chrono::time_zone`</Missing> and <Missing>`std::chrono::zoned_time`</Missing> to control how ambiguous or nonexistent local times should be resolved. Passing `choose::earliest` causes the earlier time point to be returned, while passing `choose::latest` causes the later time point to be returned. (For nonexistent local times, these two time points are identical.)
+
+  If a `choose` is not passed and an ambiguous or nonexistent local time is encountered, a <Missing>`std::chrono::ambiguous_local_time`</Missing> or <Missing>`std::chrono::nonexistent_local_time`</Missing> exception (as applicable) will be thrown.
+</DeclDoc>
+
+## See also
+
+<DescList>
+  <Desc kind="constructor" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`zoned_time::zoned_time`</Missing></RevisionBlock>
+    </Fragment>
+    constructs a `zoned_time`
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`time_zone::to_sys`</Missing></RevisionBlock>
+    </Fragment>
+    converts a `local_time` in this time zone to a `sys_time`
+  </Desc>
+</DescList>

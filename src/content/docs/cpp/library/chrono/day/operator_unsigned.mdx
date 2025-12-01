@@ -1,0 +1,49 @@
+---
+title: std::chrono::day::operator unsigned
+cppdoc:
+  keys: ["cpp.chrono.day.operator_unsigned"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr explicit operator unsigned() const noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the day value stored in `*this`.
+</DeclDoc>
+
+## Return value
+
+The day value stored in `*this`.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    constexpr std::chrono::day d{15};
+    constexpr unsigned day = static_cast<unsigned>(d);
+    std::cout << "The day is: " << day << '\n';
+}
+```
+
+**Output:**
+
+```
+The day is: 15
+```

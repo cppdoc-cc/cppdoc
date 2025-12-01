@@ -1,0 +1,199 @@
+---
+title: std::chrono::parse
+cppdoc:
+  keys: ["cpp.chrono.parse"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Parsable >
+      /* unspecified */ parse( const CharT* fmt, Parsable& tp );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream` (unqualified, to enable argument-dependent lookup) as `from_stream(is, fmt, tp)`.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits, class Alloc, class Parsable >
+      /* unspecified */ parse( const std::basic_string<CharT, Traits, Alloc>& fmt,
+                               Parsable& tp );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt.c_str(), tp)`.
+</DeclDoc>
+
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits, class Alloc, class Parsable >
+      /* unspecified */ parse( const CharT* fmt, Parsable& tp,
+                               std::basic_string<CharT, Traits, Alloc>& abbrev );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt, tp, std::addressof(abbrev))`.
+</DeclDoc>
+
+<DeclDoc id={4}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits, class Alloc, class Parsable >
+      /* unspecified */ parse( const std::basic_string<CharT, Traits, Alloc>& fmt,
+                               Parsable& tp,
+                               std::basic_string<CharT, Traits, Alloc>& abbrev );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt.c_str(), tp, std::addressof(abbrev))`.
+</DeclDoc>
+
+<DeclDoc id={5}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Parsable >
+      /* unspecified */ parse( const CharT* fmt, Parsable& tp,
+                               std::chrono::minutes& offset );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt, tp, static_cast<std::basic_string<CharT, Traits, Alloc>*>(nullptr), &offset)`.
+</DeclDoc>
+
+<DeclDoc id={6}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits, class Alloc, class Parsable >
+      /* unspecified */ parse( const std::basic_string<CharT, Traits, Alloc>& fmt,
+                               Parsable& tp, std::chrono::minutes& offset );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt.c_str(), tp, static_cast<std::basic_string<CharT, Traits, Alloc>*>(nullptr), &offset)`.
+</DeclDoc>
+
+<DeclDoc id={7}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits, class Alloc, class Parsable >
+      /* unspecified */ parse( const CharT* fmt, Parsable& tp,
+                               std::basic_string<CharT, Traits, Alloc>& abbrev,
+                               std::chrono::minutes& offset );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt, tp, std::addressof(abbrev), &offset)`.
+</DeclDoc>
+
+<DeclDoc id={8}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits, class Alloc, class Parsable >
+      /* unspecified */ parse( const std::basic_string<CharT, Traits, Alloc>& fmt,
+                               Parsable& tp,
+                               std::basic_string<CharT, Traits, Alloc>& abbrev,
+                               std::chrono::minutes& offset );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns an object `manip` of unspecified type such that, given a `std::basic_istream<CharT, Traits>` object `is`, the expression `is >> manip` calls `from_stream(is, fmt.c_str(), tp, std::addressof(abbrev), &offset)`.
+</DeclDoc>
+
+The expression `is >> manip` is an lvalue of type `std::basic_istream<CharT, Traits>` with the value `is`.
+
+These overloads participate in overload resolution only if the corresponding `from_stream` expression is well-formed.
+
+Implementations are recommended to make it difficult to use potentially dangling references to the format string, e.g., by making return types non-movable and preventing `operator>>` from accepting lvalues of return types.
+
+## Parameters
+
+<ParamDocList>
+  <ParamDoc name="fmt">
+    a format string (see below)
+  </ParamDoc>
+  <ParamDoc name="tp">
+    object to hold the parse result
+  </ParamDoc>
+  <ParamDoc name="abbrev">
+    string to hold the time zone abbreviation or name corresponding to the `%Z` specifier
+  </ParamDoc>
+  <ParamDoc name="offset">
+    duration to represent the offset from UTC corresponding to the `%z` specifier
+  </ParamDoc>
+</ParamDocList>
+
+## Format string
+
+The format string consists of zero or more conversion specifiers and ordinary characters. Each ordinary character, excluding whitespace characters and the terminating null character, matches one identical character from the input stream, or causes the function to fail if the next character on the stream does not compare equal.
+
+Each whitespace character matches zero or more whitespace characters in the input stream.
+
+Each unmodified conversion specifier begins with a `%` character followed by a character that determines the behavior of the specifier. Some conversion specifiers have a modified form in which an `E` or `O` modifier character is inserted after the `%` character.
+
+## Example
+
+```cpp
+// Example code here
+```
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+| DR | Applied to | Behavior as published | Correct behavior |
+|----|------------|----------------------|------------------|
+| LWG 3554 | C++20 | overloads for plain null-terminated character type sequences were missing | added |
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`from_stream` (sys_time)</Missing></RevisionBlock>
+    </Fragment>
+    parses a sys_time from a stream according to the provided format
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`from_stream` (utc_time)</Missing></RevisionBlock>
+    </Fragment>
+    parses a utc_time from a stream according to the provided format
+  </Desc>
+  <Desc kind="function">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`std::get_time`</Missing></RevisionBlock>
+    </Fragment>
+    parses a date/time value of specified format
+  </Desc>
+</DescList>

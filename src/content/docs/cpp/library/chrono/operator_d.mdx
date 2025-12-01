@@ -1,0 +1,99 @@
+---
+title: std::literals::chrono_literals::operator""d
+cppdoc:
+  keys: ["cpp.chrono.operator_d"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::day operator ""d( unsigned long long d ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Forms a <Missing>`std::chrono::day`</Missing> literal representing a day of the month in the calendar.
+</DeclDoc>
+
+## Parameters
+
+<ParamDocList>
+  <ParamDoc name="d">
+    the day value
+  </ParamDoc>
+</ParamDocList>
+
+## Return value
+
+A <Missing>`std::chrono::day`</Missing> storing `d`. If `d > 255`, the stored value is unspecified.
+
+## Possible implementation
+
+```cpp
+constexpr std::chrono::day operator ""d(unsigned long long d) noexcept
+{
+    return std::chrono::day(d);
+}
+```
+
+## Notes
+
+This operator is declared in the namespace `std::literals::chrono_literals`, where both `literals` and `chrono_literals` are inline namespaces. Access to this operator can be gained with:
+- `using namespace std::literals`,
+- `using namespace std::chrono_literals`, or
+- `using namespace std::literals::chrono_literals`.
+
+In addition, within the namespace `std::chrono`, the directive `using namespace literals::chrono_literals;` is provided by the standard library, so that if a programmer uses `using namespace std::chrono;` to gain access to the classes in the chrono library, the corresponding literal operators become visible as well.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    using namespace std::literals::chrono_literals;
+
+    std::cout << static_cast<unsigned>(42d) << '\t' << 42d << '\n'
+              << static_cast<unsigned>(256d) << '\t' << 256d << '\n' // unspecified
+              << static_cast<unsigned>(298d) << '\t' << 298d << '\n'; // unspecified
+}
+```
+
+Possible output:
+
+```
+42      42 is not a valid day
+0       00 is not a valid day
+42      42 is not a valid day
+```
+
+## See also
+
+<DescList>
+  <Desc kind="constructor" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`day::day`</Missing></RevisionBlock>
+    </Fragment>
+    constructs a `day`
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`day::operator unsigned`</Missing></RevisionBlock>
+    </Fragment>
+    retrieves the stored day value
+  </Desc>
+</DescList>

@@ -1,0 +1,78 @@
+---
+title: std::chrono::day::operator+=, operator-=
+cppdoc:
+  keys: ["cpp.chrono.day.operator_arith"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::day& operator+=( const std::chrono::days& d ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::day& operator-=( const std::chrono::days& d ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Adds or subtracts `d.count()` days from the day value.
+
+  1. Equivalent to `*this = *this + d;`.
+  2. Equivalent to `*this = *this - d;`.
+</DeclDoc>
+
+## Return value
+
+A reference to this `day` after modification.
+
+## Notes
+
+If the result would be outside the range \[0, 255\], the actual stored value is unspecified.
+
+## Example
+
+```cpp
+#include <cassert>
+#include <chrono>
+
+int main()
+{
+    std::chrono::day d{15};
+
+    d += std::chrono::days(2);
+    assert(d == std::chrono::day(17));
+
+    d -= std::chrono::days{3};
+    assert(d == std::chrono::day(14));
+}
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator++` / `operator--`</Missing></RevisionBlock>
+    </Fragment>
+    increments or decrements the day
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    performs arithmetic on `day`s
+  </Desc>
+</DescList>

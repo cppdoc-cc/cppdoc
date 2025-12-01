@@ -1,0 +1,81 @@
+---
+title: std::chrono::zoned_traits
+cppdoc:
+  keys: ["cpp.chrono.zoned_traits"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template < class TimeZonePtr >
+      struct zoned_traits { };
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Primary template is empty.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template <>
+      struct zoned_traits<const std::chrono::time_zone*>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The class `zoned_traits` provides a way to customize the behavior of the constructors of <Missing>`std::chrono::zoned_time`</Missing> with custom time zone pointer types. In particular, it allows such types to specify the default time zone to use and the mapping of a time zone's name to the corresponding time zone pointer. It is acceptable for custom time zone pointer types to not support either operation, in which case the corresponding constructors of `zoned_time` will not participate in overload resolution.
+
+  The primary template is empty. A specialization is provided for `const std::chrono::time_zone*`, the default time zone pointer type.
+</DeclDoc>
+
+## Member functions
+
+### std::chrono::zoned_traits\<const std::chrono::time_zone*\>::default_zone
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      static const std::chrono::time_zone* default_zone();
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns a time zone pointer for the default time zone (UTC).
+</DeclDoc>
+
+#### Return value
+
+`std::chrono::locate_zone("UTC")`.
+
+### std::chrono::zoned_traits\<const std::chrono::time_zone*\>::locate_zone
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      static const std::chrono::time_zone* locate_zone(std::string_view name);
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the time zone pointer for the time zone designated by `name`.
+</DeclDoc>
+
+#### Return value
+
+`std::chrono::locate_zone(name)`.

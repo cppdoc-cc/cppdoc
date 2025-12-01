@@ -1,0 +1,128 @@
+---
+title: std::chrono::month
+cppdoc:
+  keys: ["cpp.chrono.month"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      class month;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      inline constexpr std::chrono::month January{1};
+      inline constexpr std::chrono::month February{2};
+      inline constexpr std::chrono::month March{3};
+      inline constexpr std::chrono::month April{4};
+      inline constexpr std::chrono::month May{5};
+      inline constexpr std::chrono::month June{6};
+      inline constexpr std::chrono::month July{7};
+      inline constexpr std::chrono::month August{8};
+      inline constexpr std::chrono::month September{9};
+      inline constexpr std::chrono::month October{10};
+      inline constexpr std::chrono::month November{11};
+      inline constexpr std::chrono::month December{12};
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The class `month` represents a month in a year. Its normal range is \[1, 12\], but it may hold any number in \[0, 255\]. Twelve named constants are predefined in the `std::chrono` namespace for the twelve months of the year.
+
+  `month` is a *TriviallyCopyable* *StandardLayoutType*.
+</DeclDoc>
+
+## Member functions
+
+<DescList>
+  <Desc kind="constructor" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`(constructor)`</Missing></RevisionBlock>
+    </Fragment>
+    constructs a `month`
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator++` / `operator--`</Missing></RevisionBlock>
+    </Fragment>
+    increments or decrements the month
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+=` / `operator-=`</Missing></RevisionBlock>
+    </Fragment>
+    adds or subtracts a number of months
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator unsigned`</Missing></RevisionBlock>
+    </Fragment>
+    retrieves the stored month value
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`ok`</Missing></RevisionBlock>
+    </Fragment>
+    checks if the stored month value is in the normal range
+  </Desc>
+</DescList>
+
+## Non-member functions
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator==` / `operator<=>`</Missing></RevisionBlock>
+    </Fragment>
+    compares two `month` values
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    performs arithmetic on `month`s
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator<<`</Missing></RevisionBlock>
+    </Fragment>
+    outputs a `month` into a stream
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`from_stream`</Missing></RevisionBlock>
+    </Fragment>
+    parses a `month` from a stream according to the provided format
+  </Desc>
+</DescList>
+
+## Helper classes
+
+<DescList>
+  <Desc kind="class template specialization" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::formatter<std::chrono::month>`</Missing></RevisionBlock>
+    </Fragment>
+    formatting support for `month`
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++26">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++26" dir="v"><Missing>`std::hash<std::chrono::month>`</Missing></RevisionBlock>
+    </Fragment>
+    hash support for `std::chrono::month`
+  </Desc>
+</DescList>

@@ -1,0 +1,76 @@
+---
+title: std::chrono::get_tzdb_list, get_tzdb, remote_version, reload_tzdb
+cppdoc:
+  keys: ["cpp.chrono.get_tzdb_list", "cpp.chrono.get_tzdb", "cpp.chrono.remote_version", "cpp.chrono.reload_tzdb"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      std::chrono::tzdb_list& get_tzdb_list();
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns a reference to the global <Missing>`std::chrono::tzdb_list`</Missing> singleton. If this is the first access to the database, initialize the database. After the initialization, the database will hold a single initialized <Missing>`std::chrono::tzdb`</Missing> object. This function is thread-safe: concurrent calls to this function from multiple threads do not introduce a data race.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      const std::chrono::tzdb& get_tzdb();
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns a reference to the first <Missing>`std::chrono::tzdb`</Missing> object held by the `tzdb_list` singleton. Equivalent to `std::chrono::get_tzdb_list().front()`.
+</DeclDoc>
+
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      std::string remote_version();
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns a string containing the latest remote database version.
+</DeclDoc>
+
+<DeclDoc id={4}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      const std::chrono::tzdb& reload_tzdb();
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  If `remote_version() != get_tzdb().version`, pushes a new `tzdb` object representing the remote database to the front of the `tzdb_list` singleton referenced by `get_tzdb_list()`. Otherwise there are no effects. No references, pointers or iterators are invalidated. Calling this function concurrently with `get_tzdb_list().front()` or `get_tzdb_list().erase_after()` does not introduce a data race.
+</DeclDoc>
+
+These functions provide access to the program-wide time zone database.
+
+## Exceptions
+
+1. <Missing>`std::runtime_error`</Missing> if for any reason a reference to a `tzdb_list` containing one or more valid `tzdb` cannot be returned.
+
+## Return value
+
+1. A reference to the global <Missing>`std::chrono::tzdb_list`</Missing> singleton.
+2. `std::chrono::get_tzdb_list().front()`.
+3. A string containing the latest remote database version.
+4. `std::chrono::get_tzdb_list().front()` (after any update made by this function).

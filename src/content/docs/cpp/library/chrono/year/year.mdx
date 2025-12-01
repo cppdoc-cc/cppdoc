@@ -1,0 +1,67 @@
+---
+title: std::chrono::year::year
+cppdoc:
+  keys: ["cpp.chrono.year.year"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      year() = default;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr explicit year( int y ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Constructs a `year` object.
+
+  1. Default constructor leaves the year value uninitialized.
+  2. If `y` is in the range \[-32767, 32767\], constructs a `year` object holding the year value `y`. Otherwise the value held is unspecified.
+</DeclDoc>
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    using namespace std::chrono;
+
+    constexpr int leap_years = []
+    {
+        int count{};
+        for (int i{year::min()}; i <= int{year::max()}; ++i)
+            if (year{i}.is_leap()) // uses constructor (2)
+                ++count;
+        return count;
+    } ();
+
+    static_assert(15891 == leap_years);
+
+    std::cout << "There are " << leap_years << " leap years in the range ["
+              << int(year::min()) << ", " << int(year::max()) << "].\n";
+}
+```
+
+**Output:**
+
+```
+There are 15891 leap years in the range [-32767, 32767].
+```

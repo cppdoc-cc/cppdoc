@@ -1,0 +1,87 @@
+---
+title: std::chrono::year::operator+=, operator-=
+cppdoc:
+  keys: ["cpp.chrono.year.operator_arith"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::year& operator+=( const std::chrono::years& y ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::year& operator-=( const std::chrono::years& y ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Adds or subtracts `y.count()` years from the year value.
+
+  1. Equivalent to `*this = *this + y;`.
+  2. Equivalent to `*this = *this - y;`.
+</DeclDoc>
+
+## Return value
+
+A reference to this `year` after modification.
+
+## Notes
+
+If the result would be outside the range \[-32767, 32767\], the actual stored value is unspecified.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    using namespace std::literals::chrono_literals;
+    std::cout << std::boolalpha;
+
+    std::chrono::year y{2020};
+ 
+    y += std::chrono::years(12);
+    std::cout << (y == 2032y) << ' ';
+
+    y -= std::chrono::years(33);
+    std::cout << (y == 1999y) << '\n';
+}
+```
+
+**Output:**
+
+```
+true true
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator++` / `operator--`</Missing></RevisionBlock>
+    </Fragment>
+    increments or decrements the year
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    performs arithmetic on `year`s
+  </Desc>
+</DescList>

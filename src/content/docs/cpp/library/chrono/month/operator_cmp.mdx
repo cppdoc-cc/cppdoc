@@ -1,0 +1,61 @@
+---
+title: operator==, <=> (std::chrono::month)
+cppdoc:
+  keys: ["cpp.chrono.month.operator_cmp"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr bool operator==( const std::chrono::month& x,
+                                 const std::chrono::month& y ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::strong_ordering operator<=>( const std::chrono::month& x,
+                                                  const std::chrono::month& y ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Compare the two <Missing>`std::chrono::month`</Missing> `x` and `y`.
+
+  The `!=`, `<`, `<=`, `>`, and `>=` operators are synthesized from `operator==` and `operator<=>` respectively.
+</DeclDoc>
+
+## Return value
+
+1) `unsigned(x) == unsigned(y)`
+2) `unsigned(x) <=> unsigned(y)`
+
+## Example
+
+```cpp
+#include <chrono>
+
+int main()
+{
+    constexpr std::chrono::month m1{6}, m2{8};
+
+    static_assert
+    (
+        m1 < m2 && m1 == m1 && m1 <= m2 &&
+        m2 > m1 && m2 != m1 && m2 >= m1 &&
+        m1 <=> m2 != 0
+    );
+}
+```

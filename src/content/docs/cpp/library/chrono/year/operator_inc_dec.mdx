@@ -1,0 +1,107 @@
+---
+title: std::chrono::year::operator++, operator--
+cppdoc:
+  keys: ["cpp.chrono.year.operator_inc_dec"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::year& operator++() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::year operator++( int ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::year& operator--() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::year operator--( int ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Adds or subtracts 1 from the year value.
+
+  1,2) Performs `*this += std::chrono::years{1};`.
+  3,4) Performs `*this -= std::chrono::years{1};`.
+</DeclDoc>
+
+## Parameters
+
+(none)
+
+## Return value
+
+1,3) A reference to this `year` after modification.
+2,4) A copy of the `year` made before modification.
+
+## Notes
+
+If the result would be outside the range \[-32767, 32767\], the actual stored value is unspecified.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    std::cout << std::boolalpha;
+
+    std::chrono::year y{2020};
+    std::cout << (++y == std::chrono::year(2021)) << ' ';
+    std::cout << (--y == std::chrono::year(2020)) << '\n';
+
+    using namespace std::literals::chrono_literals;
+    y = 32767y;
+    y++; //← unspecified, see ↑ Notes ↑
+    std::cout << static_cast<int>(y) << '\n';
+}
+```
+
+**Possible output:**
+
+```
+true true
+-32768
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+=` / `operator-=`</Missing></RevisionBlock>
+    </Fragment>
+    adds or subtracts a number of years
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+` / `operator-`</Missing></RevisionBlock>
+    </Fragment>
+    performs arithmetic on `year`s
+  </Desc>
+</DescList>

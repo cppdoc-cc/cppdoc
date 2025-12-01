@@ -1,0 +1,77 @@
+---
+title: std::chrono::duration::zero
+cppdoc:
+  keys: ["cpp.chrono.duration.zero"]
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock until="C++20" noborder>
+      ```cpp
+      static constexpr duration zero();
+      ```
+    </RevisionBlock>
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      static constexpr duration zero() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns a zero-length duration.
+
+  If the representation `rep` of the duration requires some other implementation to return a zero-length duration, <Missing>`std::chrono::duration_values`</Missing> can be specialized to return the desired value.
+</DeclDoc>
+
+## Parameters
+
+(none)
+
+## Return value
+
+Returns `duration(std::chrono::duration_values<rep>::zero())`.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <ratio>
+
+template<typename X, typename Y>
+using dura = std::chrono::duration<X, Y>;
+
+static_assert
+(
+    (std::chrono::hours::zero() == std::chrono::nanoseconds::zero()) &&
+    (dura<short, std::nano>::zero() == dura<int, std::deci>::zero()) &&
+    (dura<short, std::deca>::zero() == dura<long, std::exa>::zero()) &&
+    (dura<long, std::atto>::zero().count() == dura<float, std::exa>::zero().count())
+);
+
+int main() {}
+```
+
+## See also
+
+<DescList>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`min`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value min
+  </Desc>
+  <Desc kind="static function" autorevSince="C++11">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`max`</Missing></RevisionBlock>
+    </Fragment>
+    returns the special duration value max
+  </Desc>
+</DescList>

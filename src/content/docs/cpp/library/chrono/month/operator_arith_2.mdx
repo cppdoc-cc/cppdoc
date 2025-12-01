@@ -1,0 +1,103 @@
+---
+title: operator+, operator- (std::chrono::month)
+cppdoc:
+  keys: ["cpp.chrono.month.operator_arith_2"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month operator+( const std::chrono::month& m,
+                                              const std::chrono::months& ms ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month operator+( const std::chrono::months& ms,
+                                              const std::chrono::month& m ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::month operator-( const std::chrono::month& m, 
+                                              const std::chrono::months& ms ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr std::chrono::months operator-( const std::chrono::month& m1, 
+                                               const std::chrono::month& m2 ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  1,2) Adds `ms.count()` months to `m`. The month value held in the result is computed by first evaluating `static_cast<long long>(unsigned(m)) + (ms.count() - 1)`, reducing it modulo 12 to an integer in the range \[0, 11\], and then adding 1.
+  3) Subtracts `ms.count()` months from `m` and returns the result. Equivalent to `return m + -ms;`.
+  4) If `m1.ok()` and `m2.ok()` are both `true`, returns a <Missing>`std::chrono::months`</Missing> value `m` such that `m.count()` is in the range \[0, 11\] and `m2 + m == m1`. Otherwise the returned value is unspecified.
+</DeclDoc>
+
+## Return value
+
+1-3) A <Missing>`std::chrono::month`</Missing> holding a month value calculated as described above.
+4) A <Missing>`std::chrono::months`</Missing> representing the distance between `m1` and `m2`.
+
+## Notes
+
+As long as the computation doesn't overflow, (1-3) always return a valid month even if `m.ok()` is `false`.
+
+The result of subtracting two `month` values is a duration of type <Missing>`std::chrono::months`</Missing>. That duration unit represents the length of the average Gregorian month, and the resulting duration bears no relationship to the number of days in the particular months represented by the operands. For example, `std::chrono::seconds(std::chrono::April - std::chrono::March)` is not the number of seconds in March (`2678400s`), but `2629746s` (30.436875 days).
+
+## Example
+
+```cpp
+#include <cassert>
+#include <chrono>
+
+int main()
+{
+    std::chrono::month m{6};
+
+    m = m + std::chrono::months(2);
+    assert(m == std::chrono::month(8));
+
+    m = m - std::chrono::months(3);
+    assert(m == std::chrono::month(5));
+ 
+    constexpr std::chrono::months ms = std::chrono::month(8) - std::chrono::month(6);
+    static_assert(ms == std::chrono::months(2));
+}
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator++` / `operator--`</Missing></RevisionBlock>
+    </Fragment>
+    increments or decrements the month
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator+=` / `operator-=`</Missing></RevisionBlock>
+    </Fragment>
+    adds or subtracts a number of months
+  </Desc>
+</DescList>

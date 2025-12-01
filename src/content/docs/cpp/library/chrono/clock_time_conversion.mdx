@@ -1,0 +1,321 @@
+---
+title: std::chrono::clock_time_conversion
+cppdoc:
+  keys: ["cpp.chrono.clock_time_conversion"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Dest, class Source >
+      struct clock_time_conversion {};
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  `std::chrono::clock_time_conversion` is a trait that specifies how to convert a <Missing>`std::chrono::time_point`</Missing> of the `Source` clock to that of the `Dest` clock. It does so by providing a const-callable `operator()` that accepts an argument of type `std::chrono::time_point<Source, Duration>` and returns a `std::chrono::time_point<Dest, OtherDuration>` that represents an equivalent point in time. The duration of the returned time point is computed from the source duration in a manner that varies for each specialization. `clock_time_conversion` is normally only used indirectly, via <Missing>`std::chrono::clock_cast`</Missing>.
+
+  A program may specialize `clock_time_conversion` if at least one of the template parameters is a user-defined clock type.
+
+  The primary template is an empty struct. The standard defines the following specializations:
+</DeclDoc>
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Clock >
+      struct clock_time_conversion<Clock, Clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Identity conversion: `operator()` returns a copy of the argument.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template<>
+      struct clock_time_conversion<std::chrono::system_clock, std::chrono::system_clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Identity conversion: `operator()` returns a copy of the argument.
+</DeclDoc>
+
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template<>
+      struct clock_time_conversion<std::chrono::utc_clock, std::chrono::utc_clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Identity conversion: `operator()` returns a copy of the argument.
+</DeclDoc>
+
+<DeclDoc id={4}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template<>
+      struct clock_time_conversion<std::chrono::system_clock, std::chrono::utc_clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Conversions between <Missing>`std::chrono::sys_time`</Missing> and <Missing>`std::chrono::utc_time`</Missing>: `operator()` calls <Missing>`std::chrono::utc_clock::to_sys`</Missing>.
+</DeclDoc>
+
+<DeclDoc id={5}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template<>
+      struct clock_time_conversion<std::chrono::utc_clock, std::chrono::system_clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Conversions between <Missing>`std::chrono::sys_time`</Missing> and <Missing>`std::chrono::utc_time`</Missing>: `operator()` calls <Missing>`std::chrono::utc_clock::from_sys`</Missing>.
+</DeclDoc>
+
+<DeclDoc id={6}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Clock >
+      struct clock_time_conversion<Clock, std::chrono::system_clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Conversions to and from <Missing>`std::chrono::sys_time`</Missing> when `Clock` supports `from_sys` and `to_sys`: `operator()` calls `Clock::from_sys`.
+</DeclDoc>
+
+<DeclDoc id={7}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Clock >
+      struct clock_time_conversion<std::chrono::system_clock, Clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Conversions to and from <Missing>`std::chrono::sys_time`</Missing> when `Clock` supports `from_sys` and `to_sys`: `operator()` calls `Clock::to_sys`.
+</DeclDoc>
+
+<DeclDoc id={8}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Clock >
+      struct clock_time_conversion<Clock, std::chrono::utc_clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Conversions to and from <Missing>`std::chrono::utc_time`</Missing> when `Clock` supports `from_utc` and `to_utc`: `operator()` calls `Clock::from_utc`.
+</DeclDoc>
+
+<DeclDoc id={9}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Clock >
+      struct clock_time_conversion<std::chrono::utc_clock, Clock>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Conversions to and from <Missing>`std::chrono::utc_time`</Missing> when `Clock` supports `from_utc` and `to_utc`: `operator()` calls `Clock::to_utc`.
+</DeclDoc>
+
+## Member functions
+
+Each specialization has an implicitly-declared default constructor, copy constructor, move constructor, copy assignment operator, move assignment operator, and destructor.
+
+## std::chrono::clock_time_conversion::operator()
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (1)
+      template< class Duration >
+      std::chrono::time_point<Clock, Duration>
+          operator()( const std::chrono::time_point<Clock, Duration>& t ) const;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Identity conversion. Returns `t` unchanged.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (2)
+      template< class Duration >
+      std::chrono::sys_time<Duration>
+          operator()( const std::chrono::sys_time<Duration>& t ) const;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Identity conversion. Returns `t` unchanged.
+</DeclDoc>
+
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (3)
+      template< class Duration >
+      std::chrono::utc_time<Duration>
+          operator()( const std::chrono::utc_time<Duration>& t ) const;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Identity conversion. Returns `t` unchanged.
+</DeclDoc>
+
+<DeclDoc id={4}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (4)
+      template< class Duration >
+      std::chrono::sys_time<Duration>
+          operator()( const std::chrono::utc_time<Duration>& t ) const;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::utc_clock::to_sys(t)`.
+</DeclDoc>
+
+<DeclDoc id={5}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (5)
+      template< class Duration >
+      std::chrono::utc_time<Duration>
+          operator()( const std::chrono::sys_time<Duration>& t ) const;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::utc_clock::from_sys(t)`.
+</DeclDoc>
+
+<DeclDoc id={6}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (6)
+      template< class Duration >
+      auto operator()( const std::chrono::sys_time<Duration>& t ) const
+          -> decltype(Clock::from_sys(t));
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `Clock::from_sys(t)`. This overload participates in overload resolution only if the expression `Clock::from_sys(t)` is well-formed. The program is ill-formed if `Clock::from_sys(t)` does not return `std::chrono::time_point<Clock, Duration>` where `Duration` is some valid specialization of <Missing>`std::chrono::duration`</Missing>.
+</DeclDoc>
+
+<DeclDoc id={7}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (7)
+      template< class Duration >
+      auto operator()( const std::chrono::time_point<SourceClock, Duration>& t ) const
+          -> decltype(Clock::to_sys(t));
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `Clock::to_sys(t)`. This overload participates in overload resolution only if the expression `Clock::to_sys(t)` is well-formed. The program is ill-formed if `Clock::to_sys(t)` does not return `std::chrono::sys_time<Duration>` where `Duration` is some valid specialization of <Missing>`std::chrono::duration`</Missing>.
+</DeclDoc>
+
+<DeclDoc id={8}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (8)
+      template< class Duration >
+      auto operator()( const std::chrono::utc_time<Duration>& t ) const
+          -> decltype(Clock::from_utc(t));
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `Clock::from_utc(t)`. This overload participates in overload resolution only if the expression `Clock::from_utc(t)` is well-formed. The program is ill-formed if `Clock::from_utc(t)` does not return `std::chrono::time_point<Clock, Duration>` where `Duration` is some valid specialization of <Missing>`std::chrono::duration`</Missing>.
+</DeclDoc>
+
+<DeclDoc id={9}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      // member of specialization (9)
+      template< class Duration >
+      auto operator()( const std::chrono::time_point<Clock, Duration>& t ) const
+          -> decltype(Clock::to_utc(t));
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `Clock::to_utc(t)`. This overload participates in overload resolution only if the expression `Clock::to_utc(t)` is well-formed. The program is ill-formed if `Clock::to_utc(t)` does not return `std::chrono::utc_time<Duration>` where `Duration` is some valid specialization of <Missing>`std::chrono::duration`</Missing>.
+</DeclDoc>
+
+### Parameters
+
+<ParamDocList>
+  <ParamDoc name="t">
+    time point to convert
+  </ParamDoc>
+</ParamDocList>
+
+### Return value
+
+The result of the conversion as described above:
+- (1-3): `t`.
+- (4): `std::chrono::utc_clock::to_sys(t)`.
+- (5): `std::chrono::utc_clock::from_sys(t)`.
+- (6): `Clock::from_sys(t)`.
+- (7): `Clock::to_sys(t)`.
+- (8): `Clock::from_utc(t)`.
+- (9): `Clock::to_utc(t)`.
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`clock_cast`</Missing></RevisionBlock>
+    </Fragment>
+    convert time points of one clock to another
+  </Desc>
+</DescList>

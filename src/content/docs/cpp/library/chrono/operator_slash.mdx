@@ -1,0 +1,215 @@
+---
+title: std::chrono::operator/ (calendar)
+cppdoc:
+  keys: ["cpp.chrono.operator_slash"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+These `operator/` overloads provide a conventional syntax for the creation of proleptic Gregorian calendar dates.
+
+For creation of a full date, any of the following three orders are accepted:
+- *year/month/day*,
+- *month/day/year*,
+- *day/month/year*.
+
+In each case *day* can replaced with one of:
+- <Missing>`std::chrono::last`</Missing>, for the last day of the month;
+- `weekday[i]`, for the *i*th *weekday* of the month;
+- `weekday[std::chrono::last]`, for the last *weekday* of the month.
+
+A plain integer is accepted if its meaning is unambiguous from the types of other operands: `2005y/4/5` is allowed, but `5/April/2005` is not.
+
+Partial-date types (<Missing>`year_month`</Missing>, <Missing>`month_day`</Missing>, etc.) can be created by not applying the second `operator/` in any of the three orders.
+
+## year_month
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::year& y,
+                                const std::chrono::month& m ) noexcept
+          -> std::chrono::year_month;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::year_month(y, m)`.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::year& y, int m ) noexcept
+          -> std::chrono::year_month;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::year_month(y, std::chrono::month(m))`.
+</DeclDoc>
+
+## month_day
+
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::month& m,
+                                const std::chrono::day& d ) noexcept
+          -> std::chrono::month_day;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day(m, d)`.
+</DeclDoc>
+
+<DeclDoc id={4}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::month& m, int d ) noexcept
+          -> std::chrono::month_day;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day(m, std::chrono::day(d))`.
+</DeclDoc>
+
+<DeclDoc id={5}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( int m, const std::chrono::day& d ) noexcept
+          -> std::chrono::month_day;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day(std::chrono::month(m), d)`.
+</DeclDoc>
+
+<DeclDoc id={6}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::day& d,
+                                const std::chrono::month& m ) noexcept
+         -> std::chrono::month_day;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day(m, d)`.
+</DeclDoc>
+
+<DeclDoc id={7}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::day& d, int m ) noexcept
+          -> std::chrono::month_day;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day(std::chrono::month(m), d)`.
+</DeclDoc>
+
+## month_day_last
+
+<DeclDoc id={8}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( const std::chrono::month& m,
+                               std::chrono::last_spec ) noexcept
+          -> std::chrono::month_day_last;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day_last(m)`.
+</DeclDoc>
+
+<DeclDoc id={9}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( int m, std::chrono::last_spec ) noexcept
+          -> std::chrono::month_day_last;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day_last(std::chrono::month(m))`.
+</DeclDoc>
+
+<DeclDoc id={10}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( std::chrono::last_spec,
+                                const std::chrono::month& m ) noexcept
+          -> std::chrono::month_day_last;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day_last(m)`.
+</DeclDoc>
+
+<DeclDoc id={11}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      constexpr auto operator/( std::chrono::last_spec, int m ) noexcept
+          -> std::chrono::month_day_last;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns `std::chrono::month_day_last(std::chrono::month(m))`.
+</DeclDoc>
+
+## Example
+
+```cpp
+#include <chrono>
+using namespace std::chrono;
+
+constexpr auto ym{2021y/8};
+static_assert(ym == year_month(year(2021), August));
+
+constexpr auto md{9/15d};
+static_assert(md == month_day(September, day(15)));
+
+constexpr auto mdl{October/last};
+static_assert(mdl == month_day_last(month(10)));
+
+constexpr auto mw{11/Monday[3]};
+static_assert(mw == month_weekday(November, Monday[3]));
+
+constexpr auto mwdl{December/Sunday[last]};
+static_assert(mwdl == month_weekday_last(month(12), weekday_last(Sunday)));
+
+// Those 3 year/month/day orders that people actually use on this planet and beyond:
+constexpr auto ymd{year(2021)/January/day(23)};
+static_assert(ymd == month{1}/23/2021);
+static_assert(ymd == day{23}/1/2021);
+static_assert(ymd == year_month_day(2021y, month(January), 23d));
+
+int main() {}
+```

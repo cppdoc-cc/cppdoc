@@ -1,0 +1,47 @@
+---
+title: std::chrono::year::max
+cppdoc:
+  keys: ["cpp.chrono.year.max"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      static constexpr year max() noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the largest possible `year`, that is, `std::chrono::year(32767)`.
+</DeclDoc>
+
+## Return value
+
+`std::chrono::year(32767)`
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main()
+{
+    std::cout << "The maximum year is: " << (int)std::chrono::year::max() << '\n';
+}
+```
+
+**Output:**
+
+```
+The maximum year is: 32767
+```

@@ -1,0 +1,524 @@
+---
+title: Date and time utilities
+---
+
+import { CppHeader } from "@components/header";
+import { Desc, DescItem, DescList } from "@components/desc-list";
+import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+import DocLink from "@components/DocLink.astro";
+
+C++ includes support for two types of time manipulation:
+
+- The `chrono` library, a flexible collection of types that track time with varying degrees of precision (e.g. <Missing>`std::chrono::time_point`</Missing>).
+- C-style date and time library (e.g. <Missing>`std::time`</Missing>).
+
+## Chrono library <Revision since="C++11" noborder />
+
+The `chrono` library defines <Revision until="C++20" noborder>three</Revision><Revision since="C++20" noborder>five</Revision> main types as well as utility functions and common typedefs:
+- clocks
+- time points
+- durations
+<RevisionBlock since="C++20" border>
+- calendar dates
+- time zone information
+</RevisionBlock>
+
+### Clocks
+
+A clock consists of a starting point (or epoch) and a tick rate. For example, a clock may have an epoch of January 1, 1970 and tick every second. C++ defines several clock types:
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="class">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`system_clock`</Missing></RevisionBlock>
+    </Fragment>
+    wall clock time from the system-wide realtime clock
+  </Desc>
+  <Desc kind="class">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`steady_clock`</Missing></RevisionBlock>
+    </Fragment>
+    monotonic clock that will never be adjusted
+  </Desc>
+  <Desc kind="class">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`high_resolution_clock`</Missing></RevisionBlock>
+    </Fragment>
+    the clock with the shortest tick period available
+  </Desc>
+  <Desc kind="class template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`is_clock`</Missing></RevisionBlock>
+    </Fragment>
+    determines if a type is a Clock
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`utc_clock`</Missing></RevisionBlock>
+    </Fragment>
+    Clock for Coordinated Universal Time (UTC)
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`tai_clock`</Missing></RevisionBlock>
+    </Fragment>
+    Clock for International Atomic Time (TAI)
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`gps_clock`</Missing></RevisionBlock>
+    </Fragment>
+    Clock for GPS time
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`file_clock`</Missing></RevisionBlock>
+    </Fragment>
+    Clock used for file time
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`local_t`</Missing></RevisionBlock>
+    </Fragment>
+    pseudo-clock representing local time
+  </Desc>
+</DescList>
+
+### Time point
+
+A time point is a duration of time that has passed since the epoch of a specific clock.
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="class template">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`time_point`</Missing></RevisionBlock>
+    </Fragment>
+    a point in time
+  </Desc>
+  <Desc kind="class template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`clock_time_conversion`</Missing></RevisionBlock>
+    </Fragment>
+    traits class defining how to convert time points of one clock to another
+  </Desc>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`clock_cast`</Missing></RevisionBlock>
+    </Fragment>
+    convert time points of one clock to another
+  </Desc>
+</DescList>
+
+### Duration
+
+A duration consists of a span of time, defined as some number of ticks of some time unit. For example, "42 seconds" could be represented by a duration consisting of 42 ticks of a 1-second time unit.
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="class template">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" dir="v"><Missing>`duration`</Missing></RevisionBlock>
+    </Fragment>
+    a time interval
+  </Desc>
+</DescList>
+
+### Time of day <Revision since="C++20" noborder />
+
+`hh_mm_ss` splits a duration representing time elapsed since midnight into hours, minutes, seconds, and fractional seconds, as applicable. It is primarily a formatting tool.
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="class template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`hh_mm_ss`</Missing></RevisionBlock>
+    </Fragment>
+    represents a time of day
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`is_am` / `is_pm` / `make12` / `make24`</Missing></RevisionBlock>
+    </Fragment>
+    translates a 12h/24h format time of day
+  </Desc>
+</DescList>
+
+### Calendar <Revision since="C++20" noborder />
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`last_spec`</Missing></RevisionBlock>
+    </Fragment>
+    tag class indicating the last day or weekday in a month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`day`</Missing></RevisionBlock>
+    </Fragment>
+    represents a day of a month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`month`</Missing></RevisionBlock>
+    </Fragment>
+    represents a month of a year
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`year`</Missing></RevisionBlock>
+    </Fragment>
+    represents a year in the Gregorian calendar
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`weekday`</Missing></RevisionBlock>
+    </Fragment>
+    represents a day of the week in the Gregorian calendar
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`weekday_indexed`</Missing></RevisionBlock>
+    </Fragment>
+    represents the n-th weekday of a month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`weekday_last`</Missing></RevisionBlock>
+    </Fragment>
+    represents the last weekday of a month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`month_day`</Missing></RevisionBlock>
+    </Fragment>
+    represents a specific day of a specific month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`month_day_last`</Missing></RevisionBlock>
+    </Fragment>
+    represents the last day of a specific month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`month_weekday`</Missing></RevisionBlock>
+    </Fragment>
+    represents the n-th weekday of a specific month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`month_weekday_last`</Missing></RevisionBlock>
+    </Fragment>
+    represents the last weekday of a specific month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`year_month`</Missing></RevisionBlock>
+    </Fragment>
+    represents a specific year and month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`year_month_day`</Missing></RevisionBlock>
+    </Fragment>
+    represents a specific year, month, and day
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`year_month_day_last`</Missing></RevisionBlock>
+    </Fragment>
+    represents the last day of a specific year and month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`year_month_weekday`</Missing></RevisionBlock>
+    </Fragment>
+    represents the n-th weekday of a specific year and month
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`year_month_weekday_last`</Missing></RevisionBlock>
+    </Fragment>
+    represents the last weekday of a specific year and month
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator/`</Missing></RevisionBlock>
+    </Fragment>
+    conventional syntax for Gregorian calendar date creation
+  </Desc>
+</DescList>
+
+### Time zone <Revision since="C++20" noborder />
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`tzdb`</Missing></RevisionBlock>
+    </Fragment>
+    describes a copy of the IANA time zone database
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`tzdb_list`</Missing></RevisionBlock>
+    </Fragment>
+    represents a linked list of tzdb
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`get_tzdb` / `get_tzdb_list` / `reload_tzdb` / `remote_version`</Missing></RevisionBlock>
+    </Fragment>
+    accesses and controls the global time zone database information
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`locate_zone`</Missing></RevisionBlock>
+    </Fragment>
+    locates a time_zone based on its name
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`current_zone`</Missing></RevisionBlock>
+    </Fragment>
+    returns the current time_zone
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`time_zone`</Missing></RevisionBlock>
+    </Fragment>
+    represents a time zone
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`sys_info`</Missing></RevisionBlock>
+    </Fragment>
+    represents information about a time zone at a particular time point
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`local_info`</Missing></RevisionBlock>
+    </Fragment>
+    represents information about a local time to UNIX time conversion
+  </Desc>
+  <Desc kind="enum" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`choose`</Missing></RevisionBlock>
+    </Fragment>
+    selects how an ambiguous local time should be resolved
+  </Desc>
+  <Desc kind="class template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`zoned_traits`</Missing></RevisionBlock>
+    </Fragment>
+    traits class for time zone pointers used by zoned_time
+  </Desc>
+  <Desc kind="class template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`zoned_time`</Missing></RevisionBlock>
+    </Fragment>
+    represents a time zone and a time point
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`leap_second`</Missing></RevisionBlock>
+    </Fragment>
+    contains information about a leap second insertion
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`leap_second_info`</Missing></RevisionBlock>
+    </Fragment>
+    leap second insertion information
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`get_leap_second_info`</Missing></RevisionBlock>
+    </Fragment>
+    obtains leap second insertion information from a utc_time object
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`time_zone_link`</Missing></RevisionBlock>
+    </Fragment>
+    represents an alternative name for a time zone
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`nonexistent_local_time`</Missing></RevisionBlock>
+    </Fragment>
+    exception thrown to report that a local time is nonexistent
+  </Desc>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`ambiguous_local_time`</Missing></RevisionBlock>
+    </Fragment>
+    exception thrown to report that a local time is ambiguous
+  </Desc>
+</DescList>
+
+### Literals <Revision since="C++14" noborder />
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in inline namespace `std::literals::chrono_literals`</Fragment>
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator""y`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::year` literal representing a particular year
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`operator""d`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::day` literal representing a day of a month
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""h`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing hours
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""min`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing minutes
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""s`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing seconds
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""ms`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing milliseconds
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""us`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing microseconds
+  </Desc>
+  <Desc kind="function" autorevSince="C++14">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++14" dir="v"><Missing>`operator""ns`</Missing></RevisionBlock>
+    </Fragment>
+    a `std::chrono::duration` literal representing nanoseconds
+  </Desc>
+</DescList>
+
+### Chrono I/O <Revision since="C++20" noborder />
+
+<DescList>
+  <Desc>
+    <Fragment slot="item">Defined in header <CppHeader name="chrono" /></Fragment>
+  </Desc>
+  <Desc>
+    <Fragment slot="item">Defined in namespace `std::chrono`</Fragment>
+  </Desc>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`parse`</Missing></RevisionBlock>
+    </Fragment>
+    parses a chrono object from a stream
+  </Desc>
+</DescList>
+
+## Notes
+
+<FeatureTestMacro name="__cpp_lib_chrono">
+  <FeatureTestMacroValue value="201510L" since="C++17">
+    Rounding functions for <Missing>`std::chrono::duration`</Missing> and <Missing>`std::chrono::time_point`</Missing>
+  </FeatureTestMacroValue>
+  <FeatureTestMacroValue value="201611L" since="C++17">
+    `constexpr` for all the member functions of <Missing>`std::chrono::duration`</Missing> and <Missing>`std::chrono::time_point`</Missing>
+  </FeatureTestMacroValue>
+  <FeatureTestMacroValue value="201907L" since="C++20">
+    [Calendars](#calendar) and [Time zones](#time-zone)
+  </FeatureTestMacroValue>
+  <FeatureTestMacroValue value="202306L" since="C++26">
+    Hashing support for `std::chrono` value classes
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## C-style date and time library
+
+Also provided are the C-style date and time functions, such as <Missing>`std::time_t`</Missing>, <Missing>`std::difftime`</Missing>, and <Missing>`CLOCKS_PER_SEC`</Missing>.
+
+## Example
+
+Measures and displays an execution time of a function call.
+
+```cpp
+#include <chrono>
+#include <iostream>
+ 
+long Fibonacci(unsigned n)
+{
+    return n < 2 ? n : Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+ 
+int main()
+{
+    const auto start{std::chrono::steady_clock::now()};
+    const auto fb{Fibonacci(42)};
+    const auto end{std::chrono::steady_clock::now()};
+    const std::chrono::duration<double> elapsed_seconds{end - start};
+    
+    std::cout << "Fibonacci(42): " << fb << "\nElapsed time: ";
+//  std::cout << elapsed_seconds.count() << "s\n"; // Before C++20
+    std::cout << elapsed_seconds << '\n'; // C++20's chrono::duration operator<<
+}
+```
+
+Possible output:
+
+```
+Fibonacci(42): 267914296
+Elapsed time: 0.791429s
+```

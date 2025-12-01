@@ -1,0 +1,184 @@
+---
+title: std::chrono::ambiguous_local_time
+cppdoc:
+  keys: ["cpp.chrono.ambiguous_local_time"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      class ambiguous_local_time;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Defines a type of object to be thrown as exception to report that an attempt was made to convert an ambiguous <Missing>`std::chrono::local_time`</Missing> to a <Missing>`std::chrono::sys_time`</Missing> without specifying a <Missing>`std::chrono::choose`</Missing> (such as `choose::earliest` or `choose::latest`).
+
+  This exception is thrown by <Missing>`std::chrono::time_zone::to_sys`</Missing> and functions that call it (such as the constructors of <Missing>`std::chrono::zoned_time`</Missing> that take a <Missing>`std::chrono::local_time`</Missing>).
+</DeclDoc>
+
+## Member functions
+
+<DescList>
+  <Desc kind="constructor">
+    <Fragment slot="item">`(constructor)`</Fragment>
+    constructs the exception object
+  </Desc>
+  <Desc kind="function">
+    <Fragment slot="item">`operator=`</Fragment>
+    replaces the exception object
+  </Desc>
+  <Desc kind="function">
+    <Fragment slot="item">`what`</Fragment>
+    returns the explanatory string
+  </Desc>
+</DescList>
+
+## std::chrono::ambiguous_local_time::ambiguous_local_time
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class Duration >
+      ambiguous_local_time( const std::chrono::local_time<Duration>& tp,
+                            const std::chrono::local_info& i );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The explanatory string returned by `what()` is equivalent to that produced by `os.str()` after the following code:
+
+  ```cpp
+  std::ostringstream os;
+  os << tp << " is ambiguous.  It could be\n"
+     << tp << ' ' << i.first.abbrev << " == "
+     << tp - i.first.offset << " UTC or\n"
+     << tp << ' ' << i.second.abbrev  << " == "
+     << tp - i.second.offset  << " UTC";
+  ```
+
+  The behavior is undefined if `i.result != std::chrono::local_info::ambiguous`.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      ambiguous_local_time( const ambiguous_local_time& other ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Copy constructor. If `*this` and `other` both have dynamic type `std::chrono::ambiguous_local_time` then `std::strcmp(what(), other.what()) == 0`.
+</DeclDoc>
+
+### Parameters
+
+<ParamDocList>
+  <ParamDoc name="tp">
+    the time point for which conversion was attempted
+  </ParamDoc>
+  <ParamDoc name="i">
+    a <Missing>`std::chrono::local_info`</Missing> describing the result of the conversion attempt
+  </ParamDoc>
+  <ParamDoc name="other">
+    another `ambiguous_local_time` to copy
+  </ParamDoc>
+</ParamDocList>
+
+### Exceptions
+
+May throw <Missing>`std::bad_alloc`</Missing>.
+
+### Notes
+
+Because copying a standard library class derived from <Missing>`std::exception`</Missing> is not permitted to throw exceptions, this message is typically stored internally as a separately-allocated reference-counted string.
+
+## std::chrono::ambiguous_local_time::operator=
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      ambiguous_local_time& operator=( const ambiguous_local_time& other ) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Assigns the contents with those of `other`. If `*this` and `other` both have dynamic type `std::chrono::ambiguous_local_time` then `std::strcmp(what(), other.what()) == 0` after assignment.
+</DeclDoc>
+
+### Parameters
+
+<ParamDocList>
+  <ParamDoc name="other">
+    another exception object to assign with
+  </ParamDoc>
+</ParamDocList>
+
+### Return value
+
+`*this`
+
+## std::chrono::ambiguous_local_time::what
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      virtual const char* what() const noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Returns the explanatory string.
+</DeclDoc>
+
+### Parameters
+
+(none)
+
+### Return value
+
+Pointer to a null-terminated string with explanatory information. The string is suitable for conversion and display as a <Missing>`std::wstring`</Missing>. The pointer is guaranteed to be valid at least until the exception object from which it is obtained is destroyed, or until a non-const member function (e.g. copy assignment operator) on the exception object is called.
+
+### Notes
+
+Implementations are allowed but not required to override `what()`.
+
+## Inherited from std::runtime_error
+
+Inherited from <Missing>`std::exception`</Missing>.
+
+### Member functions
+
+<DescList>
+  <Desc kind="virtual function">
+    <Fragment slot="item">`what`</Fragment>
+    returns an explanatory string
+  </Desc>
+</DescList>
+
+## See also
+
+<DescList>
+  <Desc kind="class" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`nonexistent_local_time`</Missing></RevisionBlock>
+    </Fragment>
+    exception thrown to report that a local time is nonexistent
+  </Desc>
+</DescList>

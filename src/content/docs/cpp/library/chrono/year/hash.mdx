@@ -1,0 +1,30 @@
+---
+title: std::hash<std::chrono::year>
+cppdoc:
+  keys: ["cpp.chrono.year.hash"]
+  revision:
+    since: C++26
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++26" noborder>
+      ```cpp
+      template<>
+      struct std::hash<std::chrono::year>;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The template specialization of <Missing>`std::hash`</Missing> for <Missing>`std::chrono::year`</Missing> allows users to obtain hashes of objects of type `std::chrono::year`.
+
+  The specialization is enabled, and `operator()` of this specialization is `noexcept`.
+</DeclDoc>

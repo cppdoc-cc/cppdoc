@@ -1,0 +1,101 @@
+---
+title: std::chrono::treat_as_floating_point
+cppdoc:
+  keys: ["cpp.chrono.treat_as_floating_point"]
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      template< class Rep > 
+      struct treat_as_floating_point : std::is_floating_point<Rep> {};
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The `std::chrono::treat_as_floating_point` trait helps determine if a duration can be converted to another duration with a different tick period.
+
+  Implicit conversions between two durations normally depends on the tick period of the durations. However, implicit conversions can happen regardless of tick period if `std::chrono::treat_as_floating_point<Rep>::value` is `true`.
+</DeclDoc>
+
+## Helper variable template
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++17" noborder>
+      ```cpp
+      template< class Rep >
+      constexpr bool treat_as_floating_point_v = treat_as_floating_point<Rep>::value;
+      ```
+    </RevisionBlock>
+  </Decl>
+</DeclDoc>
+
+## Specializations
+
+`std::chrono::treat_as_floating_point` may be specialized for program-defined types.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+#include <thread>
+
+void timed_piece_of_code() 
+{
+    std::chrono::milliseconds simulated_work(2);
+    std::this_thread::sleep_for(simulated_work);
+}
+
+int main() 
+{
+    auto start = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Running some timed piece of code...\n";
+    timed_piece_of_code();
+
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    // A floating point milliseconds type
+    using FpMilliseconds = 
+        std::chrono::duration<float, std::chrono::milliseconds::period>;
+
+    static_assert(std::chrono::treat_as_floating_point<FpMilliseconds::rep>::value, 
+                  "Rep required to be floating point");
+
+    // Note that implicit conversion is not allowed here    
+    auto i_ms = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
+    // Note that implicit conversion is allowed here
+    auto f_ms = FpMilliseconds(stop - start);
+
+    std::cout << "Timing stats:\n";
+
+    std::cout << "  Time in milliseconds, using default rep: "
+              << i_ms.count() << '\n';
+
+    std::cout << "  Time in milliseconds, using floating point rep: "
+              << f_ms.count() << '\n';
+}
+```
+
+Possible output:
+
+```
+Running some timed piece of code...
+Timing stats:
+  Time in milliseconds, using default rep: 2
+  Time in milliseconds, using floating point rep: 2.57307
+```

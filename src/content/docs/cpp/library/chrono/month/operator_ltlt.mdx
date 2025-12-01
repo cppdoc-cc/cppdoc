@@ -1,0 +1,72 @@
+---
+title: operator<< (std::chrono::month)
+cppdoc:
+  keys: ["cpp.chrono.month.operator_ltlt"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      template< class CharT, class Traits >
+      std::basic_ostream<CharT, Traits>&
+          operator<<( std::basic_ostream<CharT, Traits>& os, const std::chrono::month& m );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  If `!m.ok()`, inserts `unsigned(m)` followed by `" is not a valid month"` to `os`. Otherwise, forms a `std::basic_string<CharT>` `s` consisting of the abbreviated month name for the month represented by `m`, determined using the locale associated with `os`, and inserts `s` into `os`.
+
+  Equivalent to
+
+  ```cpp
+  return os << (m.ok() ?
+      std::format(os.getloc(), STATICALLY_WIDEN<CharT>("{:L%b}"), m) :
+      std::format(os.getloc(), STATICALLY_WIDEN<CharT>("{} is not a valid month"), unsigned(m)));
+  ```
+
+  where `STATICALLY_WIDEN<CharT>("...")` is `"..."` if `CharT` is `char`, and `L"..."` if `CharT` is `wchar_t`.
+</DeclDoc>
+
+## Return value
+
+`os`
+
+## Notes
+
+This `operator<<` is primarily intended for debugging use. For control over formatting, use <Missing>`std::format`</Missing>.
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+| DR | Applied to | Behavior as published | Correct behavior |
+|---|---|---|---|
+| P2372R3 | C++20 | the given locale was used by default | **L** is needed to use the given locale |
+
+## See also
+
+<DescList>
+  <Desc kind="function template" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::format`</Missing></RevisionBlock>
+    </Fragment>
+    stores formatted representation of the arguments in a new string
+  </Desc>
+  <Desc kind="class template specialization" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`std::formatter<std::chrono::month>`</Missing></RevisionBlock>
+    </Fragment>
+    formatting support for `month`
+  </Desc>
+</DescList>

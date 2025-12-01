@@ -1,0 +1,71 @@
+---
+title: std::chrono::current_zone
+cppdoc:
+  keys: ["cpp.chrono.current_zone"]
+  revision:
+    since: C++20
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="chrono" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" noborder>
+      ```cpp
+      const std::chrono::time_zone* current_zone();
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Convenience function for obtaining local time zone from the time zone database. Equivalent to `std::chrono::get_tzdb().current_zone()`.
+</DeclDoc>
+
+## Exceptions
+
+<Missing>`std::runtime_error`</Missing> if this is the first reference to the time zone database and the time zone database cannot be initialized.
+
+## Notes
+
+A call to this function that is the first reference to the time zone database will cause it to be initialized.
+
+## Example
+
+```cpp
+#include <chrono>
+#include <iostream>
+
+int main() {
+    const std::chrono::zoned_time cur_time{ std::chrono::current_zone(),
+                                            std::chrono::system_clock::now() };
+    std::cout << cur_time << '\n';
+}
+```
+
+Possible output:
+
+```
+2021-09-13 19:46:42.249182012 MAGT
+```
+
+## See also
+
+<DescList>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`tzdb::current_zone`</Missing></RevisionBlock>
+    </Fragment>
+    locates the current time zone
+  </Desc>
+  <Desc kind="function" autorevSince="C++20">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" dir="v"><Missing>`get_tzdb` / `get_tzdb_list` / `reload_tzdb` / `remote_version`</Missing></RevisionBlock>
+    </Fragment>
+    accesses and controls the global time zone database information
+  </Desc>
+</DescList>
