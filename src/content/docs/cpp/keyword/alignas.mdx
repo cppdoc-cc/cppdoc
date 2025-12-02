@@ -1,0 +1,24 @@
+---
+title: C++ keyword: alignas (since C++11)
+description: Auto‑generated from cppreference
+---
+
+import { DocLink } from '@components/index';
+
+### Usage
+
+* <DocLink src="/cpp/language/alignas">`alignas` specifier</DocLink>
+
+### Example
+
+```cpp
+struct s1 final {};
+struct alignas(2) s2 final {};
+
+static_assert(alignof(s1) == 1);
+static_assert(alignof(s2) == 2);
+```
+
+### See also
+
+* <DocLink src="/cpp/keyword/alignof">`alignof`</DocLink>
