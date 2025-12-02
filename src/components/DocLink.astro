@@ -2,11 +2,11 @@
 import { getLinkToKey } from "../lib/doc-index";
 
 interface Props {
-  dest: string;
+  src: string;
 }
 
-const { dest } = Astro.props;
-const rawLink = await getLinkToKey(dest);
+const { src } = Astro.props;
+const rawLink = await getLinkToKey(src);
 
 const missing = rawLink === undefined;
 const link = rawLink ?? "";
@@ -14,11 +14,11 @@ const link = rawLink ?? "";
 
 {
   missing ? (
-    <span class="doc-link missing" title={`${dest} (missing)`}>
+    <span class="doc-link missing" title={`${src} (missing)`}>
       <slot />
     </span>
   ) : (
-    <a class="doc-link" href={link} title={dest}>
+    <a class="doc-link" href={link} title={src}>
       <slot />
     </a>
   )
