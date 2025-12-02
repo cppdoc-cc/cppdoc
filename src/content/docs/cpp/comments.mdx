@@ -1,5 +1,5 @@
 ---
-title: Comments
+title: "Comments"
 description: Auto‑generated from cppreference
 ---
 
@@ -11,17 +11,11 @@ Comments serve as a sort of in-code documentation. When inserted into a program,
 
 ## Syntax
 
-#### Block Comment
-Often known as "C-style" or "multi-line" comments.
+*   `/* comment */` (1)
+*   `// comment` (2)
 
-```
-/* comment */
-```
-#### Single-line Comment
-Often known as "C++-style" or "single-line" comments.
-```
-// comment
-```
+1) Often known as "C-style" or "multi-line" comments.
+2) Often known as "C++-style" or "single-line" comments.
 
 All comments are removed from the program at <DocLink src="/cpp/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
 
@@ -99,6 +93,7 @@ Output:
 
 <DescList>
 <Desc>
-<DocLink slot="item" src="/c/comment">C documentation</DocLink> for <span>comment</span>
+  <DocLink slot="item" src="/c/comment">C documentation</DocLink>
+  for `comment`
 </Desc>
 </DescList>
