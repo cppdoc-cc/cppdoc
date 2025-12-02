@@ -7,7 +7,6 @@ import { execSync, spawnSync } from "child_process";
 import { visualizeTextDiff } from "./text-diff-visualizer";
 import { convert } from "html-to-text";
 
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -90,7 +89,7 @@ async function fetchPageContent(
     html: contentElement.innerHTML,
     title: headingElement?.textContent?.trim() || "",
     url,
-    innerText: (contentElement as HTMLDivElement).innerText
+    innerText: (contentElement as HTMLDivElement).innerText,
   };
 }
 
@@ -103,7 +102,7 @@ async function convertToMDX(
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
       "utf8"
     )
   );
@@ -456,11 +455,11 @@ async function main() {
       if (res.status !== 0) {
         throw new Error(
           "构建失败，可能生成的MDX有问题：" +
-          res.stderr?.toString() +
-          res.stdout?.toString() +
-          res.error?.toString() +
-          " exit code " +
-          res.status
+            res.stderr?.toString() +
+            res.stdout?.toString() +
+            res.error?.toString() +
+            " exit code " +
+            res.status
         );
       }
 
