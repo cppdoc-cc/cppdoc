@@ -5,7 +5,6 @@ import path, { join } from "path";
 import { fileURLToPath } from "url";
 import { execSync, spawnSync } from "child_process";
 import { visualizeTextDiff } from "./text-diff-visualizer";
-import { convert } from "html-to-text";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
