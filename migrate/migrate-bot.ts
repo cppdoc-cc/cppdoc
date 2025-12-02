@@ -5,6 +5,7 @@ import path, { join } from "path";
 import { fileURLToPath } from "url";
 import { execSync, spawnSync } from "child_process";
 import { visualizeTextDiff } from "./text-diff-visualizer";
+import { getTextFromDOM } from "./text-from-element";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -69,7 +70,17 @@ async function fetchPageContent(
   const html = await response.text();
   const dom = new JSDOM(html);
   const contentElement = dom.window.document.querySelector("#mw-content-text");
-  contentElement?.querySelector(".t-navbar")?.remove();
+
+  const selectorsToRemove = [
+    ".t-navbar",
+    ".t-example-live-link",
+    ".editsection",
+    "#toc",
+  ];
+  for (const selector of selectorsToRemove) {
+    const elements = contentElement?.querySelectorAll(selector);
+    elements?.forEach((el) => el.remove());
+  }
   const headingElement = dom.window.document.querySelector("#firstHeading");
   if (!contentElement) {
     throw new Error("Could not find #mw-content-text");
@@ -78,7 +89,7 @@ async function fetchPageContent(
     html: contentElement.innerHTML,
     title: headingElement?.textContent?.trim() || "",
     url,
-    innerText: contentElement.textContent?.trim() || "",
+    innerText: getTextFromDOM(contentElement),
   };
 }
 
@@ -91,7 +102,7 @@ async function convertToMDX(
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
       "utf8"
     )
   );
@@ -295,7 +306,14 @@ async function createPullRequest(
     .then((data) => {
       const dom = new JSDOM(data);
       const contentElement = dom.window.document.querySelector("main");
-      return contentElement?.textContent?.trim() || "";
+      const selectorsToRemove = [".sl-anchor-link"];
+      for (const selector of selectorsToRemove) {
+        const elements = contentElement?.querySelectorAll(selector);
+        elements?.forEach((el) => el.remove());
+      }
+
+      if (!contentElement) return "";
+      return getTextFromDOM(contentElement);
     })
     .catch(() => "");
 
@@ -423,7 +441,13 @@ async function main() {
       console.log(`  写入 ${filePath}`);
       await writeMDXFile(filePath, mdx, title);
 
-      console.log(`  尝试构建...`);
+      console.log(`  重新格式化...`);
+      spawnSync(`npm`, ["run", "format"], {
+        stdio: "inherit",
+        shell: true,
+      });
+
+      console.log(`  构建...`);
       const res = spawnSync(`npm`, ["run", "build"], {
         stdio: "inherit",
         shell: true,
@@ -431,11 +455,11 @@ async function main() {
       if (res.status !== 0) {
         throw new Error(
           "构建失败，可能生成的MDX有问题：" +
-            res.stderr?.toString() +
-            res.stdout?.toString() +
-            res.error?.toString() +
-            " exit code " +
-            res.status
+          res.stderr?.toString() +
+          res.stdout?.toString() +
+          res.error?.toString() +
+          " exit code " +
+          res.status
         );
       }
 
