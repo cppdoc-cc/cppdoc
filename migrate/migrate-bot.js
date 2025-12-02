@@ -59,7 +59,7 @@ async function convertToMDX(html, title, url) {
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
       "utf8",
     ),
   );
@@ -99,10 +99,10 @@ ${html}
   }
 
   const data = await response.json();
-  const content = data.choices[0].message.content.trim();
+  let content = data.choices[0].message.content.trim();
 
   if (content.includes("```mdx")) {
-    return content.replace(/```mdx\s*([\s\S]*?)\s*```/g, "$1").trim();
+    content = content.slice(content.indexOf("```mdx") + 6, content.lastIndexOf("```")).trim();
   }
 
   return content;
