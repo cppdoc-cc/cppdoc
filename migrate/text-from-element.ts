@@ -24,7 +24,7 @@ function isBlockElement(node: Node): boolean {
         return true;
     }
 
-    const style = window.getComputedStyle(element);
+    const style = element.ownerDocument.defaultView!.getComputedStyle(element);
     return style.display === 'block' ||
         style.display === 'flex' ||
         style.display === 'grid' ||
@@ -32,7 +32,7 @@ function isBlockElement(node: Node): boolean {
 }
 
 function isElementVisible(element: HTMLElement): boolean {
-    const style = window.getComputedStyle(element);
+    const style = element.ownerDocument.defaultView!.getComputedStyle(element);
     return style.display !== 'none' &&
         style.visibility !== 'hidden' &&
         style.opacity !== '0';
