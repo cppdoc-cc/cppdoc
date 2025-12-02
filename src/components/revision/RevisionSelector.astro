@@ -1,5 +1,5 @@
 ---
-import type {  CxxRevision } from "@src/types";
+import type { CxxRevision } from "@src/types";
 
 interface Props {
   revisions: CxxRevision[];
@@ -16,6 +16,16 @@ const { revisions } = Astro.props;
 <style>
   .revision-selector {
     font-size: 0.9em;
+    background-color: var(--sl-color-bg-nav);
+    box-shadow: var(--sl-shadow-sm);
+    padding-block: 0.3rem;
+    margin-bottom: 0.625rem;
+    padding-inline: 0.5rem calc(var(--sl-caret-size) + 0.5rem);
+    border: 1px solid var(--sl-color-hairline-light);
+    text-overflow: ellipsis;
+    color: inherit;
+    cursor: pointer;
+    appearance: menulist-button;
   }
 </style>
 
