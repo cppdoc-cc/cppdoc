@@ -3,6 +3,7 @@ import { JSDOM } from "jsdom";
 import fs, { readFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { execSync, spawnSync } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -11,6 +12,7 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const REPO_OWNER = process.env.GITHUB_REPOSITORY_OWNER || "owner";
 const REPO_NAME = process.env.GITHUB_REPOSITORY?.split("/")[1] || "cppdoc";
 const LABEL = "migrate-cppref-page";
+const MODEL_NAME = "google/gemini-2.5-flash";
 
 if (!GITHUB_TOKEN) {
   console.error("Missing GITHUB_TOKEN");
@@ -91,7 +93,7 @@ async function convertToMDX(html: string, title: string, url: string): Promise<s
         "X-Title": "CppDoc Migration Bot",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: MODEL_NAME,
         messages: [
           { role: "system", content: prompt },
           {
@@ -227,9 +229,9 @@ async function createPullRequest(issue: { number: number; title: string }, fileP
   const pageName = page ? page.replace(".html", "") : "unknown";
   const prTitle = `feat: migrate ${pageName} from cppref [#${issue.number}]`;
   const commitMessage = prTitle;
-  const prBody = `自动迁移自 ${url}
-
-[编辑 ${getRelativePath(url)}](https://github.com/cppdoc-cc/cppdoc/edit/${branchName}/${getRelativePath(url)})
+  const prBody = `> 由 ${MODEL_NAME} 自 ${url} 自动迁移
+>
+> 📝 [编辑此页面](${getRelativePath(url)})
 
 <small>Close #${issue.number}</small>
 `;
@@ -328,6 +330,12 @@ async function main() {
       const filePath = getLocalPath(url);
       console.log(`  写入 ${filePath}`);
       await writeMDXFile(filePath, mdx, title);
+
+      console.log(`  尝试构建...`);
+      const res = spawnSync(`npm run build`, { stdio: "inherit" });
+      if (res.status !== 0) {
+        throw new Error("构建失败，可能生成的MDX有问题：" + res.stderr?.toString());
+      }
 
       console.log(`  创建PR...`);
       const prNumber = await createPullRequest(issue, filePath, url);
