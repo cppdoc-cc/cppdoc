@@ -38,7 +38,7 @@ export function getLanguageFromRevision(rev: CxxRevision): Language {
 
 export function getRevisions(
   lang: Language,
-  range?: RevisionRange,
+  range?: RevisionRange
 ): CxxRevision[] {
   const revisions: CxxRevision[] = lang === "C++" ? CPP_REVISIONS : C_REVISIONS;
 
@@ -52,7 +52,7 @@ export function getRevisions(
 
 export function compareRevisions(
   lhs: CxxRevision,
-  rhs: CxxRevision,
+  rhs: CxxRevision
 ): number | undefined {
   const lhsLang = getLanguageFromRevision(lhs);
   const rhsLang = getLanguageFromRevision(rhs);
@@ -67,7 +67,7 @@ export function compareRevisions(
 
 export function isRevisionInRange(
   rev: CxxRevision,
-  range: RevisionRange,
+  range: RevisionRange
 ): boolean | undefined {
   const lang = getLanguageFromRevision(rev);
   if (range.since && lang !== getLanguageFromRevision(range.since)) {

@@ -25,7 +25,7 @@ async function buildKeyIndex(): Promise<Map<string, string>> {
 
       if (index.has(key)) {
         console.warn(
-          `Key "${key}" is already assigned to "${index.get(key)}", cannot reassign it to "${doc.id}"`,
+          `Key "${key}" is already assigned to "${index.get(key)}", cannot reassign it to "${doc.id}"`
         );
         continue;
       }
