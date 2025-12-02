@@ -1,8 +1,11 @@
 ---
-
+interface Props {
+  // The expected url of the missing resource
+  url?: string;
+}
 ---
 
-<span class="missing">
+<span class="missing" title={Astro.props.url ?? "Missing Resource"}>
   <slot />
 </span>
 
