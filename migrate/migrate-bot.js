@@ -75,7 +75,7 @@ async function convertToMDX(html, title, url) {
         "X-Title": "CppDoc Migration Bot",
       },
       body: JSON.stringify({
-        model: "deepseek/deepseek-v3.2",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: prompt },
           {
