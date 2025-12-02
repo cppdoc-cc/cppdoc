@@ -101,10 +101,10 @@ ${html}
   const data = await response.json();
   const content = data.choices[0].message.content.trim();
 
-  if (content.includes('```mdx')) {
+  if (content.includes("```mdx")) {
     return content.replace(/```mdx\s*([\s\S]*?)\s*```/g, "$1").trim();
   }
-  
+
   return content;
 }
 
