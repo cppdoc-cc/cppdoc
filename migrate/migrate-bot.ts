@@ -27,14 +27,20 @@ if (!OPENROUTER_API_KEY) {
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-async function retry<T>(fn: () => Promise<T>, retries = 3, delay = 1000): Promise<T> {
+async function retry<T>(
+  fn: () => Promise<T>,
+  retries = 3,
+  delay = 1000
+): Promise<T> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      console.warn(`Attempt ${attempt} failed: ${error instanceof Error ? error.message : String(error)}`);
+      console.warn(
+        `Attempt ${attempt} failed: ${error instanceof Error ? error.message : String(error)}`
+      );
       if (attempt < retries) {
         await new Promise((res) => setTimeout(res, delay));
       }
@@ -53,7 +59,9 @@ function hasPRReference(title: string): boolean {
   return /\[#\d+\]/.test(title);
 }
 
-async function fetchPageContent(url: string): Promise<{ html: string; title: string; url: string; innerText: string }> {
+async function fetchPageContent(
+  url: string
+): Promise<{ html: string; title: string; url: string; innerText: string }> {
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to fetch ${url}: ${response.status}`);
@@ -73,14 +81,18 @@ async function fetchPageContent(url: string): Promise<{ html: string; title: str
   };
 }
 
-async function convertToMDX(html: string, title: string, url: string): Promise<string> {
+async function convertToMDX(
+  html: string,
+  title: string,
+  url: string
+): Promise<string> {
   const prompt = (await readFile(__dirname + "/PROMPT.md", "utf8")).replace(
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
-      "utf8",
-    ),
+        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+      "utf8"
+    )
   );
 
   console.log("Prompt:", prompt);
@@ -111,7 +123,7 @@ ${html}
           },
         ],
       }),
-    },
+    }
   );
 
   if (!response.ok) {
@@ -119,7 +131,9 @@ ${html}
     throw new Error(`OpenRouter API error: ${error}`);
   }
 
-  const data = await response.json() as { choices: Array<{ message: { content: string } }> };
+  const data = (await response.json()) as {
+    choices: Array<{ message: { content: string } }>;
+  };
   let content = data.choices[0].message.content.trim();
 
   console.log("Raw content:", content);
@@ -154,7 +168,8 @@ ${html}
   ];
 
   const usedComponents = components.filter(
-    (comp: string) => content.includes(`<${comp} `) || content.includes(`<${comp}>`),
+    (comp: string) =>
+      content.includes(`<${comp} `) || content.includes(`<${comp}>`)
   );
 
   // Remove all existing import statements
@@ -218,13 +233,14 @@ function getRelativeHTMLPath(url: string): string {
 }
 
 function getLocalMDXPath(url: string): string {
-  return path.join(
-    __dirname,
-    "..", getRelativeMDXPath(url)
-  );
+  return path.join(__dirname, "..", getRelativeMDXPath(url));
 }
 
-async function writeMDXFile(filePath: string, content: string, title: string): Promise<void> {
+async function writeMDXFile(
+  filePath: string,
+  content: string,
+  title: string
+): Promise<void> {
   const dir = path.dirname(filePath);
   await fs.mkdir(dir, { recursive: true });
   const frontmatter = `---
@@ -240,34 +256,44 @@ async function uploadImageToImgBB(imageBuffer: Buffer): Promise<string> {
   const formData = new FormData();
   formData.append("image", new Blob([new Uint8Array(imageBuffer)]), "diff.svg");
 
-  const response = await fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${IMGBB_API_KEY}`, {
-    method: "POST",
-    body: formData,
-  });
+  const response = await fetch(
+    `https://api.imgbb.com/1/upload?expiration=600&key=${IMGBB_API_KEY}`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
 
   if (!response.ok) {
     const error = await response.text();
     throw new Error(`ImgBB API error: ${error}`);
   }
 
-  const data = await response.json() as { data: { url: string } };
+  const data = (await response.json()) as { data: { url: string } };
   return data.data.url;
 }
 
-async function createPullRequest(issue: { number: number; title: string }, filePath: string, url: string, originalInnerText: string): Promise<number> {
+async function createPullRequest(
+  issue: { number: number; title: string },
+  filePath: string,
+  url: string,
+  originalInnerText: string
+): Promise<number> {
   const branchName = `migrate/${issue.number}-${Date.now().toString(36)}`;
   const page = url.split("/w/").pop();
   const pageName = page ? page.replace(".html", "") : "unknown";
   const prTitle = `feat: migrate ${pageName} from cppref [#${issue.number}]`;
   const commitMessage = prTitle;
 
-  const newInnerText = await readFile(getRelativeHTMLPath(url), "utf8").then((data) => {
-    const dom = new JSDOM(data);
-    const contentElement = dom.window.document.querySelector("main");
-    return contentElement?.textContent?.trim() || "";
-  }).catch(() => "");
+  const newInnerText = await readFile(getRelativeHTMLPath(url), "utf8")
+    .then((data) => {
+      const dom = new JSDOM(data);
+      const contentElement = dom.window.document.querySelector("main");
+      return contentElement?.textContent?.trim() || "";
+    })
+    .catch(() => "");
 
-  let imageUrl = null
+  let imageUrl = null;
   if (originalInnerText && newInnerText) {
     const svg = visualizeTextDiff(originalInnerText, newInnerText);
     if (svg) {
@@ -289,14 +315,17 @@ ${imageUrl ? `![Text Diff](${imageUrl})` : "（无文本差异图像）"}
   try {
     execSync(`git config user.name "github-actions[bot]"`);
     execSync(
-      `git config user.email "github-actions[bot]@users.noreply.github.com"`,
+      `git config user.email "github-actions[bot]@users.noreply.github.com"`
     );
     execSync(`git checkout -b ${branchName}`);
     execSync(`git add "${filePath}"`);
     execSync(`git commit -m "${commitMessage}"`);
     execSync(`git push origin ${branchName}`);
   } catch (error) {
-    console.error("Git操作失败:", error instanceof Error ? error.message : String(error));
+    console.error(
+      "Git操作失败:",
+      error instanceof Error ? error.message : String(error)
+    );
     throw error;
   }
 
@@ -313,7 +342,11 @@ ${imageUrl ? `![Text Diff](${imageUrl})` : "（无文本差异图像）"}
   return pr.number;
 }
 
-async function updateIssue(issue: { number: number; title: string }, prNumber: number | null, error: unknown = null): Promise<void> {
+async function updateIssue(
+  issue: { number: number; title: string },
+  prNumber: number | null,
+  error: unknown = null
+): Promise<void> {
   const newTitle = `[#${prNumber}] ${issue.title.replace(/\[#\d+\]\s*/, "")}`;
   await octokit.issues.update({
     owner: REPO_OWNER,
@@ -371,7 +404,11 @@ async function main() {
       }
 
       console.log(`  获取 ${url}`);
-      const { html, title, innerText } = await retry(() => fetchPageContent(url), 3, 2000);
+      const { html, title, innerText } = await retry(
+        () => fetchPageContent(url),
+        3,
+        2000
+      );
 
       console.log(`  转换HTML为MDX...`);
       const mdx = await retry(() => convertToMDX(html, title, url), 3, 2000);
@@ -383,7 +420,9 @@ async function main() {
       console.log(`  尝试构建...`);
       const res = spawnSync(`npm run build`, { stdio: "inherit" });
       if (res.status !== 0) {
-        throw new Error("构建失败，可能生成的MDX有问题：" + res.stderr?.toString());
+        throw new Error(
+          "构建失败，可能生成的MDX有问题：" + res.stderr?.toString()
+        );
       }
 
       console.log(`  创建PR...`);
