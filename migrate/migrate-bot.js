@@ -25,6 +25,19 @@ if (!OPENROUTER_API_KEY) {
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
+function retry(fn, retries = 3, delay = 1000) {
+  return fn().catch((err) => {
+    if (retries > 0) {
+      console.log(`Retrying... (${retries} retries left)`, err.message, err.stack);
+      return new Promise((resolve) =>
+        setTimeout(() => resolve(retry(fn, retries - 1, delay)), delay),
+      );
+    } else {
+      return Promise.reject(err);
+    }
+  });
+}
+
 function extractLink(title) {
   const urlRegex = /https?:\/\/en\.cppreference\.com\/w\/[^\s]+/g;
   const match = title.match(urlRegex);
@@ -133,7 +146,7 @@ ${html}
   ]
 
   const usedComponents = components.filter((comp) => content.includes(`<${comp} `) || content.includes(`<${comp}>`));
-  
+
   // Remove all existing import statements
   content = content.split('\n').filter(line => !line.startsWith('import ')).join('\n');
 
@@ -143,6 +156,18 @@ ${html}
   if (usedComponents.length > 0) {
     const importStatements = `import { ${usedComponents.join(', ')} } from '@/components/index.ts';\n\n`;
     content = importStatements + content;
+  }
+
+  // Verify content
+  let normalElements = ["<div", "<section", "<span", "<table", "<thead", "<tbody", "<tr", "<td", "<th"], normalElementsCount = 0;
+  for (const elem of normalElements) {
+    normalElementsCount += (content.match(new RegExp(elem, 'g')) || []).length;
+  }
+
+  console.log(`Normal HTML elements count: ${normalElementsCount}`);
+
+  if (normalElementsCount > 4) {
+    throw new Error("生成的内容中包含过多原生HTML元素，可能转换失败。");
   }
 
   return content;
@@ -267,10 +292,10 @@ async function main() {
       }
 
       console.log(`  获取 ${url}`);
-      const { html, title } = await fetchPageContent(url);
+      const { html, title } = await retry(() => fetchPageContent(url), 3, 2000);
 
       console.log(`  转换HTML为MDX...`);
-      const mdx = await convertToMDX(html, title, url);
+      const mdx = await retry(() => convertToMDX(html, title, url), 3, 2000);
 
       const filePath = getLocalPath(url);
       console.log(`  写入 ${filePath}`);
