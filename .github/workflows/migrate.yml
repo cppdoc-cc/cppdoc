@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: 'Specific issue number to process (optional)'
+        description: "Specific issue number to process (optional)"
         required: false
         type: string
 

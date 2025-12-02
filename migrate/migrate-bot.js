@@ -55,33 +55,43 @@ async function fetchPageContent(url) {
 }
 
 async function convertToMDX(html, title, url) {
-  const prompt = await readFile(__dirname + "/PROMPT.md", "utf8")
-    .replace("{{LLM_DOCS}}", await readFile(__dirname + "/../src/content/docs/development/guide/component-docs-for-llm.mdx", "utf8"));
+  const prompt = await readFile(__dirname + "/PROMPT.md", "utf8").replace(
+    "{{LLM_DOCS}}",
+    await readFile(
+      __dirname +
+        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+      "utf8",
+    ),
+  );
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://github.com/cppdoc/cppdoc",
-      "X-Title": "CppDoc Migration Bot",
-    },
-    body: JSON.stringify({
-      model: "deepseek/deepseek-v3.2",
-      messages: [
-        { role: "system", content: prompt },
-        { role: "user", content:
-`
+  const response = await fetch(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://github.com/cppdoc/cppdoc",
+        "X-Title": "CppDoc Migration Bot",
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-v3.2",
+        messages: [
+          { role: "system", content: prompt },
+          {
+            role: "user",
+            content: `
 // Convert the following HTML content from cppreference.com into MDX format suitable for CppDoc.
 // Title: ${title}
 // URL: ${url}
 // HTML Content:
 ${html}
-`
-         }
-      ],
-    }),
-  });
+`,
+          },
+        ],
+      }),
+    },
+  );
 
   if (!response.ok) {
     const error = await response.text();
@@ -99,7 +109,14 @@ function getLocalPath(url) {
     throw new Error(`无法从URL解析路径: ${url}`);
   }
   const relative = match[1]; // "cpp/comments"
-  return path.join(__dirname, "..", "src", "content", "docs", `${relative}.mdx`);
+  return path.join(
+    __dirname,
+    "..",
+    "src",
+    "content",
+    "docs",
+    `${relative}.mdx`,
+  );
 }
 
 async function writeMDXFile(filePath, content, title) {
@@ -122,7 +139,9 @@ async function createPullRequest(issue, filePath, url) {
   const { execSync } = await import("child_process");
   try {
     execSync(`git config user.name "github-actions[bot]"`);
-    execSync(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
+    execSync(
+      `git config user.email "github-actions[bot]@users.noreply.github.com"`,
+    );
     execSync(`git checkout -b ${branchName}`);
     execSync(`git add "${filePath}"`);
     execSync(`git commit -m "${commitMessage}"`);

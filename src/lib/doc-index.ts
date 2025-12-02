@@ -58,10 +58,11 @@ async function getOrBuildKeyIndex(): Promise<Map<string, string>> {
 export async function getLinkToKey(key: string): Promise<string | undefined> {
   const index = await getOrBuildKeyIndex();
   if (key?.startsWith("/")) {
-    if (index.values().some(slug => `/${slug}/` === key || `/${slug}` === key))
+    if (
+      index.values().some((slug) => `/${slug}/` === key || `/${slug}` === key)
+    )
       return key;
-    else
-      return undefined;
+    else return undefined;
   }
   const slug = index.get(key);
   if (!slug) return undefined;
