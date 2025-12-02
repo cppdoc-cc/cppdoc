@@ -5,6 +5,13 @@ An open documentation for the C/C++ programming languages and their standard lib
 > [!TIP]
 > Currently CppDoc community members are working hard on migrating [cppreference](https://en.cppreference.com/index.html) pages to CppDoc. You’re more than welcomed to join us if you want to help!
 
+<a href="https://discord.gg/TYgbKkM4" target="_blank">
+  <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord server" />
+</a>
+<a href="https://t.me/+Rck2PsPCxBZkZWE1" target="_blank">
+  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram group" />
+</a>
+
 ## Quick Start
 
 Clone the project to your local:
