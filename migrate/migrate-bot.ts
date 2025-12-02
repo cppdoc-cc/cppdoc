@@ -1,11 +1,11 @@
 import { Octokit } from "@octokit/rest";
-import { JSDOM } from "jsdom";
+import { parseHTML } from "linkedom";
 import fs, { readFile } from "fs/promises";
 import path, { join } from "path";
 import { fileURLToPath } from "url";
 import { execSync, spawnSync } from "child_process";
 import { visualizeTextDiff } from "./text-diff-visualizer";
-import { getTextFromDOM } from "./text-from-element";
+import { convert } from "html-to-text";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -68,8 +68,8 @@ async function fetchPageContent(
     throw new Error(`Failed to fetch ${url}: ${response.status}`);
   }
   const html = await response.text();
-  const dom = new JSDOM(html);
-  const contentElement = dom.window.document.querySelector("#mw-content-text");
+  const document = parseHTML(html).document;
+  const contentElement = document.querySelector("#mw-content-text");
 
   const selectorsToRemove = [
     ".t-navbar",
@@ -81,7 +81,7 @@ async function fetchPageContent(
     const elements = contentElement?.querySelectorAll(selector);
     elements?.forEach((el) => el.remove());
   }
-  const headingElement = dom.window.document.querySelector("#firstHeading");
+  const headingElement = document.querySelector("#firstHeading");
   if (!contentElement) {
     throw new Error("Could not find #mw-content-text");
   }
@@ -89,7 +89,7 @@ async function fetchPageContent(
     html: contentElement.innerHTML,
     title: headingElement?.textContent?.trim() || "",
     url,
-    innerText: getTextFromDOM(contentElement),
+    innerText: (contentElement as HTMLDivElement).innerText,
   };
 }
 
@@ -102,7 +102,7 @@ async function convertToMDX(
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
       "utf8"
     )
   );
@@ -304,8 +304,8 @@ async function createPullRequest(
 
   const newInnerText = await readFile(getRelativeHTMLPath(url), "utf8")
     .then((data) => {
-      const dom = new JSDOM(data);
-      const contentElement = dom.window.document.querySelector("main");
+      const document = parseHTML(data).document;
+      const contentElement = document.querySelector("main");
       const selectorsToRemove = [".sl-anchor-link"];
       for (const selector of selectorsToRemove) {
         const elements = contentElement?.querySelectorAll(selector);
@@ -313,7 +313,7 @@ async function createPullRequest(
       }
 
       if (!contentElement) return "";
-      return getTextFromDOM(contentElement);
+      return (contentElement as HTMLDivElement).innerText;
     })
     .catch(() => "");
 
@@ -455,11 +455,11 @@ async function main() {
       if (res.status !== 0) {
         throw new Error(
           "构建失败，可能生成的MDX有问题：" +
-          res.stderr?.toString() +
-          res.stdout?.toString() +
-          res.error?.toString() +
-          " exit code " +
-          res.status
+            res.stderr?.toString() +
+            res.stdout?.toString() +
+            res.error?.toString() +
+            " exit code " +
+            res.status
         );
       }
 
