@@ -3,18 +3,14 @@ import RevisionTags from "./RevisionTags.astro";
 import { autoRev } from ".";
 import type { RevisionInfo } from "./types";
 
-type LayoutDirection = "h" | "v";
-
 interface Props extends RevisionInfo {
   noborder?: boolean;
-  dir?: LayoutDirection;
+  vertical?: boolean;
 }
 
 const { since, until, noborder } = Astro.props;
-const dir = Astro.props.dir ?? "h";
-
-const horizontal = dir === "h";
-const vertical = dir === "v";
+const vertical = Astro.props.vertical ?? false;
+const horizontal = !vertical;
 ---
 
 <div

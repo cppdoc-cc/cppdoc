@@ -138,11 +138,11 @@ Some more paragraphs.
 
 ### Vertical Layout
 
-By default, `RevisionBlock` has a left-to-right layout: the content sits at the left, and the revision information sits at the right. In addition, you can set the layout direction of `RevisionBlock` to top-to-bottom by setting the `dir` attribute to `v`:
+By default, `RevisionBlock` has a left-to-right layout: the content sits at the left, and the revision information sits at the right. In addition, you can set the layout direction of `RevisionBlock` to top-to-bottom by setting the `vertical` attribute to `true`:
 
 ```mdx {2}
 <RevisionBlock
-  dir="v"
+  vertical
   since="C++11"
   traits={[{ trait: "deprecated", since: "C++20" }]}
   removed="C++26"
@@ -154,7 +154,7 @@ By default, `RevisionBlock` has a left-to-right layout: the content sits at the 
 
 <Card title="Preview">
   <RevisionBlock
-    dir="v"
+    vertical
     since="C++11"
     traits={[{ trait: "deprecated", since: "C++20" }]}
     removed="C++26"
