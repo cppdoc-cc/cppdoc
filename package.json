@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "migrate": "node migrate/migrate-bot.js"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.36.2",
@@ -20,6 +21,8 @@
     "starlight-heading-badges": "0.6.1"
   },
   "devDependencies": {
-    "prettier": "3.6.2"
+    "prettier": "3.6.2",
+    "@octokit/rest": "^21.0.2",
+    "jsdom": "^26.0.0"
   }
 }
