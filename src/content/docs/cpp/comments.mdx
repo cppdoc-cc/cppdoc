@@ -1,0 +1,104 @@
+---
+title: Comments
+description: Auto‑generated from cppreference
+---
+
+import { DocLink } from '@/components/index.ts';
+
+Comments serve as a sort of in-code documentation. When inserted into a program, they are effectively ignored by the compiler; they are solely intended to be used as notes by the humans that read source code. Although specific documentation is not part of the C++ standard, several utilities exist that parse comments with different documentation formats.
+
+### Syntax
+
+<DocLink src="/cpp/comments/syntax">Syntax details</DocLink>
+<table class="t-sdsc-begin">
+<tbody>
+<tr>
+<td colspan="10" class="t-sdsc-sep">
+</td></tr>
+<tr class="t-sdsc">
+<td> <code className="cpp plain"><b>/*</b></code> <span class="t-spar">comment</span> <code className="cpp plain"><b>*/</b></code>
+</td>
+<td> (1)
+</td>
+<td class="t-sdsc-nopad">
+</td></tr>
+<tr>
+<td colspan="10" class="t-sdsc-sep">
+</td></tr>
+<tr class="t-sdsc">
+<td> <code className="cpp plain"><b>//</b></code> <span class="t-spar">comment</span>
+</td>
+<td> (2)
+</td>
+<td class="t-sdsc-nopad">
+</td></tr>
+<tr>
+<td colspan="10" class="t-sdsc-sep">
+</td></tr>
+</tbody></table>
+<div class="t-li1"><span class="t-li">1)</span> Often known as "C-style" or "multi-line" comments.</div>
+<div class="t-li1"><span class="t-li">2)</span> Often known as "C++-style" or "single-line" comments.</div>
+<p>All comments are removed from the program at <DocLink src="/cpp/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
+</p>
+<h3>C-style</h3>
+<p>C-style comments are usually used to comment large blocks of text, however, they can be used to comment single lines. To insert a C-style comment, simply surround text with <code className="cpp plain"><b>/*</b></code> and <code className="cpp plain"><b>*/</b></code>; this will cause the contents of the comment to be ignored by the compiler. Although it is not part of the C++ standard, <code className="cpp plain"><b>/**</b></code> and <code className="cpp plain"><b>*/</b></code> are often used to indicate documentation blocks; this is legal because the second asterisk is simply treated as part of the comment. C-style comments cannot be nested.
+</p>
+<h3>C++-style</h3>
+<p>C++-style comments are usually used to comment single lines, however, multiple C++-style comments can be placed together to form multi-line comments. C++-style comments tell the compiler to ignore all content between <code className="cpp plain"><b>//</b></code> and a new line.
+</p>
+<h3>Notes</h3>
+<p>Because comments <DocLink src="/cpp/language/translation_phases">are removed</DocLink> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
+</p><p>Besides commenting out, other mechanisms used for source code exclusion are
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#if 0</span>
+    <DocLink src="/cpp/io/cout"><span class="kw1775">std::<span class="me2">cout</span></span></DocLink> <span class="sy1">&lt;&lt;</span> <span class="st0">"this will not be executed or even compiled<span class="es1">\n</span>"</span><span class="sy4">;</span>
+<span class="co2">#endif</span></pre></div></div>
+<p>and
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="kw1">if</span> <span class="br0">(</span><span class="kw2">false</span><span class="br0">)</span>
+<span class="br0">{</span>
+    <DocLink src="/cpp/io/cout"><span class="kw1775">std::<span class="me2">cout</span></span></DocLink> <span class="sy1">&lt;&lt;</span> <span class="st0">"this will not be executed<span class="es1">\n</span>"</span><span class="sy4">;</span>
+<span class="br0">}</span></pre></div></div>
+<h3>Example</h3>
+<div class="t-example"><div class="t-example-live-link"><div class="coliru-btn coliru-btn-run-init">Run this code</div></div>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="cpp source-cpp"><pre class="de1"><span class="co2">#include &lt;iostream&gt;</span>
+ 
+<span class="coMULTI">/* C-style comments can contain
+multiple lines */</span>
+<span class="coMULTI">/* or just one */</span>
+ 
+<span class="coMULTI">/**************
+ *  you can insert any *, but
+ *  you can't make comments nested
+ */</span>
+ 
+<span class="co1">// C++-style comments can comment one line</span>
+ 
+<span class="co1">// or, they can</span>
+<span class="co1">// be strung together</span>
+ 
+<span class="kw4">int</span> main<span class="br0">(</span><span class="br0">)</span>
+<span class="br0">{</span>
+    <span class="co1">// comments are removed before preprocessing,</span>
+    <span class="co1">// so ABC is "1", not "1//2134", and "1 hello world"</span>
+    <span class="co1">// will be printed</span>
+<span class="co2">#define ABC 1//2134</span>
+    <DocLink src="/cpp/io/cout"><span class="kw1775">std::<span class="me2">cout</span></span></DocLink> <span class="sy1">&lt;&lt;</span> ABC <span class="sy1">&lt;&lt;</span> <span class="st0">" hello world<span class="es1">\n</span>"</span><span class="sy4">;</span>
+ 
+    <span class="co1">// The below code won't be run</span>
+    <span class="co1">// return 1;</span>
+ 
+    <span class="co1">// The below code will be run</span>
+    <span class="kw1">return</span> <span class="nu0">0</span><span class="sy4">;</span>
+<span class="br0">}</span></pre></div></div>
+<p>Output:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="text source-text"><pre class="de1">1 hello world</pre></div></div> 
+</div>
+<h3>See also</h3>
+<table class="t-dsc-begin">
+<tbody>
+<tr class="t-dsc">
+<td> <div class="t-dsc-see"><span><DocLink src="/c/comment">C documentation</DocLink></span> for <span class=""><span>comment</span></span></div>
+</td></tr>
+</tbody></table>
