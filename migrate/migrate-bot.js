@@ -208,7 +208,7 @@ description: Auto‑generated from cppreference
 async function createPullRequest(issue, filePath, url) {
   const branchName = `migrate/${issue.number}-${Date.now().toString(36)}`;
   const commitMessage = `Migrate ${url}`;
-  const prTitle = `[#${issue.number}] Migrate ${url}`;
+  const prTitle = `feat: migrate ${url.split('/w/').pop()} from cppref [#${issue.number}]`;
   const prBody = 
 `自动迁移自 ${url}
 
