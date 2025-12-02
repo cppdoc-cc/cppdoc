@@ -73,7 +73,7 @@ async function fetchPageContent(
   const selectorsToRemove = [
     ".t-navbar",
     ".t-example-live-link",
-    "editsection",
+    ".editsection",
     "#toc",
   ];
   for (const selector of selectorsToRemove) {
@@ -305,6 +305,12 @@ async function createPullRequest(
     .then((data) => {
       const dom = new JSDOM(data);
       const contentElement = dom.window.document.querySelector("main");
+      const selectorsToRemove = ['.sl-anchor-link']
+      for (const selector of selectorsToRemove) {
+        const elements = contentElement?.querySelectorAll(selector);
+        elements?.forEach((el) => el.remove());
+      }
+
       return contentElement?.textContent?.trim() || "";
     })
     .catch(() => "");
