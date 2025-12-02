@@ -215,7 +215,7 @@ async function writeMDXFile(filePath, content, title) {
   const dir = path.dirname(filePath);
   await fs.mkdir(dir, { recursive: true });
   const frontmatter = `---
-title: ${title}
+title: "${title}"
 description: Auto‑generated from cppreference
 ---\n\n`;
   await fs.writeFile(filePath, frontmatter + content, "utf8");
