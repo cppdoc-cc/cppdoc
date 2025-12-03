@@ -3,14 +3,14 @@ title: "Comments"
 description: Auto‑generated from cppreference
 ---
 
-import { Desc, DescList, DocLink, Revision } from '@components/index';
+import { Desc, DescList, DocLink, Revision, RevisionBlock } from '@components/index';
 
 Comments serve as a sort of in-code documentation. When inserted into a program, they are effectively ignored by the compiler; they are solely intended to be used as notes by the humans that read source code.
 
 ### Syntax
 
-(1) `/*` <span class="t-spar">comment</span> `*/`
-(2) `//` <span class="t-spar">comment</span> <Revision since="C99">(since C99)</Revision>
+* (1) `/*` <span class="t-spar">comment</span> `*/`
+* (2) `//` <span class="t-spar">comment</span> <Revision since="C99">(since C99)</Revision>
 
 1) Often known as "C-style" or "multi-line" comments.
 2) Often known as "C++-style" or "single-line" comments.
@@ -23,7 +23,7 @@ C-style comments are usually used to comment large blocks of text or small fragm
 
 Except within a <DocLink src="/c/language/character_constant">character constant</DocLink>, a <DocLink src="/c/language/string_literal">string literal</DocLink>, or a comment, the characters `/*` introduce a comment. The contents of such a comment are examined only to identify multibyte characters and to find the characters `*/` that terminate the comment. C-style comments cannot be nested.
 
-<Revision since="C99">
+<RevisionBlock since="C99">
 
 ### C++-style
 
