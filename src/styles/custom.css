@@ -35,36 +35,36 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f5f5f5;
+  background-color: #e6f3ff;
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1;
+  background-color: #87ceeb;
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #a8a8a8;
+  background-color: #4682b4;
 }
 
 :root[data-theme="dark"] ::-webkit-scrollbar-track {
-  background-color: #2d2a32;
+  background-color: #1e3a5f;
 }
 
 :root[data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background-color: #4a4458;
+  background-color: #4a90e2;
 }
 
 :root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-  background-color: #5a5466;
+  background-color: #5b9bd5;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 #f5f5f5;
+  scrollbar-color: #87ceeb #e6f3ff;
 }
 
 :root[data-theme="dark"] * {
-  scrollbar-color: #4a4458 #2d2a32;
+  scrollbar-color: #4a90e2 #1e3a5f;
 }
