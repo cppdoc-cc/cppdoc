@@ -221,7 +221,7 @@ ${html}
   console.log(`Normal HTML elements count: ${normalElementsCount}`);
 
   if (normalElementsCount > 4) {
-    throw new Error("生成的内容中包含过多原生HTML元素，可能转换失败。");
+    throw new Error("The generated content contains too many native HTML elements, conversion may have failed.");
   }
 
   return content;
@@ -231,7 +231,7 @@ ${html}
 function getRelativeMDXPath(url: string): string {
   const match = url.match(/https?:\/\/.*?cppreference\.com\/w\/(.+)\.html$/);
   if (!match) {
-    throw new Error(`无法从URL解析路径: ${url}`);
+    throw new Error(`Unable to parse path from URL: ${url}`);
   }
   const relative = match[1]; // "cpp/comments"
   return `src/content/docs/${relative}.mdx`;
@@ -240,7 +240,7 @@ function getRelativeMDXPath(url: string): string {
 function getRelativeHTMLPath(url: string): string {
   const match = url.match(/https?:\/\/.*?cppreference\.com\/w\/(.+)\.html$/);
   if (!match) {
-    throw new Error(`无法从URL解析路径: ${url}`);
+    throw new Error(`Unable to parse path from URL: ${url}`);
   }
   const relative = match[1]; // "cpp/comments"
   return `dist/${relative}/index.html`;
@@ -262,7 +262,7 @@ title: ${JSON.stringify(title)}
 description: Auto‑generated from cppreference
 ---\n\n`;
   await fs.writeFile(filePath, frontmatter + content, "utf8");
-  console.log(`写入 ${filePath}`);
+  console.log(`Written to ${filePath}`);
 }
 
 // curl --location --request POST "https://api.imgbb.com/1/upload?expiration=600&key=YOUR_CLIENT_API_KEY" --form "image=R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -324,18 +324,18 @@ async function createPullRequest(
     const webp = visualizeTextDiff(originalInnerText, newInnerText);
     if (webp) {
       imageUrl = await uploadImageToImgBB(webp);
-      console.log(`上传文本差异图像到 ImgBB: ${imageUrl}`);
+      console.log(`Uploaded text diff image to ImgBB: ${imageUrl}`);
     }
   }
 
-  const prBody = `> 由 ${MODEL_NAME} 自 ${url} 自动迁移
+  const prBody = `> Automatically migrated from ${url} by ${MODEL_NAME}
 >
-> 📝 [编辑此页面](https://github.com/cppdoc-cc/cppdoc/edit/${branchName}/${getRelativeMDXPath(url)})
+> 📝 [Edit this page](https://github.com/cppdoc-cc/cppdoc/edit/${branchName}/${getRelativeMDXPath(url)})
 
 <small>Close #${issue.number}</small>
 
-${imageUrl ? `![Text Diff](${imageUrl})` : "（无文本差异图像）"}
-<small>绿色：迁移后词汇出现次数大于迁移前；红色：迁移后词汇出现次数小于迁移前。</small>
+${imageUrl ? `![Text Diff](${imageUrl})` : "(No text diff image)"}
+<small>Green: word count increased after migration; Red: word count decreased after migration.</small>
 `;
 
   const { execSync } = await import("child_process");
@@ -350,7 +350,7 @@ ${imageUrl ? `![Text Diff](${imageUrl})` : "（无文本差异图像）"}
     execSync(`git push origin ${branchName}`);
   } catch (error) {
     console.error(
-      "Git操作失败:",
+      "Git operation failed:",
       error instanceof Error ? error.message : String(error)
     );
     throw error;
@@ -365,7 +365,7 @@ ${imageUrl ? `![Text Diff](${imageUrl})` : "（无文本差异图像）"}
     base: "main",
   });
 
-  console.log(`创建PR #${pr.number}`);
+  console.log(`Created PR #${pr.number}`);
   return pr.number;
 }
 
@@ -388,7 +388,7 @@ async function updateIssue(
       owner: REPO_OWNER,
       repo: REPO_NAME,
       issue_number: issue.number,
-      body: `迁移失败: ${message}\n\n已关闭issue。`,
+      body: `Migration failed: ${message}\n\nIssue closed.`,
     });
     await octokit.issues.update({
       owner: REPO_OWNER,
@@ -401,13 +401,13 @@ async function updateIssue(
       owner: REPO_OWNER,
       repo: REPO_NAME,
       issue_number: issue.number,
-      body: `迁移完成！已创建PR [#${prNumber}].`,
+      body: `Migration completed! Created PR [#${prNumber}].`,
     });
   }
 }
 
 async function main() {
-  console.log("获取带有标签", LABEL, "的issue...");
+  console.log("Fetching issues with label", LABEL, "...");
   const { data: issues } = await octokit.issues.listForRepo({
     owner: REPO_OWNER,
     repo: REPO_NAME,
@@ -416,10 +416,10 @@ async function main() {
     per_page: 50,
   });
 
-  console.log(`找到 ${issues.length} 个issue`);
+  console.log(`Found ${issues.length} issues`);
 
   for (const issue of issues) {
-    console.log(`处理issue #${issue.number}: ${issue.title}`);
+    console.log(`Processing issue #${issue.number}: ${issue.title}`);
     try {
       if (hasPRReference(issue.title)) {
         continue;
@@ -427,37 +427,37 @@ async function main() {
 
       const url = extractLink(issue.title);
       if (!url) {
-        throw new Error("标题中未找到有效的cppreference链接");
+        throw new Error("No valid cppreference link found in title");
       }
 
-      console.log(`  获取 ${url}`);
+      console.log(`  Fetching ${url}`);
       const { html, title, innerText } = await retry(
         () => fetchPageContent(url),
         3,
         2000
       );
 
-      console.log(`  转换HTML为MDX...`);
+      console.log(`  Converting HTML to MDX...`);
       const mdx = await retry(() => convertToMDX(html, title, url), 3, 2000);
 
       const filePath = getLocalMDXPath(url);
-      console.log(`  写入 ${filePath}`);
+      console.log(`  Writing to ${filePath}`);
       await writeMDXFile(filePath, mdx, title);
 
-      console.log(`  重新格式化...`);
+      console.log(`  Re-formatting...`);
       spawnSync(`npm`, ["run", "format"], {
         stdio: "inherit",
         shell: true,
       });
 
-      console.log(`  构建...`);
+      console.log(`  Building...`);
       const res = spawnSync(`npm`, ["run", "build"], {
         stdio: "inherit",
         shell: true,
       });
       if (res.status !== 0) {
         throw new Error(
-          "构建失败，可能生成的MDX有问题：" +
+          "Build failed, possibly due to issues with the generated MDX:" +
             res.stderr?.toString() +
             res.stdout?.toString() +
             res.error?.toString() +
@@ -466,20 +466,20 @@ async function main() {
         );
       }
 
-      console.log(`  创建PR...`);
+      console.log(`  Creating PR...`);
       const prNumber = await createPullRequest(issue, filePath, url, innerText);
 
-      console.log(`  更新issue...`);
+      console.log(`  Updating issue...`);
       await updateIssue(issue, prNumber);
 
-      console.log(`  issue #${issue.number} 完成`);
+      console.log(`  Issue #${issue.number} completed`);
     } catch (error) {
-      console.error(`  issue #${issue.number} 出错:`, error);
+      console.error(`  Issue #${issue.number} error:`, error);
       await updateIssue(issue, null, error);
     }
   }
 
-  console.log("全部完成");
+  console.log("All completed");
 }
 
 main().catch((err) => {
