@@ -28,3 +28,36 @@
 .sl-markdown-content pre > code {
   font-size: 1em;
 }
+
+/* Custom scrollbar */
+:root[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #666;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+}
