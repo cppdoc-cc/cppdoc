@@ -81,7 +81,7 @@ The `main` function has several restrictions (violation of which renders the pro
   - its address cannot be taken
   - it cannot be used in a <Missing>`typeid`</Missing> expression <Revision since="C++11">or a <Missing>`decltype`</Missing> specifier</Revision>
 - It cannot be predefined and cannot be overloaded: effectively, the name `main` in the global namespace is reserved for functions (although it can be used to name classes, namespaces, enumerations, and any entity in a non-global namespace, except that an entity named `main` cannot be declared with C <Missing>language linkage</Missing> in any namespace).
-- It cannot be defined <Revision since="C++11">as deleted or</Revision> declared with any language linkage<Revision since="C++11">, <Missing>constexpr</Missing></Revision><Revision since="C++20">, <Missing>consteval</Missing></Revision>, <Missing>inline</Missing>, or <Missing>static</Missing>.
+- It cannot be <Revision since="C++11">defined as deleted or</Revision> declared with any language linkage<Revision since="C++11">, <Missing>constexpr</Missing></Revision><Revision since="C++20">, <Missing>consteval</Missing></Revision>, <Missing>inline</Missing>, or <Missing>static</Missing>.
 - <Revision since="C++14">The return type of the `main` function cannot be deduced (`auto main() {...}` is not allowed).</Revision>
 - <Revision since="C++20">The `main` function cannot be a <Missing>coroutine</Missing>.</Revision>
 - <Revision since="C++20">The `main` function cannot attach to a named <Missing>module</Missing>.</Revision>
