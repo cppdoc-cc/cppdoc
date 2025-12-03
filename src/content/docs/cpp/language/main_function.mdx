@@ -9,6 +9,7 @@ import Code from "@astrojs/starlight/components";
 import Behavior from "@components/Behavior.astro";
 import { Decl, DeclDoc } from "@components/decl-doc";
 import { DR, DRList } from "@components/defect-report";
+import { Desc, DescList, DocLink } from '@components/index';
 import Missing from "@components/Missing.astro";
 import { ParamDoc, ParamDocList } from "@components/param-doc";
 import { Revision } from "@components/revision";
@@ -80,7 +81,7 @@ The `main` function has several restrictions (violation of which renders the pro
   - its address cannot be taken
   - it cannot be used in a <Missing>`typeid`</Missing> expression <Revision since="C++11">or a <Missing>`decltype`</Missing> specifier</Revision>
 - It cannot be predefined and cannot be overloaded: effectively, the name `main` in the global namespace is reserved for functions (although it can be used to name classes, namespaces, enumerations, and any entity in a non-global namespace, except that an entity named `main` cannot be declared with C <Missing>language linkage</Missing> in any namespace).
-- It cannot be defined <Revision since="C++11">as deleted or</Revision> declared with any language linkage<Revision since="C++11">, <Missing>constexpr</Missing></Revision><Revision since="C++20">, <Missing>consteval</Missing></Revision>, <Missing>inline</Missing>, or <Missing>static</Missing>.
+- It cannot be <Revision since="C++11">defined as deleted or</Revision> declared with any language linkage<Revision since="C++11">, <Missing>constexpr</Missing></Revision><Revision since="C++20">, <Missing>consteval</Missing></Revision>, <Missing>inline</Missing>, or <Missing>static</Missing>.
 - <Revision since="C++14">The return type of the `main` function cannot be deduced (`auto main() {...}` is not allowed).</Revision>
 - <Revision since="C++20">The `main` function cannot be a <Missing>coroutine</Missing>.</Revision>
 - <Revision since="C++20">The `main` function cannot attach to a named <Missing>module</Missing>.</Revision>
@@ -131,8 +132,16 @@ argv[3] == 0
 
 ## References
 
-- C++23 standard (ISO/IEC 14882:2024):
+<DeclDoc style="text-align: center;">
+  <Decl slot="decl">
+    <div style="text-align: center;">
+      <strong>Extended Content</strong>
+    </div>
+  </Decl>
+
+- C++23 standard (ISO/IEC 14882:2024)
   - 6.9.3.1 main function [basic.start.main]
+</DeclDoc>
 
 ## Defect reports
 
@@ -175,3 +184,11 @@ The following behavior-changing defect reports were applied retroactively to pre
     </Fragment>
   </DR>
 </DRList>
+
+## See also
+
+<DescList>
+<Desc>
+  <DocLink slot="item" src="/c/language/main_function"> C documentation</DocLink> for <span> **main function** </span>
+</Desc>
+</DescList>
