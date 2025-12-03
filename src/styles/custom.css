@@ -31,40 +31,40 @@
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-    width: 4px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #F5F5F5;
-    border-radius: 2px;
+  background-color: #f5f5f5;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #C1C1C1;
-    border-radius: 2px;
+  background-color: #c1c1c1;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #A8A8A8;
+  background-color: #a8a8a8;
 }
 
 :root[data-theme="dark"] ::-webkit-scrollbar-track {
-    background-color: #2D2A32;
+  background-color: #2d2a32;
 }
 
 :root[data-theme="dark"] ::-webkit-scrollbar-thumb {
-    background-color: #4A4458;
+  background-color: #4a4458;
 }
 
 :root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
-    background-color: #5A5466;
+  background-color: #5a5466;
 }
 
 * {
-    scrollbar-width: thin;
-    scrollbar-color: #C1C1C1 #F5F5F5;
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f5f5f5;
 }
 
 :root[data-theme="dark"] * {
-    scrollbar-color: #4A4458 #2D2A32;
+  scrollbar-color: #4a4458 #2d2a32;
 }
