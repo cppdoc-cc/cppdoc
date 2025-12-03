@@ -221,7 +221,9 @@ ${html}
   console.log(`Normal HTML elements count: ${normalElementsCount}`);
 
   if (normalElementsCount > 4) {
-    throw new Error("The generated content contains too many native HTML elements, conversion may have failed.");
+    throw new Error(
+      "The generated content contains too many native HTML elements, conversion may have failed."
+    );
   }
 
   return content;
