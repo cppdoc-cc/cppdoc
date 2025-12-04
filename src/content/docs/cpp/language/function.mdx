@@ -399,36 +399,50 @@ The parameter list determines the arguments that can be specified when the funct
 
   `void` is the only syntax equivalent to an empty parameter list, other usages of `void` parameters are <Behavior kind="ill-formed">ill-formed</Behavior>:
 
-  <table>
-    <tr>
-      <th>Incorrect usage</th>
-      <th>Example</th>
-    </tr>
-    <tr>
-      <td>multiple parameters are present</td>
-      <td>`int f1(void, int);`</td>
-    </tr>
-    <tr>
-      <td>the `void` parameter is named</td>
-      <td>`inf f2(void param);`</td>
-    </tr>
-    <tr>
-      <td>`void` is cv-qualified</td>
-      <td>`int f3(const void);`</td>
-    </tr>
-    <tr>
-      <td>`void` is <DocLink src="/cpp/language/dependent_name">dependent</DocLink></td>
-      <td>`int f4(T);` (where `T` is `void`)</td>
-    </tr>
-  	<tr {...autoRev({ autorevSince: "C++23" })}>
-      <td>
-        <RevisionBlock since="C++23" vertical noborder>
+  <DescList>
+    <Desc>
+      <Fragment slot="item">
+        **Incorrect usage**
+      </Fragment>
+
+      **Example**
+    </Desc>
+    <Desc>
+      <Fragment slot="item">
+        multiple parameters are present
+      </Fragment>
+      
+      `int f1(void, int);`
+    </Desc>
+    <Desc>
+      <Fragment slot="item">
+        the `void` parameter is named
+      </Fragment>
+      
+      `inf f2(void param);`
+    </Desc>
+    <Desc>
+      <Fragment slot="item">
+        `void` is cv-qualified
+      </Fragment>
+      
+      `int f3(const void);`
+    </Desc>
+    <Desc>
+      <Fragment slot="item">
+        `void` is <DocLink src="/cpp/language/dependent_name">dependent</DocLink>
+      </Fragment>
+      
+      `int f4(T);` (where `T` is `void`)
+    </Desc>
+    <Desc autorevSince="C++23">
+      <RevisionBlock slot="item" since="C++23" vertical noborder>
         the `void` parameter is an <DocLink src="/cpp/language/function">explicit object parameter</DocLink>
-        </RevisionBlock>
-      </td>
-      <td>`int f5(this void);`</td>
-    </tr>
-  </table>
+      </RevisionBlock>
+      
+      `int f5(this void);`
+    </Desc>
+  </DescList>
 </DeclDoc>
 
 <RevisionBlock until="C++17">
