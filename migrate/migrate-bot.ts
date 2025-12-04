@@ -100,7 +100,10 @@ async function fetchPageContent(
 async function loadSlugMap(): Promise<Map<string, string | null>> {
   const mapPath = path.join(__dirname, "slug_map.json");
   const data = await readFile(mapPath, "utf8");
-  const arr = JSON.parse(data) as Array<{ cppref: string; cppdoc: string | null }>;
+  const arr = JSON.parse(data) as Array<{
+    cppref: string;
+    cppdoc: string | null;
+  }>;
   const map = new Map<string, string | null>();
   for (const entry of arr) {
     map.set(entry.cppref, entry.cppdoc);
@@ -108,7 +111,10 @@ async function loadSlugMap(): Promise<Map<string, string | null>> {
   return map;
 }
 
-function replaceDocLinks(content: string, slugMap: Map<string, string | null>): string {
+function replaceDocLinks(
+  content: string,
+  slugMap: Map<string, string | null>
+): string {
   const docLinkRegex = /<DocLink\s+([^>]*)>/g;
   return content.replace(docLinkRegex, (match, attributes) => {
     const srcMatch = attributes.match(/src\s*=\s*["']([^"']+)["']/);
@@ -116,10 +122,10 @@ function replaceDocLinks(content: string, slugMap: Map<string, string | null>): 
       return match;
     }
     const src = srcMatch[1];
-    if (!src.startsWith('/')) {
+    if (!src.startsWith("/")) {
       return match;
     }
-    const key = src.slice(1).replace(/\.html$/, '');
+    const key = src.slice(1).replace(/\.html$/, "");
     const mapped = slugMap.get(key);
     let newSrc: string;
     if (mapped === undefined) {
@@ -143,7 +149,7 @@ async function convertToMDX(
     "{{LLM_DOCS}}",
     await readFile(
       __dirname +
-      "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
+        "/../src/content/docs/development/guide/component-docs-for-llm.mdx",
       "utf8"
     )
   );
@@ -308,7 +314,7 @@ async function writeMDXFile(
   await fs.mkdir(dir, { recursive: true });
   const frontmatter = `---
 title: ${JSON.stringify(title)}
-cppref-url: ${cpprefUrl ? JSON.stringify(cpprefUrl) : 'null'}
+cppref-url: ${cpprefUrl ? JSON.stringify(cpprefUrl) : "null"}
 ---\n\n`;
   await fs.writeFile(filePath, frontmatter + content, "utf8");
   console.log(`Written to ${filePath}`);
@@ -509,11 +515,11 @@ async function main() {
       if (res.status !== 0) {
         throw new Error(
           "Build failed, possibly due to issues with the generated MDX:" +
-          res.stderr?.toString() +
-          res.stdout?.toString() +
-          res.error?.toString() +
-          " exit code " +
-          res.status
+            res.stderr?.toString() +
+            res.stdout?.toString() +
+            res.error?.toString() +
+            " exit code " +
+            res.status
         );
       }
 

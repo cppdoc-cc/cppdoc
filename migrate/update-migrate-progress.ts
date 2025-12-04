@@ -35,7 +35,9 @@ async function isMigrated(entry: string): Promise<boolean> {
   return (await fileExists(mdxPath)) || (await fileExists(indexPath));
 }
 
-function generateUrls(entry: SlugMapItem): Omit<EntryStatus, "entry" | "migrated"> {
+function generateUrls(
+  entry: SlugMapItem
+): Omit<EntryStatus, "entry" | "migrated"> {
   const cpprefUrl = `http://en.cppreference.com/w/${entry.cppref}.html`;
   const cppdocUrl = `http://cppdoc.cc/${entry.cppdoc}`;
   const issueUrl = `https://github.com/cppdoc-cc/cppdoc/issues/new?title=${encodeURIComponent(cpprefUrl)}&labels=migrate-cppref-page`;
@@ -47,8 +49,9 @@ function generateMarkdown(status: EntryStatus): string {
   if (migrated) {
     return `| ✅ | [cppref](${cpprefUrl}) | [cppdoc](${cppdocUrl}) | \`${entry}\` | `;
   } else {
-    return `| ❌ | [cppref](${cpprefUrl}) | ${entry.cppdoc ? `[create](${issueUrl})` : "N/A"
-      } |  \`${entry}\` |`;
+    return `| ❌ | [cppref](${cpprefUrl}) | ${
+      entry.cppdoc ? `[create](${issueUrl})` : "N/A"
+    } |  \`${entry}\` |`;
   }
 }
 
