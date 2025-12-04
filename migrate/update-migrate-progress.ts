@@ -47,7 +47,7 @@ function generateUrls(
 function generateMarkdown(status: EntryStatus): string {
   const { entry, migrated, cpprefUrl, cppdocUrl, issueUrl } = status;
   if (migrated) {
-    return `| ✅ | [cppref](${cpprefUrl}) | [cppdoc](${cppdocUrl}) | \`${entry}\` | `;
+    return `| ✅ | [cppref](${cpprefUrl}) | [cppdoc](${cppdocUrl}) | \`${entry.cppdoc ?? (entry.cppref + "(cppref)")}\` | `;
   } else {
     return `| ❌ | [cppref](${cpprefUrl}) | ${
       entry.cppdoc ? `[create](${issueUrl})` : "N/A"
