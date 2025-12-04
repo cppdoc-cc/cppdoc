@@ -1,0 +1,763 @@
+---
+title: "Ranges library (since C++20)"
+cppref-url: "http://en.cppreference.com/w/cpp/ranges.html"
+---
+
+import { CppHeader, DR, DRList, Desc, DescList, DocLink, Revision, WG21PaperLink } from '@components/index';
+
+The ranges library is an extension and generalization of the algorithms and iterator libraries that makes them more powerful by making them composable and less error-prone.
+
+The library creates and manipulates range *views*, lightweight objects that indirectly represent iterable sequences (*ranges*). Ranges are an abstraction on top of
+
+*   `[begin, end)` – iterator pairs, e.g. ranges made by implicit conversion from containers. All algorithms that take iterator pairs now have overloads that accept ranges (e.g. <DocLink src="/cpp/library/algorithm/ranges/sort">`ranges::sort`</DocLink>)
+*   begin `+` `[0,` size`)` – counted sequences, e.g. range returned by <DocLink src="/cpp/library/ranges/counted_view">`views::counted`</DocLink>
+*   `[begin,` *predicate*`)` – conditionally-terminated sequences, e.g. range returned by <DocLink src="/cpp/library/ranges/take_while_view">`views::take_while`</DocLink>
+*   `[begin, ..)` – unbounded sequences, e.g. range returned by <DocLink src="/cpp/library/ranges/iota_view">`views::iota`</DocLink>
+
+The ranges library includes <DocLink src="/cpp/library/algorithm/ranges">range algorithms</DocLink>, which are applied to ranges eagerly, and [range adaptors](#Range_adaptors), which are applied to views lazily. Adaptors can be composed into pipelines, so that their actions take place as the view is iterated.
+
+```cpp
+namespace std {
+    namespace views = ranges::views;
+}
+```
+
+The namespace alias `std::views` is provided as a shorthand for `std::ranges::views`.
+
+## Defined in namespace `std::ranges`
+
+### Range access
+
+## Defined in header <CppHeader name="ranges" />
+## Defined in header <CppHeader name="iterator" />
+
+<DescList>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/begin">`ranges::begin`</DocLink>
+    returns an iterator to the beginning of a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/end">`ranges::end`</DocLink>
+    returns a sentinel indicating the end of a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/cbegin">`ranges::cbegin`</DocLink>
+    returns an iterator to the beginning of a read-only range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/cend">`ranges::cend`</DocLink>
+    returns a sentinel indicating the end of a read-only range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/rbegin">`ranges::rbegin`</DocLink>
+    returns a reverse iterator to a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/rend">`ranges::rend`</DocLink>
+    returns a reverse end iterator to a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/crbegin">`ranges::crbegin`</DocLink>
+    returns a reverse iterator to a read-only range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/crend">`ranges::crend`</DocLink>
+    returns a reverse end iterator to a read-only range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++26">
+    <DocLink slot="item" src="/cpp/ranges/reserve_hint">`ranges::reserve_hint`</DocLink>
+    returns an integer equal to the reserve hint given by a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/size">`ranges::size`</DocLink>
+    returns an integer equal to the size of a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/ssize">`ranges::ssize`</DocLink>
+    returns a signed integer equal to the size of a range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/empty">`ranges::empty`</DocLink>
+    checks whether a range is empty
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/data">`ranges::data`</DocLink>
+    obtains a pointer to the beginning of a contiguous range
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/cdata">`ranges::cdata`</DocLink>
+    obtains a pointer to the beginning of a read-only contiguous range
+    (customization point object)
+  </Desc>
+</DescList>
+
+### Range primitives
+
+## Defined in header <CppHeader name="ranges" />
+
+<DescList>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/iterator_t">`ranges::iterator_t` `ranges::const_iterator_t` `ranges::sentinel_t` `ranges::const_sentinel_t`</DocLink>
+    obtains iterator and sentinel types of a range
+    (alias template)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/range_size_t">`ranges::range_difference_t` `ranges::range_size_t` `ranges::range_value_t`</DocLink>
+    obtains size, difference, and value types of a range
+    (alias template)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/range_reference_t">`ranges::range_reference_t` `ranges::range_const_reference_t` `ranges::range_rvalue_reference_t` `ranges::range_common_reference_t`</DocLink>
+    obtains reference types of a range
+    (alias template)
+  </Desc>
+</DescList>
+
+### Dangling iterator handling
+
+## Defined in header <CppHeader name="ranges" />
+
+<DescList>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/dangling">`ranges::dangling`</DocLink>
+    a placeholder type indicating that an iterator or a `subrange` should not be returned since it would be dangling
+    (class)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/borrowed_iterator_t">`ranges::borrowed_iterator_t` `ranges::borrowed_subrange_t`</DocLink>
+    obtains iterator type or `subrange` type of a <DocLink src="/cpp/library/ranges/borrowed_range">`borrowed_range`</DocLink>
+    (alias template)
+  </Desc>
+</DescList>
+
+### Other utilities
+
+## Defined in header <CppHeader name="ranges" />
+
+<DescList>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/elements_of">`ranges::elements_of`</DocLink>
+    tags a range to be treated as a sequence rather than a single value
+    (class template)
+  </Desc>
+</DescList>
+
+### Range concepts
+
+## Defined in header <CppHeader name="ranges" />
+
+<DescList>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/range">`ranges::range`</DocLink>
+    specifies that a type is a range, that is, it provides a `begin` iterator and an `end` sentinel
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/borrowed_range">`ranges::borrowed_range`</DocLink>
+    specifies that a type is a <DocLink src="/cpp/library/ranges/range">`range`</DocLink> and iterators obtained from an expression of it can be safely returned without danger of dangling
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++26">
+    <DocLink slot="item" src="/cpp/ranges/approximately_sized_range">`ranges::approximately_sized_range`</DocLink>
+    specifies that a range can estimate its size in constant time
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/sized_range">`ranges::sized_range`</DocLink>
+    specifies that a range knows its size in constant time
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/view">`ranges::view`</DocLink>
+    specifies that a range is a view, that is, it has constant time copy/move/assignment
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/input_range">`ranges::input_range`</DocLink>
+    specifies a range whose iterator type satisfies <DocLink src="/cpp/library/iterator/input_iterator">`input_iterator`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/output_range">`ranges::output_range`</DocLink>
+    specifies a range whose iterator type satisfies <DocLink src="/cpp/library/iterator/output_iterator">`output_iterator`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/forward_range">`ranges::forward_range`</DocLink>
+    specifies a range whose iterator type satisfies <DocLink src="/cpp/library/iterator/forward_iterator">`forward_iterator`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/bidirectional_range">`ranges::bidirectional_range`</DocLink>
+    specifies a range whose iterator type satisfies <DocLink src="/cpp/library/iterator/bidirectional_iterator">`bidirectional_iterator`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/random_access_range">`ranges::random_access_range`</DocLink>
+    specifies a range whose iterator type satisfies <DocLink src="/cpp/library/iterator/random_access_iterator">`random_access_iterator`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/contiguous_range">`ranges::contiguous_range`</DocLink>
+    specifies a range whose iterator type satisfies <DocLink src="/cpp/library/iterator/contiguous_iterator">`contiguous_iterator`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/common_range">`ranges::common_range`</DocLink>
+    specifies that a range has identical iterator and sentinel types
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/viewable_range">`ranges::viewable_range`</DocLink>
+    specifies the requirements for a <DocLink src="/cpp/library/ranges/range">`range`</DocLink> to be safely convertible to a <DocLink src="/cpp/library/ranges/view">`view`</DocLink>
+    (concept)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/constant_range">`ranges::constant_range`</DocLink>
+    specifies that a range has read-only elements
+    (concept)
+  </Desc>
+</DescList>
+
+### Range conversions
+
+## Defined in header <CppHeader name="ranges" />
+
+<DescList>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/to">`ranges::to`</DocLink>
+    constructs a new non-view object from an input range
+    (function template)
+  </Desc>
+</DescList>
+
+### Views
+
+## Defined in header <CppHeader name="ranges" />
+
+<DescList>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/view_interface">`ranges::view_interface`</DocLink>
+    helper class template for defining a <DocLink src="/cpp/library/ranges/view">`view`</DocLink>, using the <DocLink src="/cpp/language/crtp">curiously recurring template pattern</DocLink>
+    (class template)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/subrange">`ranges::subrange`</DocLink>
+    combines an iterator-sentinel pair into a <DocLink src="/cpp/library/ranges/view">`view`</DocLink>
+    (class template)
+  </Desc>
+</DescList>
+
+### Range factories
+
+## Defined in header <CppHeader name="ranges" />
+## Defined in namespace `std::ranges`
+
+<DescList>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/empty_view">`ranges::empty_view` `views::empty`</DocLink>
+    an empty <DocLink src="/cpp/library/ranges/view">`view`</DocLink> with no elements
+    (class template) (variable template)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/single_view">`ranges::single_view` `views::single`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that contains a single element of a specified value
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/iota_view">`ranges::iota_view` `views::iota`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of a sequence generated by repeatedly incrementing an initial value
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/repeat_view">`ranges::repeat_view` `views::repeat`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of a generated sequence by repeatedly producing the same value
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/basic_istream_view">`ranges::basic_istream_view` `views::istream`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of the elements obtained by successive application of `operator>>` on the associated input stream
+    (class template) (customization point object)
+  </Desc>
+</DescList>
+
+### Range adaptors
+
+## Defined in header <CppHeader name="ranges" />
+## Defined in namespace `std::ranges`
+
+<DescList>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/range_adaptor_closure">`ranges::range_adaptor_closure`</DocLink>
+    helper base class template for defining a range adaptor closure object
+    (class template)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/all_view">`views::all_t` `views::all`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that includes all elements of a <DocLink src="/cpp/library/ranges/range">`range`</DocLink>
+    (alias template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/ref_view">`ranges::ref_view`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of the elements of some other <DocLink src="/cpp/library/ranges/range">`range`</DocLink>
+    (class template)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/owning_view">`ranges::owning_view`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> with unique ownership of some <DocLink src="/cpp/library/ranges/range">`range`</DocLink>
+    (class template)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/as_rvalue_view">`ranges::as_rvalue_view` `views::as_rvalue`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of a sequence that casts each element to an rvalue
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/filter_view">`ranges::filter_view` `views::filter`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that consists of the elements of a <DocLink src="/cpp/library/ranges/range">`range`</DocLink> that satisfies a predicate
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/transform_view">`ranges::transform_view` `views::transform`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of a sequence that applies a transformation function to each element
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/take_view">`ranges::take_view` `views::take`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of the first N elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/take_while_view">`ranges::take_while_view` `views::take_while`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of the initial elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>, until the first element on which a predicate returns `false`
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/drop_view">`ranges::drop_view` `views::drop`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>, skipping the first N elements
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/drop_while_view">`ranges::drop_while_view` `views::drop_while`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of the elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>, skipping the initial subsequence of elements until the first element where the predicate returns `false`
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/join_view">`ranges::join_view` `views::join`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of the sequence obtained from flattening a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of <DocLink src="/cpp/library/ranges/range">`range`s</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/join_with_view">`ranges::join_with_view` `views::join_with`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of the sequence obtained from flattening a view of ranges, with the delimiter in between elements
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/lazy_split_view">`ranges::lazy_split_view` `views::lazy_split`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> over the subranges obtained from splitting another <DocLink src="/cpp/library/ranges/view">`view`</DocLink> using a delimiter
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/split_view">`ranges::split_view` `views::split`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> over the subranges obtained from splitting another <DocLink src="/cpp/library/ranges/view">`view`</DocLink> using a delimiter
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++26">
+    <DocLink slot="item" src="/cpp/library/ranges/concat_view">`ranges::concat_view` `views::concat`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of concatenation of the adapted views
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/ranges/view counted">`views::counted`</DocLink>
+    creates a subrange from an iterator and a count
+    (customization point object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/common_view">`ranges::common_view` `views::common`</DocLink>
+    converts a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> into a <DocLink src="/cpp/library/ranges/common_range">`common_range`</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/reverse_view">`ranges::reverse_view` `views::reverse`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that iterates over the elements of another bidirectional view in reverse order
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/as_const_view">`ranges::as_const_view` `views::as_const`</DocLink>
+    converts a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> into a <DocLink src="/cpp/library/ranges/constant_range">`constant_range`</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/elements_view">`ranges::elements_view` `views::elements`</DocLink>
+    takes a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of <DocLink src="/cpp/library/utility/tuple/tuple-like">`tuple-like`</DocLink> values and a number N and produces a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of N`th` element of each tuple
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/keys_view">`ranges::keys_view` `views::keys`</DocLink>
+    takes a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of pair-like values and produces a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of the first elements of each pair
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++20">
+    <DocLink slot="item" src="/cpp/library/ranges/values_view">`ranges::values_view` `views::values`</DocLink>
+    takes a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of pair-like values and produces a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> of the second elements of each pair
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/enumerate_view">`ranges::enumerate_view` `views::enumerate`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that maps each element of adapted sequence to a tuple of both the element's position and its value
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/zip_view">`ranges::zip_view` `views::zip`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of tuples of references to corresponding elements of the adapted views
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/zip_transform_view">`ranges::zip_transform_view` `views::zip_transform`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of results of application of a transformation function to corresponding elements of the adapted views
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/adjacent_view">`ranges::adjacent_view` `views::adjacent`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of tuples of references to adjacent elements of the adapted view
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/adjacent_transform_view">`ranges::adjacent_transform_view` `views::adjacent_transform`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of results of application of a transformation function to adjacent elements of the adapted view
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/chunk_view">`ranges::chunk_view` `views::chunk`</DocLink>
+    a range of <DocLink src="/cpp/library/ranges/view">`view`s</DocLink> that are `N`-sized non-overlapping successive chunks of the elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/slide_view">`ranges::slide_view` `views::slide`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> whose M`th` element is a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> over the M`th` through (M + N - 1)`th` elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/chunk_by_view">`ranges::chunk_by_view` `views::chunk_by`</DocLink>
+    splits the <DocLink src="/cpp/library/ranges/view">`view`</DocLink> into subranges between each pair of adjacent elements for which the given predicate returns `false`
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/stride_view">`ranges::stride_view` `views::stride`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of elements of another <DocLink src="/cpp/library/ranges/view">`view`</DocLink>, advancing over N elements at a time
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/cartesian_product_view">`ranges::cartesian_product_view` `views::cartesian_product`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> consisting of tuples of results calculated by the n-ary cartesian product of the adapted views
+    (class template) (customization point object)
+  </Desc>
+  <Desc autorevSince="C++26">
+    <DocLink slot="item" src="/cpp/ranges/cache_latest_view">`ranges::cache_latest_view` `views::cache_latest`</DocLink>
+    a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that caches the last-accessed element of its underlying sequence
+    (class template) (range adaptor object)
+  </Desc>
+  <Desc autorevSince="C++26">
+    <DocLink slot="item" src="/cpp/ranges/to_input_view">`ranges::to_input_view` `views::to_input`</DocLink>
+    converts a <DocLink src="/cpp/library/ranges/view">`view`</DocLink> into a range that is <DocLink src="/cpp/library/ranges/input_range">`input_range`</DocLink>-only and non-<DocLink src="/cpp/library/ranges/common_range">`common_range`</DocLink>
+    (class template) (range adaptor object)
+  </Desc>
+</DescList>
+
+### Range generators <Revision since="C++23">(since C++23)</Revision>
+
+## Defined in header <CppHeader name="generator" />
+## Defined in namespace `std`
+
+<DescList>
+  <Desc autorevSince="C++23">
+    <DocLink slot="item" src="/cpp/library/ranges/generator">`generator`</DocLink>
+    A <DocLink src="/cpp/library/ranges/view">`view`</DocLink> that represents synchronous <DocLink src="/cpp/language/functions/coroutines">coroutine</DocLink> generator
+    (class template)
+  </Desc>
+</DescList>
+
+### Helper items
+
+#### Range adaptor objects
+
+See <DocLink src="/cpp/library/named_req/RangeAdaptorObject">`RangeAdaptorObject`</DocLink> (RAO).
+
+#### Range adaptor closure objects
+
+See <DocLink src="/cpp/library/named_req/RangeAdaptorClosureObject">`RangeAdaptorClosureObject`</DocLink> (RACO).
+
+#### Customization point objects
+
+See <DocLink src="/cpp/library/standard_library/cpo">Customization point object</DocLink> (CPO).
+
+#### Assignable wrapper
+
+Some range adaptors wrap their elements or function objects with the <Revision until="C++23"><span><DocLink src="/cpp/library/ranges/copyable_wrapper">`*copyable-box*`</DocLink></span></Revision><Revision since="C++23"><span><DocLink src="/cpp/library/ranges/copyable_wrapper">`*movable-box*`</DocLink></span></Revision>. The wrapper augments the wrapped object with assignability when needed.
+
+#### Non-propagating cache
+
+Some range adaptors are specified in terms of an exposition-only class template <DocLink src="/cpp/library/ranges/non-propagating-cache">`*non-propagating-cache*`</DocLink>, which behaves almost like `std::optional<T>` (see description for differences).
+
+#### Conditionally-`const` type
+
+```cpp
+template< bool Const, class T >
+using /*maybe-const*/ = std::conditional_t<Const, const T, T>;
+```
+The alias template `/*maybe-const*/` is a shorthand used to conditionally apply a `const` qualifier to the type `T`.
+
+#### Integer-like type helper templates
+
+```cpp
+template< /*is-integer-like*/ T >
+using /*make-signed-like-t*/<T> = /* see description */;
+```
+(1)
+```cpp
+template< /*is-integer-like*/ T >
+using /*make-unsigned-like-t*/<T> = /* see description */;
+```
+(2)
+```cpp
+template< /*is-integer-like*/ T >
+/*make-unsigned-like-t*/<T> /*to-unsigned-like*/( T t )
+{
+    return static_cast</*make-unsigned-like-t*/<T>>(t);
+}
+```
+(3)
+
+1.  For an <DocLink src="/cpp/library/iterator/is-integer-like">integer-like type</DocLink> `T`:
+    *   If `T` is an integer type, `/*make-signed-like-t*/<T>` is `std::make_signed_t<T>`.
+    *   Otherwise, `/*make-signed-like-t*/<T>` is a corresponding unspecified signed-integer-like type of the same width as `T`.
+
+2.  For an integer-like type `T`:
+    *   If `T` is an integer type, `/*make-unsigned-like-t*/<T>` is `std::make_unsigned_t<T>`.
+    *   Otherwise, `/*make-signed-like-t*/<T>` is a corresponding unspecified unsigned-integer-like type of the same width as `T`.
+
+3.  Explicitly converts `t` to `/*make-unsigned-like-t*/<T>`.
+
+#### Customization point object helpers
+
+```cpp
+template< ranges::input_range R >
+constexpr auto& /*possibly-const-range*/(R& r) noexcept
+{
+    if constexpr (ranges::input_range<const R>)
+        return const_cast<const R&>(r);
+    else
+        return r;
+}
+```
+(1)
+```cpp
+template< class T >
+constexpr auto /*as-const-pointer*/( const T* p ) noexcept
+{
+    return p;
+}
+```
+(2)
+
+Some range access customization point objects are specified in terms of these exposition-only function templates.
+
+1.  `/*possibly-const-range*/` returns the const-qualified version of `r` if `const R` models <DocLink src="/cpp/library/ranges/input_range">`input_range`</DocLink>; otherwise, returns `r` without any casting.
+2.  `/*as-const-pointer*/` returns a pointer to object of constant type.
+
+#### Range adaptor helpers
+
+```cpp
+template< class F, class Tuple >
+constexpr auto /*tuple-transform*/( F&& f, Tuple&& tuple )
+{
+    return std::apply([]<class... Ts>(Ts&&... args)
+    {
+        return std::tuple<std::invoke_result_t<F&, Ts>...>
+            (std::invoke(f, std::forward<Ts>(args))...);
+    }, std::forward<Tuple>(tuple));
+}
+```
+(1)
+```cpp
+template< class F, class Tuple >
+constexpr void /*tuple-for-each*/( F&& f, Tuple&& tuple )
+{
+    std::apply([]<class... Ts>(Ts&&... args)
+    {
+        (static_cast<void>(std::invoke(f, std::forward<Ts>(args))), ...);
+    }, std::forward<Tuple>(tuple));
+}
+```
+(2)
+```cpp
+template< class T >
+constexpr T& /*as-lvalue*/( T&& t )
+{
+    return static_cast<T&>(t);
+}
+```
+(3)
+
+Some range adaptors are specified in terms of these exposition-only function templates.
+
+1.  `/*tuple-transform*/` returns a new tuple constructed by applying `f` to each element of `tuple`.
+2.  `/*tuple-for-each*/` applies `f` to each element of `tuple` and returns nothing.
+3.  `/*as-lvalue*/` forwards rvalue `t` as lvalue.
+
+#### Helper concepts
+
+Following exposition-only concepts are used for several types, but they are not parts of the interface of standard library.
+
+```cpp
+template< class R >
+concept /*simple-view*/ =
+    ranges::view<R> && ranges::range<const R> &&
+    std::same_as<ranges::iterator_t<R>, ranges::iterator_t<const R>> &&
+    std::same_as<ranges::sentinel_t<R>, ranges::sentinel_t<const R>>;
+```
+(1)
+```cpp
+template< class I >
+concept /*has-arrow*/ =
+    ranges::input_iterator<I> &&
+    (std::is_pointer_v<I> || requires(const I i) { i.operator->(); });
+```
+(2)
+```cpp
+template< class T, class U >
+concept /*different-from*/ =
+    !std::same_as<std::remove_cvref_t<T>, std::remove_cvref_t<U>>;
+```
+(3)
+```cpp
+template< class R >
+concept /*range-with-movable-references*/ =
+    ranges::input_range<R> &&
+    std::move_constructible<ranges::range_reference_t<R>> &&
+    std::move_constructible<ranges::range_rvalue_reference_t<R>>;
+```
+(4)
+```cpp
+template< bool C, class... Views >
+concept /*all-random-access*/ =
+    (ranges::random_access_range
+    <std::conditional_t<C, const Views, Views>> && ...);
+```
+(5)
+```cpp
+template< bool C, class... Views >
+concept /*all-bidirectional*/ =
+    (ranges::bidirectional_range
+    <std::conditional_t<C, const Views, Views>> && ...);
+```
+(6)
+```cpp
+template< bool C, class... Views >
+concept /*all-forward*/ =
+    (ranges::forward_range
+    <std::conditional_t<C, const Views, Views>> && ...);
+```
+(7)
+
+### Notes
+
+| Feature-test macro | Value | Std | Feature |
+| :----------------- | :---- | :-- | :------ |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_generator`</DocLink> | `202207L` | <Revision since="C++23" /> | `std::generator` – synchronous coroutine generator for ranges |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges`</DocLink> | `201911L` | <Revision since="C++20" /> | Ranges library and <DocLink src="/cpp/library/algorithm/ranges">constrained algorithms</DocLink> |
+| | `202106L` | <Revision since="C++23" /> (DR20) | Non-<DocLink src="/cpp/library/concepts/default_initializable">default-initializable</DocLink> <DocLink src="/cpp/library/ranges/view">views</DocLink> |
+| | `202110L` | <Revision since="C++23" /> (DR20) | <DocLink src="/cpp/library/ranges/view">Views</DocLink> with <DocLink src="/cpp/library/ranges/owning_view">ownership</DocLink> |
+| | `202202L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/range_adaptor_closure">`ranges::range_adaptor_closure`</DocLink> |
+| | `202207L` | <Revision since="C++23" /> | Relaxing [range adaptors](#Range_adaptors) to allow for move-only types |
+| | `202211L` | <Revision since="C++23" /> | Removing "poison pills" <WG21PaperLink paper="P2602" /> overloads in <DocLink src="/cpp/library/ranges/begin">`ranges::begin`</DocLink> etc |
+| | `202302L` | <Revision since="C++23" /> | Relaxing ranges to allow certain projections |
+| | `202406L` | <Revision since="C++26" /> (DR20) | Removing the common reference requirement from the indirectly invocable concepts |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_as_const`</DocLink> | `202207L` | <Revision since="C++23" /> | `std::const_iterator`, <DocLink src="/cpp/library/ranges/as_const_view">`ranges::as_const_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_as_rvalue`</DocLink> | `202207L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/as_rvalue_view">`ranges::as_rvalue_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_cache_latest`</DocLink> | `202411L` | <Revision since="C++26" /> | `ranges::cache_latest_view` |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_cartesian_product`</DocLink> | `202207L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/cartesian_product_view">`ranges::cartesian_product_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_chunk`</DocLink> | `202202L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/chunk_view">`ranges::chunk_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_chunk_by`</DocLink> | `202202L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/chunk_by_view">`ranges::chunk_by_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_concat`</DocLink> | `202403L` | <Revision since="C++26" /> | <DocLink src="/cpp/library/ranges/concat_view">`ranges::concat_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_enumerate`</DocLink> | `202302L` | <Revision since="C++23" /> | `ranges::enumerate_view` |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_join_with`</DocLink> | `202202L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/join_with_view">`ranges::join_with_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_repeat`</DocLink> | `202207L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/repeat_view">`ranges::repeat_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_reserve_hint`</DocLink> | `202502L` | <Revision since="C++26" /> | `ranges::reserve_hint` and `ranges::approximately_sized_range` |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_slide`</DocLink> | `202202L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/slide_view">`ranges::slide_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_stride`</DocLink> | `202207L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/stride_view">`ranges::stride_view`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_to_container`</DocLink> | `202202L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/to">`ranges::to`</DocLink> |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_to_input`</DocLink> | `202502L` | <Revision since="C++26" /> | `ranges::to_input_view` |
+| <DocLink src="/cpp/experimental/feature_test">`__cpp_lib_ranges_zip`</DocLink> | `202110L` | <Revision since="C++23" /> | <DocLink src="/cpp/library/ranges/zip_view">`ranges::zip_view`</DocLink>,<br /><DocLink src="/cpp/library/ranges/zip_transform_view">`ranges::zip_transform_view`</DocLink>,<br /><DocLink src="/cpp/library/ranges/adjacent_view">`ranges::adjacent_view`</DocLink>,<br /><DocLink src="/cpp/library/ranges/adjacent_transform_view">`ranges::adjacent_transform_view`</DocLink> |
+
+### Example
+
+```cpp
+#include <iostream>
+#include <ranges>
+
+int main()
+{
+    auto const ints = {0, 1, 2, 3, 4, 5};
+    auto even = [](int i) { return 0 == i % 2; };
+    auto square = [](int i) { return i * i; };
+
+    // the "pipe" syntax of composing the views:
+    for (int i : ints | std::views::filter(even) | std::views::transform(square))
+        std::cout << i << ' ';
+
+    std::cout << '\n';
+
+    // a traditional "functional" composing syntax:
+    for (int i : std::views::transform(std::views::filter(ints, even), square))
+        std::cout << i << ' ';
+}
+```
+
+Output:
+
+```text
+0 4 16
+0 4 16
+```
+
+### Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="lwg" id={3509} std="C++20">
+    <Fragment slot="behavior-published">was unclear how range adaptor objects bound trailing arguments</Fragment>
+    <Fragment slot="correct-behavior">they are bound by value</Fragment>
+  </DR>
+  <DR kind="lwg" id={3948} std="C++23">
+    <Fragment slot="behavior-published">`*possibly-const-range*` and `*as-const-pointer*` were not declared `noexcept`</Fragment>
+    <Fragment slot="correct-behavior">declared `noexcept`</Fragment>
+  </DR>
+  <DR kind="lwg" id={4027} std="C++23">
+    <Fragment slot="behavior-published">`*possibly-const-range*` would not add const-qualification for ranges that has already modeled <DocLink src="/cpp/library/ranges/constant_range">`constant_range`</DocLink></Fragment>
+    <Fragment slot="correct-behavior">adds const-qualification for such ranges</Fragment>
+  </DR>
+  <DR kind="lwg" id={4112} std="C++20">
+    <Fragment slot="behavior-published">`*has-arrow*` did not require `i` to be const-qualified</Fragment>
+    <Fragment slot="correct-behavior">requires</Fragment>
+  </DR>
+</DRList>
+
+### See also
+
+*   <DocLink src="/cpp/library/iterator">Iterator library</DocLink>
+*   <DocLink src="/cpp/library/algorithm/ranges">Constrained algorithms</DocLink>
