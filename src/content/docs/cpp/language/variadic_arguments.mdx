@@ -1,0 +1,168 @@
+---
+title: Variadic arguments
+cppdoc:
+  keys: ["cpp.lang.variadic_arguments"]
+---
+
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { DR, DRList } from "@components/defect-report";
+import { Desc, DescList, DocLink } from '@components/index';
+import { autoRev, Revision, RevisionBlock } from "@components/revision";
+import Behavior from "@components/Behavior.astro";
+import Missing from "@components/Missing.astro";
+
+Allows a function to accept any number of extra arguments.
+
+A function is a variadic if the last parameter of its <DocLink src="/cpp/language/function">parameter list</DocLink> is an ellipsis (`...`).
+
+<RevisionBlock traits={[{ trait: "deprecated", since: "C++26" }]}>
+  The comma preceding the ellipsis can be omitted.
+</RevisionBlock>
+
+```cpp
+// the function declared as follows
+int printx(const char* fmt, ...);
+int printx(const char* fmt...); // same as above, but deprecated since C++26
+ 
+// may be called with one or more arguments:
+printx("hello world");
+printx("a=%d b=%d", a, b);
+ 
+int printy(..., const char* fmt); // error: ... can only be the last parameter
+int printz(...); // valid, but the arguments cannot be accessed portably
+```
+
+<RevisionBlock since="C++11">
+  This is different from a function <DocLink src="/cpp/language/parameter_pack">parameter pack</DocLink> expansion, which is indicated by an ellipsis that is a part of a parameter declarator, rather than an ellipsis being a parameter alone. Both parameter pack expansion and the “variadic” ellipsis may appear in the declaration of a function template, as in the case of <Missing>`std::is_function`</Missing>.
+</RevisionBlock>
+
+## Default argument promotions
+
+When a variadic function is called, after lvalue-to-rvalue, array-to-pointer, and function-to-pointer <DocLink src="/cpp/language/implicit_cast">conversions</DocLink>, each argument that is a part of the variable argument list undergoes additional conversions known as _default argument promotions_:
+
+<RevisionBlock since="C++11">
+  - <Missing>`std::nullptr_t`</Missing> is converted to `void*`.
+</RevisionBlock>
+
+- `float` arguments are converted to `double` as in <DocLink src="/cpp/language/implicit_cast">floating-point promotion</DocLink>.
+- `bool`, `char`, `short`, and unscoped enumerations are converted to `int` or wider integer types as in <DocLink src="/cpp/language/implicit_cast">integral promotion</DocLink>.
+
+<Revision until="C++11">Non-POD class types</Revision><Revision since="C++11">Scoped enumerations and class types with an eligible non-trivial copy constructor, an eligible non-trivial move constructor, or a non-trivial destructor</Revision> are conditionally-supported in potentially-evaluated calls with <Behavior kind="impl-def">implementation-defined</Behavior> semantics (these types are always supported in <DocLink src="/cpp/language/expressions">unevaluated calls</DocLink>).
+
+Because variadic parameters have the lowest rank for the purpose of <DocLink src="/cpp/language/overload_resolution">overload resolution</DocLink>, they are commonly used as the catch-all fallbacks in <DocLink src="/cpp/language/sfinae">SFINAE</DocLink>.
+
+Within the body of a function that uses variadic arguments, the values of these arguments may be accessed using the <Missing>\<cstdarg\> library facilities</Missing>:
+
+<DescList>
+  <Desc kind="function macro">
+    <Fragment slot="item">
+      <Missing>va_start</Missing>
+    </Fragment>
+    enables access to variadic function arguments
+  </Desc>
+  <Desc kind="function macro">
+    <Fragment slot="item">
+      <Missing>va_arg</Missing>
+    </Fragment>
+    accesses the next variadic function argument
+  </Desc>
+  <Desc kind="function macro" autorevSince="C++11">
+    <RevisionBlock slot="item" since="C++11" vertical noborder>
+      <Missing>va_copy</Missing>
+    </RevisionBlock>
+    makes a copy of the variadic function arguments
+  </Desc>
+  <Desc kind="function macro">
+    <Fragment slot="item">
+      <Missing>va_end</Missing>
+    </Fragment>
+    ends traversal of the variadic function arguments
+  </Desc>
+  <Desc kind="typedef">
+    <Fragment slot="item">
+      <Missing>va_list</Missing>
+    </Fragment>
+    holds the information needed by <Missing>`va_start`</Missing>, <Missing>`va_arg`</Missing><Revision since="C++11">, <Missing>`va_copy`</Missing></Revision>, and <Missing>`va_end`</Missing>
+  </Desc>
+</DescList>
+
+The behavior of the <Missing>`va_start`</Missing> macro is <Behavior kind="undef">undefined</Behavior> if the last parameter before the ellipsis has reference type, or has type that is not <DocLink src="/c/language/compatible_type">compatible</DocLink> with the type that results from default argument promotions.
+
+<RevisionBlock since="C++11">
+  If the a <DocLink src="/cpp/language/parameter_pack">pack expansion</DocLink> or an entity resulting from a <DocLink src="/cpp/language/lambda">lambda capture</DocLink> is used as the last parameter in <Missing>`va_start`</Missing>, the program is <Behavior kind="ifndr">ill-formed, no diagnostic required</Behavior>.
+</RevisionBlock>
+
+<div {...autoRev({ autorevSince: "C++11" })}>
+  ## Alternatives :badge[C++11]
+
+  - <DocLink src="/cpp/language/parameter_pack">Variadic templates</DocLink> can also be used to create functions that take variable number of arguments. They are often the better choice because they do not impose restrictions on the types of the arguments, do not perform integral and floating-point promotions, and are type safe.
+  - If all variable arguments share a common type, a <Missing>`std::initializer_list`</Missing> provides a convenient mechanism (albeit with a different syntax) for accessing variable arguments. In this case however the arguments cannot be modified since <Missing>`std::initializer_list`</Missing> can only provide a const pointer to its elements.
+</div>
+
+## Notes
+
+In the C programming language until C23, at least one named parameter must appear before the ellipsis parameter, so `R printz(...);` is not valid until C23. In C++, this form is allowed even though the arguments passed to such function are not accessible, and is commonly used as the fallback overload in <DocLink src="/cpp/language/sfinae">SFINAE</DocLink>, exploiting the lowest priority of the ellipsis conversion in <DocLink src="/cpp/language/overload_resolution">overload resolution</DocLink>.
+
+This syntax for variadic arguments was introduced in 1983 C++ without the comma before the ellipsis. When C89 adopted function prototypes from C++, it replaced the syntax with one requiring the comma. For compatibility, C++98 accepts both C++-style `f(int n...)` and `C-style f(int n, ...)`. The original C++-style grammar is deprecated since C++26.
+
+<RevisionBlock since="C++20" vertical>
+  The comma can be used in abbreviated function templates to make the ellipsis signify a variadic function instead of a variadic template:
+
+  ```cpp
+  void f1(auto...);   // same as template<class... Ts> void f3(Ts...)
+  void f2(auto, ...); // same as template<class T> void f3(T, ...)
+  ```
+</RevisionBlock>
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="cwg" id={506} std="C++98">
+    <Fragment slot="behavior-published">
+      passing non-POD class arguments to an ellipsis resulted in undefined behavior
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      passing such arguments is conditionally-supported with implementation-defined semantics
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={634} std="C++98">
+    <Fragment slot="behavior-published">
+      conditionally-supported class types made some SFINAE idioms not work
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      always supported if unevaluated
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2247} std="C++11">
+    <Fragment slot="behavior-published">
+      no restriction on passing parameter pack or lambda capture to `va_start`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      made ill-formed, no diagnostic required
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2347} std="C++11">
+    <Fragment slot="behavior-published">
+      it was unclear whether scoped enumerations passed to an ellipsis are subject to default argument promotions
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      passing scoped enumerations is conditionally-supported with implementation-defined semantics
+    </Fragment>
+  </DR>
+</DRList>
+
+## See also
+
+<DescList>
+  <Desc>
+    <DocLink slot="item" src="/c/language/variadic"> C documentation</DocLink> for <span> **Variadic arguments** </span>
+  </Desc>
+  <Desc>
+    <DocLink slot="item" src="/c/language/conversion"> C documentation</DocLink> for <span> **Implicit conversions** </span>
+  </Desc>
+</DescList>
