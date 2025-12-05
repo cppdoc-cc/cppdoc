@@ -6,6 +6,8 @@ import starlightUtils from "@lorenzo_lewis/starlight-utils";
 import starlightAutoSidebar from "starlight-auto-sidebar";
 import starlightHeadingBadges from "starlight-heading-badges";
 
+import { pluginCxxMark } from "./src/plugins/expressive-code/cxx-mark";
+
 // https://astro.build/config
 export default defineConfig({
   site: process.env.CPPDOC_SITE,
@@ -61,6 +63,9 @@ export default defineConfig({
         }),
       ],
       customCss: ["./src/styles/custom.css"],
+      expressiveCode: {
+        plugins: [pluginCxxMark()],
+      },
     }),
   ],
 });
