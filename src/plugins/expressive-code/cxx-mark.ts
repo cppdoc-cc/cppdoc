@@ -33,7 +33,6 @@ export function pluginCxxMark(): ExpressiveCodePlugin {
                     color: "var(--cppdoc-color-cxx-mark-exposition)",
                     italic: true
                   })
-
                 )
                 line.editText(begin + 2, begin + 9, "")
               } else if (match.groups?.optional != undefined) {
