@@ -27,6 +27,8 @@ if (!OPENROUTER_API_KEY) {
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
+let slugMapCache: Map<string, string | null> | null = null;
+
 async function retry<T>(
   fn: () => Promise<T>,
   retries = 3,
@@ -93,6 +95,49 @@ async function fetchPageContent(
     url,
     innerText: title + "\n" + (contentElement as HTMLDivElement).innerText,
   };
+}
+
+async function loadSlugMap(): Promise<Map<string, string | null>> {
+  const mapPath = path.join(__dirname, "slug_map.json");
+  const data = await readFile(mapPath, "utf8");
+  const arr = JSON.parse(data) as Array<{
+    cppref: string;
+    cppdoc: string | null;
+  }>;
+  const map = new Map<string, string | null>();
+  for (const entry of arr) {
+    map.set(entry.cppref, entry.cppdoc);
+  }
+  return map;
+}
+
+function replaceDocLinks(
+  content: string,
+  slugMap: Map<string, string | null>
+): string {
+  const docLinkRegex = /<DocLink\s+([^>]*)>/g;
+  return content.replace(docLinkRegex, (match, attributes) => {
+    const srcMatch = attributes.match(/src\s*=\s*["']([^"']+)["']/);
+    if (!srcMatch) {
+      return match;
+    }
+    const src = srcMatch[1];
+    if (!src.startsWith("/")) {
+      return match;
+    }
+    const key = src.slice(1).replace(/\.html$/, "");
+    const mapped = slugMap.get(key);
+    let newSrc: string;
+    if (mapped === undefined) {
+      return match;
+    } else if (mapped === null) {
+      newSrc = `/not-migrated-url#${src}`;
+    } else {
+      newSrc = `/${mapped}`;
+    }
+    const newAttributes = attributes.replace(srcMatch[0], `src="${newSrc}"`);
+    return `<DocLink ${newAttributes}>`;
+  });
 }
 
 async function convertToMDX(
@@ -200,6 +245,9 @@ ${html}
     content = importStatements + content;
   }
 
+  // Replace DocLink src attributes based on slug_map.json
+  content = replaceDocLinks(content, slugMapCache!);
+
   // Verify content
   const normalElements = [
     "<div",
@@ -236,7 +284,11 @@ function getRelativeMDXPath(url: string): string {
     throw new Error(`Unable to parse path from URL: ${url}`);
   }
   const relative = match[1]; // "cpp/comments"
-  return `src/content/docs/${relative}.mdx`;
+  const mapped = slugMapCache!.get(relative);
+  if (mapped) {
+    return `src/content/docs/${mapped}.mdx`;
+  }
+  throw new Error(`No mapping found for cppreference path: ${relative}`);
 }
 
 function getRelativeHTMLPath(url: string): string {
@@ -255,13 +307,14 @@ function getLocalMDXPath(url: string): string {
 async function writeMDXFile(
   filePath: string,
   content: string,
-  title: string
+  title: string,
+  cpprefUrl: string
 ): Promise<void> {
   const dir = path.dirname(filePath);
   await fs.mkdir(dir, { recursive: true });
   const frontmatter = `---
 title: ${JSON.stringify(title)}
-description: Auto‑generated from cppreference
+cppref-url: ${cpprefUrl ? JSON.stringify(cpprefUrl) : "null"}
 ---\n\n`;
   await fs.writeFile(filePath, frontmatter + content, "utf8");
   console.log(`Written to ${filePath}`);
@@ -409,6 +462,8 @@ async function updateIssue(
 }
 
 async function main() {
+  slugMapCache = await loadSlugMap();
+
   console.log("Fetching issues with label", LABEL, "...");
   const { data: issues } = await octokit.issues.listForRepo({
     owner: REPO_OWNER,
@@ -444,7 +499,7 @@ async function main() {
 
       const filePath = getLocalMDXPath(url);
       console.log(`  Writing to ${filePath}`);
-      await writeMDXFile(filePath, mdx, title);
+      await writeMDXFile(filePath, mdx, title, url);
 
       console.log(`  Re-formatting...`);
       spawnSync(`npm`, ["run", "format"], {

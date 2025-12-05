@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..");
 
 interface EntryStatus {
-  entry: string;
+  entry: SlugMapItem;
   migrated: boolean;
   cpprefUrl: string;
   cppdocUrl: string;
@@ -35,9 +35,11 @@ async function isMigrated(entry: string): Promise<boolean> {
   return (await fileExists(mdxPath)) || (await fileExists(indexPath));
 }
 
-function generateUrls(entry: string): Omit<EntryStatus, "entry" | "migrated"> {
-  const cpprefUrl = `http://en.cppreference.com/w/${entry}.html`;
-  const cppdocUrl = `http://cppdoc.cc/${entry}`;
+function generateUrls(
+  entry: SlugMapItem
+): Omit<EntryStatus, "entry" | "migrated"> {
+  const cpprefUrl = `http://en.cppreference.com/w/${entry.cppref}.html`;
+  const cppdocUrl = `http://cppdoc.cc/${entry.cppdoc}`;
   const issueUrl = `https://github.com/cppdoc-cc/cppdoc/issues/new?title=${encodeURIComponent(cpprefUrl)}&labels=migrate-cppref-page`;
   return { cpprefUrl, cppdocUrl, issueUrl };
 }
@@ -47,18 +49,22 @@ function generateMarkdown(status: EntryStatus): string {
   if (migrated) {
     return `| ✅ | [cppref](${cpprefUrl}) | [cppdoc](${cppdocUrl}) | \`${entry}\` | `;
   } else {
-    return `| ❌ | [cppref](${cpprefUrl}) | [create](${issueUrl}) |  \`${entry}\` |`;
+    return `| ❌ | [cppref](${cpprefUrl}) | ${
+      entry.cppdoc ? `[create](${issueUrl})` : "N/A"
+    } |  \`${entry}\` |`;
   }
 }
 
-async function loadEntries(): Promise<string[]> {
-  const indexPath = path.join(__dirname, "cppref_index.json");
+interface SlugMapItem {
+  cppref: string;
+  cppdoc: string | null;
+}
+
+async function loadEntries(): Promise<SlugMapItem[]> {
+  const indexPath = path.join(__dirname, "slug_map.json");
   const content = await fs.readFile(indexPath, "utf-8");
-  const entries = JSON.parse(content) as string[];
-  // Ensure entries are strings and filter out any empty
-  return entries.filter(
-    (e): e is string => typeof e === "string" && e.length > 0
-  );
+  const entries = JSON.parse(content) as SlugMapItem[];
+  return entries;
 }
 
 async function main() {
@@ -68,7 +74,7 @@ async function main() {
 
   const statuses: EntryStatus[] = [];
   for (const entry of entries) {
-    const migrated = await isMigrated(entry);
+    const migrated = entry.cppdoc ? await isMigrated(entry.cppdoc) : false;
     const urls = generateUrls(entry);
     statuses.push({ entry, migrated, ...urls });
     if (statuses.length % 100 === 0) {
