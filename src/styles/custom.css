@@ -17,6 +17,9 @@
   --cppdoc-color-ill-formed: var(--sl-color-red);
   --cppdoc-color-ifndr: var(--sl-color-red);
 
+  --cppdoc-color-cxx-mark-exposition: #ff0000;
+  --cppdoc-color-cxx-mark-optional: var(--sl-color-green);
+
   --sl-sidebar-width: 22rem;
 }
 
