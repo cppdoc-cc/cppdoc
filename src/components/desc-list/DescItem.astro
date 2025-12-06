@@ -1,0 +1,29 @@
+---
+import { autoRev, type AutorevProps } from "@components/revision";
+
+interface Props extends AutorevProps {}
+---
+
+<div class="desc-item" {...autoRev(Astro.props)}>
+  <slot />
+</div>
+
+<style>
+  .desc-item {
+    margin: 0;
+    padding-top: calc(var(--sl-content-gap-y) * 0.35);
+    padding-bottom: calc(var(--sl-content-gap-y) * 0.35);
+  }
+
+  .desc-item:not(:first-of-type) {
+    border-top: 1px dashed var(--sl-color-gray-4);
+  }
+
+  .desc-item:first-of-type {
+    padding-top: 0;
+  }
+
+  .desc-item:last-of-type {
+    padding-bottom: 0;
+  }
+</style>

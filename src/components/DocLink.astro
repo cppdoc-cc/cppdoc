@@ -1,0 +1,31 @@
+---
+import { getLinkToKey } from "../lib/doc-index";
+
+interface Props {
+  src: string;
+}
+
+const { src } = Astro.props;
+const rawLink = await getLinkToKey(src);
+
+const missing = rawLink === undefined;
+const link = rawLink ?? "";
+---
+
+{
+  missing ? (
+    <span class="doc-link missing" title={`${src} (missing)`}>
+      <slot />
+    </span>
+  ) : (
+    <a class="doc-link" href={link} title={src}>
+      <slot />
+    </a>
+  )
+}
+
+<style>
+  .doc-link.missing {
+    color: var(--cppdoc-color-missing-link);
+  }
+</style>
