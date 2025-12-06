@@ -1,0 +1,75 @@
+---
+title: Migration Workflow
+sidebar:
+  order: 1
+---
+
+import { Aside, LinkCard } from "@astrojs/starlight/components";
+
+We're now in the process of migrating pages from [cppreference] to CppDoc. To start, check out our live-updated [migration progress document](https://github.com/cppdoc-cc/cppdoc/blob/migrate-progress/CPPREF_MIGRATE_PROGRESS.md) on GitHub. This document lists all pages on cppreference and their migration status. Choose a page that has not been migrated yet, and you could start migrating it. You could either migrate the page [manually](#migrate-a-page-manually) or [with the help of an AI agent](#migrate-a-page-with-the-help-of-an-ai-agent).
+
+[cppreference]: https://en.cppreference.com/index.html
+
+Here are pages that you may constantly find useful during migration.
+
+<LinkCard
+  title="Migration Content Guideline"
+  href="migration/guideline"
+  description="Guidelines for migrating content from cppreference to CppDoc."
+/>
+
+<LinkCard
+  title="Development Guideline"
+  href="./guide"
+  description="Detailed development guidelines for writing CppDoc contents."
+/>
+
+## Migrate a page manually
+
+Once you selected a cppreference page to migrate, check out the file [`slug_map.json`](https://github.com/cppdoc-cc/cppdoc/blob/main/migrate/slug_map.json), which provides a mapping from cppreference slugs to CppDoc slugs, to find the slug of the corresponding page in CppDoc. This file is rather large, you could use your browser's search function to locate the entry for the cppreference page you want to migrate.
+
+For example, if the cppreference page you want to migrate is `cpp/concepts/integral`, you could find the following entry in `slug_map.json` related to the page:
+
+```json
+{
+  "cppref": "cpp/concepts/integral",
+  "cppdoc": "cpp/library/concepts/integral"
+}
+```
+
+So the slug of the migrated CppDoc page should be `cpp/library/concepts/integral`. This is where you should create the new CppDoc page.
+
+<Aside type="tip">
+  Contact the community if either:
+  - You cannot find an entry in `slug_map.json` for your selected cppreference page.
+  - The entry in `slug_map.json` says the CppDoc slug is `null`.
+  - You think the CppDoc slug recorded in `slug_map.json` is not appropriate for some reasons.
+</Aside>
+
+After determining the CppDoc slug of the migrated page, you could create the page and start migrating page contents from cppreference to CppDoc. Please follow our documentation convention during migration.
+
+When everything is finished, [create a pull request](https://github.com/cppdoc-cc/cppdoc/compare) to submit your changes. The community will review your changes and provide feedback. If everything goes well, your changes will be merged and deployed to the live website immediately after merge.
+
+## Migrate a page with the help of an AI agent
+
+To make our life easier, we have an experimental AI agent that could help you migrate a page. Its usage is completely optional.
+
+The agent is embedded into the GitHub actions pipeline. It grabs a cppreference page you specified, try hard to rewrite it in CppDoc convention, and eventually creates a pull request. Once the pull request is opened, you and other community members could review it and make further changes on it.
+
+<Aside type="note">
+  AI agent is far from perfect and in most occassions its output must be changed further to meet our standards. The agent may also output complete garbage, in which case you have to either re-run the agent or migrate the page by hand.
+</Aside>
+
+<Aside type="tip">
+  AI agent works best when the size of the page is relatively small and similar pages have already been migrated before. If you're migrating a large page, or similar content on the page has not been migrated before, the quality of the agent output could drop dramastically. In such cases we recommend migrate the page by hand.
+</Aside>
+
+To start, select a cppreference page which has not been migrated in the [migration progress document](https://github.com/cppdoc-cc/cppdoc/blob/migrate-progress/CPPREF_MIGRATE_PROGRESS.md).
+
+Then click the "create" link in the "CppDoc Link" table column. This will take you to a pre-filled "new GitHub issue" page. The new issue's title is the URL to the cppreference page, and the new issue has an issue label `migrate-cppref-page`. After filling in any descriptive text for the new issue, click the "Create" button to create the issue.
+
+Creation of the new issue will trigger the execution of an GitHub Action workflow. The workflow will invoke the AI agent to migrate the page. After the agent finishes, it will automatically create a draft pull request with the migrated page. Review the migrated content, make any necessary changes, and mark the pull request ready when done. The community will review your changes and provide feedback. If everything goes well, your changes will be merged and deployed to the live website immediately after merge.
+
+<Aside type="tip">
+  If you cannot edit the pull request created by the agent, contact community members for acquiring write access to the CppDoc repository.
+</Aside>

@@ -10,6 +10,7 @@ import starlightHeadingBadges from "starlight-heading-badges";
 export default defineConfig({
   site: process.env.CPPDOC_SITE,
   base: process.env.CPPDOC_BASE,
+  trailingSlash: "never",
   integrations: [
     starlight({
       title: "CppDoc",
