@@ -12,14 +12,12 @@ export function pluginCxxMark(): ExpressiveCodePlugin {
         context.codeBlock.getLines().forEach((line) => {
           if (context.codeBlock.meta.includes("cxx-mark")) {
             const matches = [
-              ...line.text.matchAll(
-                /\/\*\$(((?<syntax>s)|(?<exposition>expos)):[^\*]+|(?<optional>opt))\*\//g
-              ),
+              ...line.text.matchAll(/\/\*\$(.+?)\*\//g),
             ].reverse();
             matches.forEach((match) => {
               const begin = match.index;
               const end = begin + match[0].length;
-              if (match.groups?.syntax != undefined) {
+              if (match[1].startsWith("s:")) {
                 line.addAnnotation(
                   new InlineStyleAnnotation({
                     inlineRange: {
@@ -31,7 +29,7 @@ export function pluginCxxMark(): ExpressiveCodePlugin {
                   })
                 );
                 line.editText(begin, end, match[0].slice(5, -2));
-              } else if (match.groups?.exposition != undefined) {
+              } else if (match[1].startsWith("expos:")) {
                 line.addAnnotation(
                   new InlineStyleAnnotation({
                     inlineRange: {
@@ -43,7 +41,7 @@ export function pluginCxxMark(): ExpressiveCodePlugin {
                   })
                 );
                 line.editText(begin + 2, begin + 9, "");
-              } else if (match.groups?.optional != undefined) {
+              } else if (match[1] == "opt") {
                 const new_str = "(optional)";
                 line.editText(begin, end, new_str);
                 line.addAnnotation(
