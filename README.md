@@ -36,6 +36,8 @@ You can report a bug or request a new feature by [opening a new GitHub issue](ht
 
 If you have made some changes, you can [open a new GitHub pull request](https://github.com/cppdoc-cc/cppdoc/compare).
 
+For more information on contributing to CppDoc, please refer to our [contribution guide](./CONTRIBUTING.md).
+
 ## License
 
 The content of the documentation is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International license](./LICENSE.CC-BY-SA-4.0) and the [GNU Free Documentation License](./LICENSE.GFDL). The underlying source code used to process, format, and display that content is licensed under the [MIT license](./LICENSE.MIT).

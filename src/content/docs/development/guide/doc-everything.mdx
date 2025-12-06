@@ -271,33 +271,12 @@ The `ParamDocList` component can be used to document function or template parame
 
 ## Links
 
-### Link by Doc Keys
+### Link to Another CppDoc Page
 
-Each page could optionally associate itself with zero or more _doc keys_ through its frontmatter.
-
-```mdx {4}
----
-title: std::move
-cppdoc:
-  keys: ["cpp.library.utilities.move"]
-  cppdoc:
-    lang: C++
-    since: C++11
----
-```
-
-<Aside type="caution">
-  While a page can have multiple doc keys, each unique doc key can only be associated to at most one page.
-</Aside>
-
-The `DocLink` component allows you to render an inline link to the page associated with the specified doc key. You can also specify the destination page by its absolute path.
+The `DocLink` component allows you to render an inline link to a specified CppDoc page. The path to the target page must be an absolute path.
 
 ```mdx
 import DocLink from "@components/DocLink.astro";
-
-Check out
-<DocLink src="cpp.library.utilities.move">this page</DocLink>
-for more information about `std::move`.
 
 Check out
 <DocLink src="/cpp/library/utilities/move">this page</DocLink>
@@ -305,13 +284,11 @@ for more information about `std::move`.
 ```
 
 <Card title="Preview">
-  Check out <DocLink src="cpp.library.utilities.move">this page</DocLink> for detailed information about `std::move`.
-
   Check out <DocLink src="/cpp/library/utilities/move">this page</DocLink> for more information about `std::move`.
 </Card>
 
 <Aside type="tip">
-  If the specified doc key does not exist yet, the `DocLink` component will render as a plain text span without a link.
+  If the specified page does not exist yet, the `DocLink` component will render as a plain text span without a link.
 </Aside>
 
 ### Link to Header
