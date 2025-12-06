@@ -418,6 +418,7 @@ ${imageUrl ? `![Text Diff](${imageUrl})` : "(No text diff image)"}
     body: prBody,
     head: branchName,
     base: "main",
+    draft: true,
   });
 
   console.log(`Created PR #${pr.number}`);
