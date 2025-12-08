@@ -29,7 +29,7 @@ export function pluginCxxMark(): ExpressiveCodePlugin {
                   })
                 );
                 line.editText(begin, end, match[0].slice(5, -2));
-              } else if (match[1].startsWith("expos:")) {
+              } else if (match[1].startsWith("e:")) {
                 line.addAnnotation(
                   new InlineStyleAnnotation({
                     inlineRange: {
@@ -40,15 +40,15 @@ export function pluginCxxMark(): ExpressiveCodePlugin {
                     italic: true,
                   })
                 );
-                line.editText(begin + 2, begin + 9, "");
+                line.editText(begin + 2, begin + 5, "");
               } else if (match[1] == "opt") {
-                const new_str = "(optional)";
-                line.editText(begin, end, new_str);
+                const newStr = "(optional)";
+                line.editText(begin, end, newStr);
                 line.addAnnotation(
                   new InlineStyleAnnotation({
                     inlineRange: {
                       columnStart: begin,
-                      columnEnd: begin + new_str.length,
+                      columnEnd: begin + newStr.length,
                     },
                     color: "var(--cppdoc-color-cxx-mark-optional)",
                   })
