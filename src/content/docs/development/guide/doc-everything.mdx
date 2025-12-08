@@ -139,6 +139,75 @@ import declDocExample3 from "@src/assets/examples/development/guide/decl-doc-3.m
   Don't forget the `autorevSince` attribute on the `DeclDoc` component! Presence of this attribute allows [autorev](./revision#autorev) to automatically show and hide the `DeclDoc` component according to the user-selected revision.
 </Aside>
 
+## Code block inline markers
+
+Special comments can be embedded within Markdown code blocks to specify part of codes has special meanings. Enable this feature by adding `cxx-mark` after the language name of code block's opening fence:
+
+import cxxMarkExample1 from "@src/assets/examples/development/guide/cxx-mark-1.mdx?raw";
+
+<Code code={cxxMarkExample1} lang="mdx" />
+
+<Card title="Preview">
+  ```cpp cxx-mark
+  // syntax of for statement
+  /*$s:attr*//*$opt*/ for ( /*$s:init-statement*/ /*$s:condition*//*$opt*/ ; /*$s:expression*//*$opt*/ ) /*$s:statement*/
+
+  // exposition only alias template of conditionally const type
+  template< bool Const, class T >
+  using /*$e:maybe-const*/ = std::conditional_t<Const, const T, T>;
+  ```
+</Card>
+
+Three kinds of markers are supported:
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```
+    /*$s:something*/
+    ```
+  </Decl>
+
+  Marks part of code to be a syntax notation.
+
+  Rendered as:
+
+  ```cpp cxx-mark
+  /*$s:something*/
+  ```
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```
+    /*$e:something*/
+    ```
+  </Decl>
+
+  Marks part of code to be exposition only.
+
+  Rendered as:
+
+  ```cpp cxx-mark
+  /*$e:something*/
+  ```
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```
+    something/*$opt*/
+    ```
+  </Decl>
+
+  Mark the previous part of code (often a syntax notation) to be optional.
+
+  Rendered as:
+
+  ```cpp cxx-mark
+  something/*$opt*/
+  ```
+</DeclDoc>
+
 ## Description list
 
 ### Basic Usage
