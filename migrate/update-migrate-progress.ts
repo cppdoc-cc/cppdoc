@@ -51,7 +51,7 @@ function generateMarkdown(status: EntryStatus): string {
   } else {
     return `| ❌ | [cppref](${cpprefUrl}) | ${
       entry.cppdoc ? `[create](${issueUrl})` : "N/A"
-    } |  \`${entry}\` |`;
+    } |  \`${entry.cppdoc ?? entry.cppref + "(cppref)"}\` |`;
   }
 }
 
