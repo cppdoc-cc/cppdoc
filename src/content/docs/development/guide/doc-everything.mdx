@@ -13,6 +13,7 @@ import DocLink from "@components/DocLink.astro";
 import { DR, DRList } from "@components/defect-report";
 import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
 import Missing from "@components/Missing.astro";
+import NamedReq from "@components/NamedReq.astro"
 import { ParamDoc, ParamDocList } from "@components/param-doc";
 import { RevisionBlock } from "@components/revision";
 
@@ -382,6 +383,40 @@ Entities in it can be used in a C++ program by including the header
 
 <Aside type="tip">
   If documentation for the specified header does not exist yet, the `CHeader` and the `CppHeader` component will render the header name as plain text without a link.
+</Aside>
+
+### Link to Named Requirement
+
+The `NamedReq` component renders an inline link to the documentation page of a named requirement.
+
+```mdx
+import NamedReq from "@components/NamedReq.astro";
+
+A <NamedReq name="FunctionObject" /> type is the type of an object
+that can be used on the left of the function call operator.
+```
+
+<Card title="Preview">
+  A <NamedReq name="FunctionObject" /> type is the type of an object
+  that can be used on the left of the function call operator.
+</Card>
+
+You can set the `bold` attribute to `true`, to make the requirement name appear in bold.
+
+```mdx
+import NamedReq from "@components/NamedReq.astro";
+
+A <NamedReq name="FunctionObject" bold /> type is the type of an object
+that can be used on the left of the function call operator.
+```
+
+<Card title="Preview">
+  A <NamedReq name="FunctionObject" bold /> type is the type of an object
+  that can be used on the left of the function call operator.
+</Card>
+
+<Aside type="tip">
+  If documentation for the specified named requirement does not exist yet, the `NamedReq` component will render the requirement name as plain text without a link.
 </Aside>
 
 ## Feature Test Macros
