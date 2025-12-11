@@ -288,6 +288,26 @@ import { CppHeader } from "@components/header";
 
 Base component for `CHeader` and `CppHeader`. Not used directly.
 
+### NamedReq
+
+The `NamedReq` component renders an inline link to a named requirement.
+
+#### Props
+
+- `name` (required): The name of the requirement.
+- `bold` (optional): If `true`, the text renders bold.
+- `displayName` (optional): Custom display text.
+- `nolink` (optional): If `true`, renders as plain text without a link.
+
+#### Usage
+
+
+import NamedReq from "@components/NamedReq.astro"
+
+A <NamedReq name="FunctionObject" /> type is the type of an object
+that can be used on the left of the function call operator.
+
+
 ## Feature Test Macros
 
 ### FeatureTestMacro
