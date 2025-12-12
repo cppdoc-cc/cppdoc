@@ -22116,6 +22116,142 @@
     "cppdoc": "c/library/header"
   },
   {
+    "cppref": "c/header/assert",
+    "cppdoc": "c/library/headers/assert"
+  },
+  {
+    "cppref": "c/header/complex",
+    "cppdoc": "c/library/headers/complex"
+  },
+  {
+    "cppref": "c/header/ctype",
+    "cppdoc": "c/library/headers/ctype"
+  },
+  {
+    "cppref": "c/header/errno",
+    "cppdoc": "c/library/headers/errno"
+  },
+  {
+    "cppref": "c/header/fenv",
+    "cppdoc": "c/library/headers/fenv"
+  },
+  {
+    "cppref": "c/header/float",
+    "cppdoc": "c/library/headers/float"
+  },
+  {
+    "cppref": "c/header/inttypes",
+    "cppdoc": "c/library/headers/inttypes"
+  },
+  {
+    "cppref": "c/header/iso646",
+    "cppdoc": "c/library/headers/iso646"
+  },
+  {
+    "cppref": "c/header/limits",
+    "cppdoc": "c/library/headers/limits"
+  },
+  {
+    "cppref": "c/header/locale",
+    "cppdoc": "c/library/headers/locale"
+  },
+  {
+    "cppref": "c/header/math",
+    "cppdoc": "c/library/headers/math"
+  },
+  {
+    "cppref": "c/header/setjmp",
+    "cppdoc": "c/library/headers/setjmp"
+  },
+  {
+    "cppref": "c/header/signal",
+    "cppdoc": "c/library/headers/signal"
+  },
+  {
+    "cppref": "c/header/stdalign",
+    "cppdoc": "c/library/headers/stdalign"
+  },
+  {
+    "cppref": "c/header/stdarg",
+    "cppdoc": "c/library/headers/stdarg"
+  },
+  {
+    "cppref": "c/header/stdatomic",
+    "cppdoc": "c/library/headers/stdatomic"
+  },
+  {
+    "cppref": "c/header/stdbit",
+    "cppdoc": "c/library/headers/stdbit"
+  },
+  {
+    "cppref": "c/header/stdbool",
+    "cppdoc": "c/library/headers/stdbool"
+  },
+  {
+    "cppref": "c/header/stdckdint",
+    "cppdoc": "c/library/headers/stdckdint"
+  },
+  {
+    "cppref": "c/header/stddef",
+    "cppdoc": "c/library/headers/stddef"
+  },
+  {
+    "cppref": "c/header/stdint",
+    "cppdoc": "c/library/headers/stdint"
+  },
+  {
+    "cppref": "c/header/stdio",
+    "cppdoc": "c/library/headers/stdio"
+  },
+  {
+    "cppref": "c/header/stdlib",
+    "cppdoc": "c/library/headers/stdlib"
+  },
+  {
+    "cppref": "c/header/stdmchar",
+    "cppdoc": "c/library/headers/stdmchar"
+  },
+  {
+    "cppref": "c/header/stdnoreturn",
+    "cppdoc": "c/library/headers/stdnoreturn"
+  },
+  {
+    "cppref": "c/header/string",
+    "cppdoc": "c/library/headers/string"
+  },
+  {
+    "cppref": "c/header/tgmath",
+    "cppdoc": "c/library/headers/tgmath"
+  },
+  {
+    "cppref": "c/header/math",
+    "cppdoc": "c/library/headers/math"
+  },
+  {
+    "cppref": "c/header/complex",
+    "cppdoc": "c/library/headers/complex"
+  },
+  {
+    "cppref": "c/header/threads",
+    "cppdoc": "c/library/headers/threads"
+  },
+  {
+    "cppref": "c/header/time",
+    "cppdoc": "c/library/headers/time"
+  },
+  {
+    "cppref": "c/header/uchar",
+    "cppdoc": "c/library/headers/uchar"
+  },
+  {
+    "cppref": "c/header/wchar",
+    "cppdoc": "c/library/headers/wchar"
+  },
+  {
+    "cppref": "c/header/wctype",
+    "cppdoc": "c/library/headers/wctype"
+  },
+  {
     "cppref": "c/locale",
     "cppdoc": "c/library/locale"
   },
