@@ -22224,14 +22224,6 @@
     "cppdoc": "c/library/headers/tgmath"
   },
   {
-    "cppref": "c/header/math",
-    "cppdoc": "c/library/headers/math"
-  },
-  {
-    "cppref": "c/header/complex",
-    "cppdoc": "c/library/headers/complex"
-  },
-  {
     "cppref": "c/header/threads",
     "cppdoc": "c/library/headers/threads"
   },
