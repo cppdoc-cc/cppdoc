@@ -1,6 +1,7 @@
 import Behavior from "@components/Behavior.astro";
 import { Decl, DeclDoc } from "@components/decl-doc";
 import { DescList, Desc } from "@components/desc-list";
+import NamedReq from "@components/NamedReq.astro";
 import { ParamDocList, ParamDoc } from "@components/param-doc";
 import DocLink from "@components/DocLink.astro";
 import { CHeader, CppHeader } from "@components/header";
@@ -20,6 +21,7 @@ export {
   DeclDoc,
   DescList,
   Desc,
+  NamedReq,
   ParamDocList,
   ParamDoc,
   DocLink,
