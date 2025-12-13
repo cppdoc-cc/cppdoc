@@ -3,13 +3,14 @@ import { getLinkToKey } from "../lib/doc-index";
 
 interface Props {
   src: string;
+  section?: string;
 }
 
-const { src } = Astro.props;
+const { src, section } = Astro.props;
 const rawLink = await getLinkToKey(src);
 
 const missing = rawLink === undefined;
-const link = rawLink ?? "";
+const link = rawLink ? rawLink + (section ? "#" + section : "") : "";
 ---
 
 {
