@@ -1,0 +1,38 @@
+---
+title: Migration Guidelines
+sidebar:
+  order: 2
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+This document gives guidelines to migrate content from cppreference to CppDoc.
+
+<Aside type="tip">
+  For a more detailed guideline about writing CppDoc contents, please check out the [development guideline](../guide).
+</Aside>
+
+<Aside type="note">
+  This document is a work in progress. Incomplete content is expected.
+</Aside>
+
+## Page Revisions
+
+If the entire page is associated with specific C/C++ standard revisions, make sure the revisions are specified in the `cppdoc.revision` frontmatter:
+
+```mdx
+---
+title: Page Title
+cppdoc:
+  revision:
+    lang: C++
+    since: C++11
+    until: C++20
+---
+```
+
+The `since` and `until` fields are both optional.
+
+## Cross References
+
+Cross references are links within a CppDoc page that point to another CppDoc page. Please make sure all cross references are established using the [`DocLink` component](../guide/doc-everything#link-to-another-cppdoc-page).
