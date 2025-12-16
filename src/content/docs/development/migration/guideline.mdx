@@ -5,11 +5,12 @@ sidebar:
 ---
 
 import { Aside } from "@astrojs/starlight/components";
+import DocLink from "@components/DocLink.astro"
 
 This document gives guidelines to migrate content from cppreference to CppDoc.
 
 <Aside type="tip">
-  For a more detailed guideline about writing CppDoc contents, please check out the [development guideline](../guide).
+  For a more detailed guideline about writing CppDoc contents, please check out the <DocLink src="/development/guide">development guideline</DocLink>.
 </Aside>
 
 <Aside type="note">
@@ -35,4 +36,4 @@ The `since` and `until` fields are both optional.
 
 ## Cross References
 
-Cross references are links within a CppDoc page that point to another CppDoc page. Please make sure all cross references are established using the [`DocLink` component](../guide/doc-everything#link-to-another-cppdoc-page).
+Cross references are links within a CppDoc page that point to another CppDoc page. Please make sure all cross references are established using the <DocLink src="/development/guide/doc-everything" section="link-to-another-cppdoc-page">`DocLink` component</DocLink>.
