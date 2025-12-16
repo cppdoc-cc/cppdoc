@@ -1,5 +1,5 @@
 ---
-import { getLinkToKey } from "../lib/doc-index";
+import { isLinkMissing, normalizeLink } from "../lib/doc-link";
 
 interface Props {
   src: string;
@@ -7,10 +7,9 @@ interface Props {
 }
 
 const { src, section } = Astro.props;
-const rawLink = await getLinkToKey(src);
 
-const missing = rawLink === undefined;
-const link = rawLink ? rawLink + (section ? "#" + section : "") : "";
+const missing = await isLinkMissing(src);
+const link = normalizeLink(src) + (section ? "#" + section : "");
 ---
 
 {
