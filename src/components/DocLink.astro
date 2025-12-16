@@ -2,23 +2,23 @@
 import { isLinkMissing, normalizeLink } from "../lib/doc-link";
 
 interface Props {
-  src: string;
+  dest: string;
   section?: string;
 }
 
-const { src, section } = Astro.props;
+const { dest, section } = Astro.props;
 
-const missing = await isLinkMissing(src);
-const link = normalizeLink(src) + (section ? "#" + section : "");
+const missing = await isLinkMissing(dest);
+const link = normalizeLink(dest) + (section ? "#" + section : "");
 ---
 
 {
   missing ? (
-    <span class="doc-link missing" title={`${src} (missing)`}>
+    <span class="doc-link missing" title={`${dest} (missing)`}>
       <slot />
     </span>
   ) : (
-    <a class="doc-link" href={link} title={src}>
+    <a class="doc-link" href={link} title={dest}>
       <slot />
     </a>
   )
