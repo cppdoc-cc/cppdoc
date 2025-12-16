@@ -9,12 +9,12 @@ interface Props {
 }
 
 const { name, bold, displayName, nolink } = Astro.props;
-const src = `/cpp/named_req/${name}`;
+const dest = `/cpp/named_req/${name}`;
 
 const text = displayName ?? name;
 
 const As = nolink ? Fragment : DocLink;
-const asProps = nolink ? {} : { src };
+const asProps = nolink ? {} : { dest };
 ---
 
 <As {...asProps}>
