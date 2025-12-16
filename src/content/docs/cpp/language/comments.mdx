@@ -31,7 +31,7 @@ Comments serve as a sort of in-code documentation. When inserted into a program,
   Often known as "C++-style" or "single-line" comments.
 </DeclDoc>
 
-All comments are removed from the program at <DocLink src="/cpp/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
+All comments are removed from the program at <DocLink dest="/cpp/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
 
 ## C-style
 
@@ -43,7 +43,7 @@ C++-style comments are usually used to comment single lines, however, multiple C
 
 ## Notes
 
-Because comments <DocLink src="/cpp/language/translation_phases">are removed</DocLink> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
+Because comments <DocLink dest="/cpp/language/translation_phases">are removed</DocLink> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
 
 Besides commenting out, other mechanisms used for source code exclusion are
 
