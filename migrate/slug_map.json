@@ -10116,6 +10116,10 @@
     "cppdoc": "cpp/library/utility/in_range"
   },
   {
+    "cppref": "cpp/utility/rtti",
+    "cppdoc": "cpp/library/utility/rtti"
+  },
+  {
     "cppref": "cpp/utility/program",
     "cppdoc": "cpp/library/utility/program"
   },
@@ -24500,6 +24504,22 @@
     "cppdoc": "cpp/language/keywords/override"
   },
   {
+    "cppref": "cpp/identifier_with_special_meaning/pre",
+    "cppdoc": "cpp/language/keywords/pre"
+  },
+  {
+    "cppref": "cpp/identifier_with_special_meaning/post",
+    "cppdoc": "cpp/language/keywords/post"
+  },
+  {
+    "cppref": "cpp/identifier_with_special_meaning/trivially_relocatable_if_eligible",
+    "cppdoc": "cpp/language/keywords/trivially_relocatable_if_eligible"
+  },
+  {
+    "cppref": "cpp/identifier_with_special_meaning/replaceable_if_eligible",
+    "cppdoc": "cpp/language/keywords/replaceable_if_eligible"
+  },
+  {
     "cppref": "cpp/identifier_with_special_meaning/module",
     "cppdoc": "cpp/language/keywords/module"
   },
@@ -24650,6 +24670,10 @@
   {
     "cppref": "cpp/language/modules",
     "cppdoc": "cpp/language/basic_concepts/modules"
+  },
+  {
+    "cppref": "cpp/language/contracts",
+    "cppdoc": "cpp/language/basic_concepts/contracts"
   },
   {
     "cppref": "cpp/language/copy_initialization",
