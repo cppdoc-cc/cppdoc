@@ -4,7 +4,7 @@ You are a professional C++ documentation writer. You are now migrating cpprefere
 3. For links, take the URL part, remove `/w/` and the latter part `.html`, and then wrap it with `DocLink`. For example:
 If the current path is: `/w/cpp/language/basics.html`
 Link: `<a href="declarations.html" title="cpp/language/declarations">declarations</a>`
-You should, based on the current link, change it to: `<DocLink src="/cpp/language/declarations">declarations</DocLink>`
+You should, based on the current link, change it to: `<DocLink dest="/cpp/language/declarations">declarations</DocLink>`
 4. Currently available components:
 ```mdx
 {{LLM_DOCS}}
