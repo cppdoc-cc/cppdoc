@@ -38,16 +38,16 @@ The definition of a class template must be visible at the point of implicit inst
 
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    template <parameter-list> requires-clause(optional)</span> declaration
+    ```cpp cxx-mark
+    template </*$s:parameter-list*/> /*$s:requires-clause*//*$opt*//*$s:declaration*/
     ```
   </Decl>
 </DeclDoc>
 
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    export template <parameter-list> declaration
+    ```cpp cxx-mark
+    export template </*$s:parameter-list*/> /*$s:requires-clause*//*$opt*//*$s:declaration*/
     ```
   </Decl>
   <Revision until="C++11"></Revision>
@@ -55,8 +55,8 @@ The definition of a class template must be visible at the point of implicit inst
 
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    template <parameter-list> concept concept-name = constraint-expression;
+    ```cpp cxx-mark
+    template </*$s:parameter-list*/> concept /*$s:concept-name*/ = /*$s:constraint-expression*/;
     ```
   </Decl>
   <Revision since="C++20"></Revision>
@@ -65,18 +65,15 @@ The definition of a class template must be visible at the point of implicit inst
 
 <ParamDocList>
   <ParamDoc name="parameter-list">
-    a non-empty comma-separated list of the template parameters, each of which is either constant parameter, a type parameter, a template parameter, or a parameter pack of any of those(since C++11).
+    a non-empty comma-separated list of the <DocLink dest="/cpp/language/template_parameters">template parameters</DocLink>, each of which is either <DocLink dest="/cpp/language/template_parameters#Constant_template_parameters">constant parameter</DocLink>, a <DocLink dest="/cpp/language/template_parameters#Type_template_parameters">type parameter</DocLink>, a <DocLink dest="/cpp/language/template_parameters#Template_template_parameters">template parameter</DocLink><Revision since="C++11">, or a <DocLink dest="/cpp/language/parameter_pack">parameter pack</DocLink> of any of those</Revision>.
   </ParamDoc>
   <ParamDoc name="requires-clause">
-    (since C++20) a requires-clause that specifies the constraints on the template arguments.
+    <Revision since="C++20">a <DocLink dest="/cpp/language/constraints#requires-clauses">requires-clause</DocLink> that specifies the <DocLink dest="/cpp/language/constraints">constraints</DocLink> on the template arguments.</Revision>
   </ParamDoc>
   <ParamDoc name="declaration">
-    declaration of a class (including struct and union), a member class or member enumeration type, a function or member function, a static data member at namespace scope, a variable or static data member at class scope(since C++14), or an alias template(since C++11). It may also define a template specialization.
+    declaration of a <DocLink dest="/cpp/language/class_template">class (including struct and union)</DocLink>, a <DocLink dest="/cpp/language/member_template">member class or member enumeration type</DocLink>, a <DocLink dest="/cpp/language/function_template">function</DocLink> or <DocLink dest="/cpp/language/member_template">member function</DocLink>, a static data member at namespace scope<Revision since="C++14">, a <DocLink dest="/cpp/language/variable_template">variable or static data member at class scope</DocLink></Revision>, <Revision since="C++11">or an <DocLink dest="/cpp/language/type_alias">alias template</DocLink></Revision>. It may also define a <DocLink dest="/cpp/language/template_specialization">template specialization</DocLink>.
   </ParamDoc>
-  <ParamDoc name="concept-name">
-    concept-name
-  </ParamDoc>
-  <ParamDoc name="constraint-expression">
+  <ParamDoc name="concept-name constraint-expression">
     see constraints and concepts
   </ParamDoc>
 </ParamDocList>
@@ -91,8 +88,8 @@ A template identifier has one of the following syntaxes:
 
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    template-name<template-argument-list(optional)>
+    ```cpp cxx-mark
+    /*$s:template-name*/</*$s:template-argument-list*//*$opt*/>
     ```
   </Decl>
 
@@ -100,8 +97,8 @@ A template identifier has one of the following syntaxes:
 </DeclDoc>
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    operator op<template-argument-list(optional)>
+    ```cpp cxx-mark
+    operator /*$s:op*/</*$s:template-argument-list*//*$opt*/>
     ```
   </Decl>
 
@@ -109,8 +106,8 @@ A template identifier has one of the following syntaxes:
 </DeclDoc>
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    operator "" identifier<template-argument-list(optional)>
+    ```cpp cxx-mark
+    operator "" /*$s:identifier*/</*$s:template-argument-list*//*$opt*/>
     ```
   </Decl>
 
@@ -118,13 +115,31 @@ A template identifier has one of the following syntaxes:
 </DeclDoc>
 <DeclDoc>
   <Decl slot="decl">
-    ```cpp
-    operator user-defined-string-literal<template-argument-list(optional)>
+    ```cpp cxx-mark
+    operator user-defined-string-literal</*$s:template-argument-list*//*$opt*/>
     ```
   </Decl>
 
   A user-defined string literal operator. <Revision since="C++11"></Revision>
 </DeclDoc>
+
+
+<ParamDocList>
+  <ParamDoc name="template-name">
+    an <DocLink dest="/cpp/language/name">identifier</DocLink> that names a template
+  </ParamDoc>
+  <ParamDoc name="op">
+    an <DocLink dest="/cpp/language/operators">overloadable operator</DocLink>
+  </ParamDoc>
+  <ParamDoc name="identifier">
+    an identifier
+  </ParamDoc>
+  <ParamDoc name="user-defined-string-literal">
+    `""` followed by an identifier
+  </ParamDoc>
+</ParamDocList>
+
+
 
 A simple template identifier that names a class template specialization names a class.
 
