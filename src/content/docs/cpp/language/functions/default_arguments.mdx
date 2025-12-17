@@ -48,7 +48,7 @@ import DocLink from "@components/DocLink.astro";
 
   Allows a function to be called without providing one or more trailing arguments.
 
-  Indicated by using the syntax above for a parameter in the `parameter-list` of a <DocLink src="/cpp/language/functions/function">function declaration</DocLink>.
+  Indicated by using the syntax above for a parameter in the `parameter-list` of a <DocLink dest="/cpp/language/functions/function">function declaration</DocLink>.
 </DeclDoc>
 
 Default arguments are used in place of the missing trailing arguments in a function call:
@@ -104,7 +104,7 @@ The ellipsis is not a parameter, and so can follow a parameter with a default ar
 int g(int n = 0, ...); // OK
 ```
 
-Default arguments are only allowed in the parameter lists of <DocLink src="/cpp/language/functions/function">function declarations</DocLink><Revision since="C++11"> and <DocLink src="/cpp/language/functions/lambda">lambda-expressions</DocLink>,</Revision> and are not allowed in the declarations of pointers to functions, references to functions, or in <DocLink src="/cpp/language/declarations/typedef">typedef</DocLink> declarations. Template parameter lists use similar syntax for their <DocLink src="/cpp/language/templates/template_parameters" section="default-template-arguments">default template arguments</DocLink>.
+Default arguments are only allowed in the parameter lists of <DocLink dest="/cpp/language/functions/function">function declarations</DocLink><Revision since="C++11"> and <DocLink dest="/cpp/language/functions/lambda">lambda-expressions</DocLink>,</Revision> and are not allowed in the declarations of pointers to functions, references to functions, or in <DocLink dest="/cpp/language/declarations/typedef">typedef</DocLink> declarations. Template parameter lists use similar syntax for their <DocLink dest="/cpp/language/templates/template_parameters" section="default-template-arguments">default template arguments</DocLink>.
 
 For non-template functions, default arguments can be added to a function that was already declared if the function is redeclared in the same scope. At the point of a function call, the default arguments are a union of the default arguments provided in all visible declarations for the function. A redeclaration cannot introduce a default argument for a parameter for which a default argument is already visible (even if the value is the same). A re-declaration in an inner scope does not acquire the default arguments from outer scopes.
 
@@ -134,15 +134,15 @@ void n() { // new scope begins
 }
 ```
 
-If an <DocLink src="/cpp/language/declarations/inline">inline</DocLink> function is declared in different translation units, the accumulated sets of default arguments must be the same at the end of each translation unit.
+If an <DocLink dest="/cpp/language/declarations/inline">inline</DocLink> function is declared in different translation units, the accumulated sets of default arguments must be the same at the end of each translation unit.
 
 <RevisionBlock since="C++20">
   If a non-inline function is declared in the same namespace scope in different translation units, the corresponding default arguments must be the same if present (but some default arguments can be absent in some TU).
 </RevisionBlock>
 
-If a <DocLink src="/cpp/language/classes/friend">friend</DocLink> declaration specifies a default argument, it must be a friend function definition, and no other declarations of this function are allowed in the translation unit.
+If a <DocLink dest="/cpp/language/classes/friend">friend</DocLink> declaration specifies a default argument, it must be a friend function definition, and no other declarations of this function are allowed in the translation unit.
 
-The <DocLink src="/cpp/language/declarations/namespace" section="using-declarations">using-declarations</DocLink> carries over the set of known default arguments, and if more default arguments are added later to the function's namespace, those default arguments are also visible anywhere the using-declaration is visible:
+The <DocLink dest="/cpp/language/declarations/namespace" section="using-declarations">using-declarations</DocLink> carries over the set of known default arguments, and if more default arguments are added later to the function's namespace, those default arguments are also visible anywhere the using-declaration is visible:
 
 ```cpp
 namespace N {
@@ -165,7 +165,7 @@ void h() {
 }
 ```
 
-The names used in the default arguments are looked up, checked for <DocLink src="/cpp/language/classes/access">accessibility</DocLink>, and bound at the point of declaration, but are executed at the point of the function call:
+The names used in the default arguments are looked up, checked for <DocLink dest="/cpp/language/classes/access">accessibility</DocLink>, and bound at the point of declaration, but are executed at the point of the function call:
 
 ```cpp
 int a = 1;
@@ -184,7 +184,7 @@ void h() {
 }
 ```
 
-For a <DocLink src="/cpp/language/classes/member_functions">member function</DocLink> of a non-<DocLink src="/cpp/language/templates" section="templated-entity">templated</DocLink> class, the default arguments are allowed on the out-of-class definition, and are combined with the default arguments provided by the declaration inside the class body. If these out-of-class default arguments would turn a member function into a default constructor or copy<Revision since="C++11">/move</Revision> constructor/assignment operator (which makes the call ambiguous), the program is <Behavior kind="ill-formed">ill-formed</Behavior>. For member functions of templated classes, all default arguments must be provided in the initial declaration of the member function.
+For a <DocLink dest="/cpp/language/classes/member_functions">member function</DocLink> of a non-<DocLink dest="/cpp/language/templates" section="templated-entity">templated</DocLink> class, the default arguments are allowed on the out-of-class definition, and are combined with the default arguments provided by the declaration inside the class body. If these out-of-class default arguments would turn a member function into a default constructor or copy<Revision since="C++11">/move</Revision> constructor/assignment operator (which makes the call ambiguous), the program is <Behavior kind="ill-formed">ill-formed</Behavior>. For member functions of templated classes, all default arguments must be provided in the initial declaration of the member function.
 
 ```cpp
 class C {
@@ -202,7 +202,7 @@ void C::g(int i = 88, int j) {} // OK: in this translation unit,
 C::C(int arg = 1) {}            // Error: turns this into a default constructor
 ```
 
-The overriders of <DocLink src="/cpp/language/classes/virtual">virtual</DocLink> functions do not acquire the default arguments from the base class declarations, and when the virtual function call is made, the default arguments are decided based on the static type of the object (note: this can be avoided with [non-virtual interface](http://www.gotw.ca/publications/mill18.htm) pattern).
+The overriders of <DocLink dest="/cpp/language/classes/virtual">virtual</DocLink> functions do not acquire the default arguments from the base class declarations, and when the virtual function call is made, the default arguments are decided based on the static type of the object (note: this can be avoided with [non-virtual interface](http://www.gotw.ca/publications/mill18.htm) pattern).
 
 ```cpp
 struct Base {
@@ -221,7 +221,7 @@ void m() {
 }
 ```
 
-Local variables are not allowed in default arguments unless they are <DocLink src="/cpp/language/expressions" section="potentially-evaluated-expressions">not evaluated</DocLink>:
+Local variables are not allowed in default arguments unless they are <DocLink dest="/cpp/language/expressions" section="potentially-evaluated-expressions">not evaluated</DocLink>:
 
 ```cpp
 void f() {
@@ -231,7 +231,7 @@ void f() {
 }
 ```
 
-The <DocLink src="/cpp/language/classes/this">this</DocLink> pointer is not allowed in default arguments:
+The <DocLink dest="/cpp/language/classes/this">this</DocLink> pointer is not allowed in default arguments:
 
 ```cpp
 class A {
@@ -256,7 +256,7 @@ class X {
 };
 ```
 
-A default argument is evaluated each time the function is called with no argument for the corresponding parameter. Function parameters are not allowed in default arguments except if they are <DocLink src="/cpp/language/expressions" section="potentially-evaluated-expressions">not evaluated</DocLink>. Note that parameters that appear earlier in the parameter list are in <DocLink src="/cpp/language/basic_concepts/scope">scope</DocLink>:
+A default argument is evaluated each time the function is called with no argument for the corresponding parameter. Function parameters are not allowed in default arguments except if they are <DocLink dest="/cpp/language/expressions" section="potentially-evaluated-expressions">not evaluated</DocLink>. Note that parameters that appear earlier in the parameter list are in <DocLink dest="/cpp/language/basic_concepts/scope">scope</DocLink>:
 
 ```cpp
 int a;
@@ -281,7 +281,7 @@ int (*p1)(int) = &f;
 int (*p2)()    = &f; // Error: the type of f is int(int)
 ```
 
-Operator functions other than the <DocLink src="/cpp/language/expressions/operator_other" section="built-in-function-call-operator">function call operator</DocLink><Revision since="C++23"> and the <DocLink src="/cpp/language/expressions/operator_member_access" section="built-in-subscript-operator">subscript operator</DocLink></Revision> cannot have default arguments:
+Operator functions other than the <DocLink dest="/cpp/language/expressions/operator_other" section="built-in-function-call-operator">function call operator</DocLink><Revision since="C++23"> and the <DocLink dest="/cpp/language/expressions/operator_member_access" section="built-in-subscript-operator">subscript operator</DocLink></Revision> cannot have default arguments:
 
 ```cpp
 class C {
@@ -292,7 +292,7 @@ class C {
 ```
 
 <RevisionBlock since="C++23" vertical>
-  <DocLink src="/cpp/language/functions/function" section="explicit-object-parameter">Explicit object parameters</DocLink> cannot have default arguments:
+  <DocLink dest="/cpp/language/functions/function" section="explicit-object-parameter">Explicit object parameters</DocLink> cannot have default arguments:
 
   ```cpp
   struct S { void f(this const S& = S{}); }; // ill-formed
@@ -301,7 +301,7 @@ class C {
 
 ## Notes
 
-Spaces may be necessary to avoid a compound assignment token if the parameter name is absent (see <DocLink src="/cpp/language/basic_concepts/translation_phases" section="maximal-munch">maximal munch</DocLink>).
+Spaces may be necessary to avoid a compound assignment token if the parameter name is absent (see <DocLink dest="/cpp/language/basic_concepts/translation_phases" section="maximal-munch">maximal munch</DocLink>).
 
 ```cpp
 void f1(int*=0);         // Error, “*=” is unexpected here
