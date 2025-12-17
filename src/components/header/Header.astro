@@ -11,13 +11,13 @@ export interface Props {
 
 const { lang, name, displayName, nolink } = Astro.props;
 const langPrefix = lang == "C" ? "/c" : "/cpp";
-const src = `${langPrefix}/library/headers/${name}`;
+const dest = `${langPrefix}/library/headers/${name}`;
 
 const extension = lang === "C" ? ".h" : "";
 const text = displayName ?? `<${name}${extension}>`;
 
 const As = nolink ? Fragment : DocLink;
-const asProps = nolink ? {} : { src };
+const asProps = nolink ? {} : { dest };
 ---
 
 <As {...asProps}>

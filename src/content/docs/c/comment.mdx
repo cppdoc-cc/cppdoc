@@ -14,13 +14,13 @@ Comments serve as a sort of in-code documentation. When inserted into a program,
 1) Often known as "C-style" or "multi-line" comments.
 2) Often known as "C++-style" or "single-line" comments.
 
-All comments are removed from the program at <DocLink src="/c/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
+All comments are removed from the program at <DocLink dest="/c/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
 
 ### C-style
 
 C-style comments are usually used to comment large blocks of text or small fragments of code; however, they can be used to comment single lines. To insert text as a C-style comment, simply surround the text with `/*` and `*/`. C-style comments tell the compiler to ignore all content between `/*` and `*/`. Although it is not part of the C standard, `/**` and `**/` are often used to indicate documentation blocks; this is legal because the second asterisk is simply treated as part of the comment.
 
-Except within a <DocLink src="/c/language/character_constant">character constant</DocLink>, a <DocLink src="/c/language/string_literal">string literal</DocLink>, or a comment, the characters `/*` introduce a comment. The contents of such a comment are examined only to identify multibyte characters and to find the characters `*/` that terminate the comment. C-style comments cannot be nested.
+Except within a <DocLink dest="/c/language/character_constant">character constant</DocLink>, a <DocLink dest="/c/language/string_literal">string literal</DocLink>, or a comment, the characters `/*` introduce a comment. The contents of such a comment are examined only to identify multibyte characters and to find the characters `*/` that terminate the comment. C-style comments cannot be nested.
 
 <RevisionBlock since="C99">
 
@@ -28,7 +28,7 @@ Except within a <DocLink src="/c/language/character_constant">character constant
 
 C++-style comments are usually used to comment single lines of text or code; however, they can be placed together to form multi-line comments. To insert text as a C++-style comment, simply precede the text with `//` and follow the text with the new line character. C++-style comments tell the compiler to ignore all content between `//` and a new line.
 
-Except within a <DocLink src="/c/language/character_constant">character constant</DocLink>, a <DocLink src="/c/language/string_literal">string literal</DocLink>, or a comment, the characters `//` introduce a comment that includes all multibyte characters up to, but not including, the next new-line character. The contents of such a comment are examined only to identify multibyte characters and to find the new-line character that terminates the comment. C++-style comments can be nested:
+Except within a <DocLink dest="/c/language/character_constant">character constant</DocLink>, a <DocLink dest="/c/language/string_literal">string literal</DocLink>, or a comment, the characters `//` introduce a comment that includes all multibyte characters up to, but not including, the next new-line character. The contents of such a comment are examined only to identify multibyte characters and to find the new-line character that terminates the comment. C++-style comments can be nested:
 
 ```c
 //  y = f(x);   // invoke algorithm
@@ -53,7 +53,7 @@ A C++-style comment may appear within a C-style comment; this is a mechanism for
 
 ### Notes
 
-Because comments <DocLink src="/c/language/translation_phases">are removed</DocLink> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
+Because comments <DocLink dest="/c/language/translation_phases">are removed</DocLink> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
 
 ```c
 /* An attempt to use a macro to form a comment. */
@@ -151,6 +151,6 @@ Hello, again
 
 <DescList>
   <Desc>
-    <DocLink slot="item" src="/cpp/comments">C++ documentation</DocLink> for <span>Comments</span>
+    <DocLink slot="item" dest="/cpp/comments">C++ documentation</DocLink> for <span>Comments</span>
   </Desc>
 </DescList>

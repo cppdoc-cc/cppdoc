@@ -234,7 +234,7 @@ The `DocLink` component renders an inline link to a page associated with a doc k
 
 #### Props
 
-- `src` (required): The absolute path (e.g., `"/cpp/library/utilities/move"`).
+- `dest` (required): The absolute path (e.g., `"/cpp/library/utilities/move"`).
 - `section` (optional): The `id` of the HTML element to jump to, typically the `id` of heading tags generated from Markdown headings.
 
 #### Slots
@@ -246,9 +246,7 @@ The `DocLink` component renders an inline link to a page associated with a doc k
 
 import DocLink from "@components/DocLink.astro";
 
-Check out <DocLink src="cpp.library.utilities.move">this page</DocLink> for more information.
-
-Check out <DocLink src="/cpp/library/utilities/move">this page</DocLink> for more information.
+Check out <DocLink dest="/cpp/library/utilities/move">this page</DocLink> for more information.
 
 
 If the doc key does not exist, the component renders as plain text with missing styling.
