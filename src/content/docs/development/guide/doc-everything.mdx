@@ -12,6 +12,7 @@ import { Desc, DescList } from "@components/desc-list";
 import DocLink from "@components/DocLink.astro";
 import { DR, DRList } from "@components/defect-report";
 import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+import Incomplete from "@components/Incomplete.astro";
 import Missing from "@components/Missing.astro";
 import NamedReq from "@components/NamedReq.astro"
 import { ParamDoc, ParamDocList } from "@components/param-doc";
@@ -536,6 +537,20 @@ import { DR, DRList } from "@components/defect-report";
       </Fragment>
     </DR>
   </DRList>
+</Card>
+
+## Incomplete Sections
+
+The `Incomplete` component marks a section to be incomplete.
+
+```mdx
+import { Incomplete } from "@components/Incomplete.astro";
+
+<Incomplete reason="more examples" />
+```
+
+<Card title="Preview">
+  <Incomplete reason="more examples" />
 </Card>
 
 ## Missing Content
