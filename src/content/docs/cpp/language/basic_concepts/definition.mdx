@@ -4,6 +4,7 @@ title: Definitions and ODR
 
 import { DR, DRList } from "@components/defect-report";
 import { Revision, RevisionBlock } from "@components/revision";
+import Behavior from "@components/Behavior.astro";
 import DocLink from "@components/DocLink.astro";
 import Incomplete from "@components/Incomplete.astro";
 
@@ -130,13 +131,13 @@ An <DocLink dest="/cpp/language/declarations/asm">asm declaration</DocLink> does
 
 Where necessary, the compiler may implicitly define the <DocLink dest="/cpp/language/classes/default_constructor">default constructor</DocLink>, <DocLink dest="/cpp/language/classes/copy_constructor">copy constructor</DocLink>, <DocLink dest="/cpp/language/classes/move_constructor">move constructor</DocLink>, <DocLink dest="/cpp/language/classes/as_operator">copy assignment operator</DocLink>, <DocLink dest="/cpp/language/classes/move_operator">move assignment operator</DocLink>, and the <DocLink dest="/cpp/language/classes/destructor">destructor</DocLink>.
 
-If the definition of any object results in an object of <DocLink dest="/cpp/language/basic_concepts/incomplete_type">incomplete type</DocLink> or <DocLink dest="/cpp/language/classes/abstract_class">abstract class type</DocLink>, the program is ill-formed.
+If the definition of any object results in an object of <DocLink dest="/cpp/language/basic_concepts/incomplete_type">incomplete type</DocLink> or <DocLink dest="/cpp/language/classes/abstract_class">abstract class type</DocLink>, the program is <Behavior kind="ill-formed">ill-formed</Behavior>.
 
 ## One Definition Rule
 
 Only one definition of any variable, function, class type, enumeration type<Revision since="C++20">, <DocLink dest="/cpp/language/templates/constraints">concept</DocLink></Revision> or template is allowed in any one translation unit (some of these may have multiple declarations, but only one definition is allowed).
 
-One and only one definition of every non-<DocLink dest="/cpp/language/declarations/inline">inline</DocLink> function or variable that is _odr-used_ (see below) is required to appear in the entire program (including any standard and user-defined libraries). The compiler is not required to diagnose this violation, but the behavior of the program that violates it is undefined.
+One and only one definition of every non-<DocLink dest="/cpp/language/declarations/inline">inline</DocLink> function or variable that is _odr-used_ (see below) is required to appear in the entire program (including any standard and user-defined libraries). The compiler is not required to diagnose this violation, but the behavior of the program that violates it is <Behavior kind="undef">undefined</Behavior>.
 
 For an inline function<Revision since="C++17"> or inline variable</Revision>, a definition is required in every translation unit where it is _odr-used_.
 
@@ -170,9 +171,9 @@ There can be more than one definition in a program of each of the following: cla
 
 - If the definition is for a template, then all these requirements apply to both names at the point of definition and dependent names at the point of instantiation.
 
-If all these requirements are satisfied, the program behaves as if there is only one definition in the entire program. Otherwise, the program is ill-formed, no diagnostic required.
+If all these requirements are satisfied, the program behaves as if there is only one definition in the entire program. Otherwise, the program is <Behavior kind="ifndr">ill-formed, no diagnostic required</Behavior>.
 
-Note: in C, there is no program-wide ODR for types, and even extern declarations of the same variable in different translation units may have different types <DocLink dest="/c/language/basic_concepts/compatible_type" section="compatible-types">as long as they are compatible</DocLink>. In C++, the source-code tokens used in declarations of the same type must be the same as described above: if one .cpp file defines `struct S { int x; };` and the other .cpp file defines `struct S { int y; }`;, the behavior of the program that links them together is undefined. This is usually resolved with <DocLink dest="/cpp/language/declarations/namespace">unnamed namespaces</DocLink>.
+Note: in C, there is no program-wide ODR for types, and even extern declarations of the same variable in different translation units may have different types <DocLink dest="/c/language/basic_concepts/compatible_type" section="compatible-types">as long as they are compatible</DocLink>. In C++, the source-code tokens used in declarations of the same type must be the same as described above: if one .cpp file defines `struct S { int x; };` and the other .cpp file defines `struct S { int y; }`;, the behavior of the program that links them together is <Behavior kind="undef">undefined</Behavior>. This is usually resolved with <DocLink dest="/cpp/language/declarations/namespace">unnamed namespaces</DocLink>.
 
 ### Naming an entity
 
