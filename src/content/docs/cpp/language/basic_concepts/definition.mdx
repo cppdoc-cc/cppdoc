@@ -2,10 +2,10 @@
 title: Definitions and ODR
 ---
 
-import { Aside } from "@astrojs/starlight/components";
 import { DR, DRList } from "@components/defect-report";
-import { Revision, RevisionBlock } from "@components/revision"
-import DocLink from "@components/DocLink.astro"
+import { Revision, RevisionBlock } from "@components/revision";
+import DocLink from "@components/DocLink.astro";
+import Incomplete from "@components/Incomplete.astro";
 
 _Definitions_ are <DocLink dest="/cpp/language/declarations">declarations</DocLink> that fully define the entity introduced by the declaration. Every declaration is a definition, except for the following:
 
@@ -270,9 +270,7 @@ A function is odr-used in following cases:
 - A constructor (including default constructors) for a class is odr-used by the <DocLink dest="/cpp/language/initialization">initialization</DocLink> that selects it.
 - A destructor for a class is odr-used if it is <DocLink dest="/cpp/language/destructor" section="potentially-invoked-destructor">potentially invoked</DocLink>.
 
-<Aside title="This section is incomplete">
-  Reason: list of all situations where odr-use makes a difference
-</Aside>
+<Incomplete reason="list of all situations where odr-use makes a difference" />
 
 ## Defect reports
 

@@ -13,6 +13,7 @@ import { DR, DRList } from "@components/defect-report";
 import { Revision, RevisionBlock } from "@components/revision";
 import AutoCollapse from "@components/AutoCollapse.astro";
 import FlexTable from "@components/FlexTable.astro";
+import Incomplete from "@components/Incomplete.astro";
 import WG21PaperLink from "@components/WG21PaperLink.astro";
 
 export {
@@ -35,5 +36,6 @@ export {
   RevisionBlock,
   AutoCollapse,
   FlexTable,
+  Incomplete,
   WG21PaperLink,
 };
