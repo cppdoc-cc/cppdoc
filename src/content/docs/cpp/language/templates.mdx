@@ -34,30 +34,30 @@ The definition of a class template must be visible at the point of implicit inst
 
 ## Syntax
 
-<DeclDoc>
+<DeclDoc id={1}>
   <Decl slot="decl">
     ```cpp cxx-mark
-    template </*$s:parameter-list*/> /*$s:requires-clause*//*$opt*//*$s:declaration*/
+    template </*$s:parameter-list*/> /*$s:requires-clause*//*$opt*//*$s: declaration*/
     ```
   </Decl>
 </DeclDoc>
-
-<DeclDoc>
+<DeclDoc id={2}>
   <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
     ```cpp cxx-mark
-    export template </*$s:parameter-list*/> /*$s:requires-clause*//*$opt*//*$s:declaration*/
+    export template </*$s:parameter-list*/> /*$s:requires-clause*//*$opt*//*$s: declaration*/
     ```
+    </RevisionBlock>
   </Decl>
-  <Revision until="C++11"></Revision>
 </DeclDoc>
-
-<DeclDoc>
+<DeclDoc id={3}>
   <Decl slot="decl">
+    <RevisionBlock until="C++20" noborder>
     ```cpp cxx-mark
     template </*$s:parameter-list*/> concept /*$s:concept-name*/ = /*$s:constraint-expression*/;
     ```
+    </RevisionBlock>
   </Decl>
-  <Revision since="C++20"></Revision>
 </DeclDoc>
 
 
@@ -84,7 +84,7 @@ The definition of a class template must be visible at the point of implicit inst
 
 A template identifier has one of the following syntaxes:
 
-<DeclDoc>
+<DeclDoc id={1}>
   <Decl slot="decl">
     ```cpp cxx-mark
     /*$s:template-name*/</*$s:template-argument-list*//*$opt*/>
@@ -93,7 +93,7 @@ A template identifier has one of the following syntaxes:
 
   A *simple template identifier*.
 </DeclDoc>
-<DeclDoc>
+<DeclDoc id={2}>
   <Decl slot="decl">
     ```cpp cxx-mark
     operator /*$s:op*/</*$s:template-argument-list*//*$opt*/>
@@ -102,23 +102,19 @@ A template identifier has one of the following syntaxes:
 
   An operator function template identifier.
 </DeclDoc>
-<DeclDoc>
+<DeclDoc id={3}>
   <Decl slot="decl">
     ```cpp cxx-mark
     operator "" /*$s:identifier*/</*$s:template-argument-list*//*$opt*/>
     ```
   </Decl>
-
-  A literal operator function template identifier. <Revision since="C++11" traits={[{ trait: "deprecated", since:"C++23"}]}></Revision>
-</DeclDoc>
-<DeclDoc>
   <Decl slot="decl">
     ```cpp cxx-mark
     operator user-defined-string-literal</*$s:template-argument-list*//*$opt*/>
     ```
   </Decl>
 
-  A user-defined string literal operator. <Revision since="C++11"></Revision>
+  A literal operator function template identifier. <Revision since="C++11" traits={[{ trait: "deprecated", since:"C++23"}]}></Revision>
 </DeclDoc>
 
 
