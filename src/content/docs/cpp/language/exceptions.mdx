@@ -1,0 +1,80 @@
+---
+title: Exceptions
+---
+
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList, DocLink } from '@components/index';
+import { Revision, RevisionBlock } from "@components/revision";
+import { DR, DRList } from "@components/defect-report";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+
+Exception handling provides a way of transferring control and information from some point in the execution of a program to a handler associated with a point previously passed by the execution (in other words, exception handling transfers control up the call stack).
+
+Evaluating a <DocLink dest="cpp/language/throw.html#throw_expressions">`throw` expression</DocLink> will throw an exception. Exceptions can also be thrown in <DocLink dest="cpp/language/throw.html#throw_expressions">other contexts</DocLink>.
+
+In order for an exception to be caught, the `throw` expression has to be inside a <DocLink dest="cpp/language/try">`try` block</DocLink>, and the `try` block has to contain a <DocLink dest="cpp/language/catch">handler</DocLink> that matches the type of the exception object.
+
+When declaring a function, the following specification(s) may be provided to limit the types of the exceptions a function may throw:
+
+- <Revision since="C++17"><DocLink dest="cpp/language/cpp/language/except_spec">dynamic exception specifications</DocLink></Revision>
+- <Revision since="C++11"><DocLink dest="cpp/language/cpp/language/noexcept_spec">noexcept specifications</DocLink></Revision>
+
+Errors that arise during exception handling are handled by <DocLink dest="cpp/error/terminate">`std::terminate`</DocLink> and <Revision since="C++17"><DocLink dest="cpp/error/unexpected">`std::unexpected`</DocLink></Revision>.
+
+## Usage
+
+While `throw` expression can be used to transfer control to an arbitrary block of code up the execution stack, for arbitrary reasons (similar to <DocLink dest="cpp/utility/program/longjmp">`std::longjmp`</DocLink>), its intended usage is error handling.
+
+### Error handling
+
+Throwing an exception is used to signal errors from functions, where "errors" are typically limited to only the following[^1] [^2] [^3]:
+
+1.  Failures to meet the postconditions, such as failing to produce a valid return value object.
+2.  Failures to meet the preconditions of another function that must be called.
+3.  (for non-private member functions) Failures to (re)establish a class invariant.
+
+In particular, this implies that the failures of constructors (see also <DocLink dest="cpp/language/raii">RAII</DocLink>) and most operators should be reported by throwing exceptions.
+
+In addition, so-called *wide contract* functions use exceptions to indicate unacceptable inputs, for example, <DocLink dest="cpp/string/basic_string/at">`std::basic_string::at`</DocLink> has no preconditions, but throws an exception to indicate index out of range.
+
+### Exception safety
+
+After the error condition is reported by a function, additional guarantees may be provided with regards to the state of the program. The following four levels of exception guarantee are generally recognized[^4] [^5] [^6], which are strict supersets of each other:
+
+1.  *Nothrow (or nofail) exception guarantee* — the function never throws exceptions. Nothrow (errors are reported by other means or concealed) is expected of <DocLink dest="cpp/language/destructor">destructors</DocLink> and other functions that may be called during stack unwinding. <Revision since="C++11">The <DocLink dest="cpp/language/destructor">destructors</DocLink> are <DocLink dest="cpp/language/noexcept">`noexcept`</DocLink> by default.</Revision> Nofail (the function always succeeds) is expected of swaps, <DocLink dest="cpp/language/move_constructor">move constructors</DocLink>, and other functions used by those that provide strong exception guarantee.
+2.  *Strong exception guarantee* — If the function throws an exception, the state of the program is rolled back to the state just before the function call (for example, <DocLink dest="cpp/container/vector/push_back">`std::vector::push_back`</DocLink>).
+3.  *Basic exception guarantee* — If the function throws an exception, the program is in a valid state. No resources are leaked, and all objects' invariants are intact.
+4.  *No exception guarantee* — If the function throws an exception, the program may not be in a valid state: resource leaks, memory corruption, or other invariant-destroying errors may have occurred.
+
+Generic components may, in addition, offer *exception-neutral guarantee*: if an exception is thrown from a template parameter (e.g. from the `Compare` function object of <DocLink dest="cpp/algorithm/sort">`std::sort`</DocLink> or from the constructor of `T` in <DocLink dest="cpp/memory/shared_ptr/make_shared">`std::make_shared`</DocLink>), it is propagated, unchanged, to the caller.
+
+## Exception objects
+
+While objects of any complete type and cv pointers to `void` may be thrown as exception objects, all standard library functions throw unnamed objects by value, and the types of those objects are derived (directly or indirectly) from <DocLink dest="cpp/error/exception">`std::exception`</DocLink>. User-defined exceptions usually follow this pattern.[^7] [^8] [^9]
+
+To avoid unnecessary copying of the exception object and object slicing, the best practice for handlers is to catch by reference.[^10] [^11] [^12] [^13]
+
+## Notes
+
+<FeatureTestMacro name="__cpp_constexpr_exceptions">
+  <FeatureTestMacroValue value="202411L" since="C++26">
+    `constexpr` exceptions
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## External links
+
+[^1]: H. Sutter (2004) [When and How to Use Exceptions](https://www.drdobbs.com/when-and-how-to-use-exceptions/184401836) in Dr. Dobb's
+[^2]: H. Sutter, A. Alexandrescu (2004) "C++ Coding Standards" Item 70
+[^3]: C++ Core Guidelines [I.10: Use exceptions to signal a failure to perform a required task](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Ri-except)
+[^4]: B. Stroustrup (2000) "The C++ Programming Language" [Appendix E](https://stroustrup.com/3rd_safe.pdf)
+[^5]: H. Sutter (2000) "Exceptional C++"
+[^6]: D. Abrahams (2001) ["Exception Safety in Generic Components"](https://www.boost.org/community/exception_safety.html)
+[^7]: D. Abrahams (2001) ["Error and Exception Handling"](https://www.boost.org/community/error_handling.html)
+[^8]: isocpp.org Super-FAQ ["What should I throw?"](https://isocpp.org/wiki/faq/exceptions#what-to-throw)
+[^9]: C++ Core Guidelines [E.14: Use purpose-designed user-defined types as exceptions (not built-in types)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Re-exception-types)
+[^10]: C++ Core Guidelines [E.15: Throw by value, catch exceptions from a hierarchy by reference](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Re-exception-ref)
+[^11]: S. Meyers (1996) "More Effective C++" Item 13
+[^12]: isocpp.org Super-FAQ ["What should I catch?"](https://isocpp.org/wiki/faq/exceptions#what-to-catch)
+[^13]: H. Sutter, A. Alexandrescu (2004) "C++ Coding Standards" Item 73
