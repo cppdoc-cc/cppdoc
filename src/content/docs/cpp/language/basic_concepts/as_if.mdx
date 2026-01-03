@@ -2,6 +2,7 @@
 title: The as-if rule
 ---
 
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { Desc, DescList } from "@components/desc-list";
 import { RevisionBlock } from "@components/revision";
 import DocLink from "@components/DocLink.astro";
@@ -96,40 +97,45 @@ int main() {
 }
 ```
 
-Output:
+Full code of the `main()` function as produced by the GCC compiler, for different platforms:
 
-```
-# full code of the main() function as produced by the GCC compiler
-# x86 (Intel) platform:
-        movl    input(%rip), %eax   # eax = input
-        leal    3(%rax,%rax), %eax  # eax = 3 + eax + eax
-        movl    %eax, result(%rip)  # result = eax
-        xorl    %eax, %eax          # eax = 0 (the return value of main())
-        ret
- 
-# PowerPC (IBM) platform:
-        lwz 9,LC..1(2)
-        li 3,0          # r3 = 0 (the return value of main())
-        lwz 11,0(9)     # r11 = input;
-        slwi 11,11,1    # r11 = r11 << 1;
-        addi 0,11,3     # r0 = r11 + 3;
-        stw 0,4(9)      # result = r0;
-        blr
- 
-# Sparc (Sun) platform:
-        sethi   %hi(result), %g2
-        sethi   %hi(input), %g1
-        mov     0, %o0                 # o0 = 0 (the return value of main)
-        ld      [%g1+%lo(input)], %g1  # g1 = input
-        add     %g1, %g1, %g1          # g1 = g1 + g1
-        add     %g1, 3, %g1            # g1 = 3 + g1
-        st      %g1, [%g2+%lo(result)] # result = g1
-        jmp     %o7+8
-        nop
- 
-# in all cases, the side effects of preinc() were eliminated, and the
-# entire main() function was reduced to the equivalent of result = 2 * input + 3;
-```
+<Tabs>
+  <TabItem label="x86 (Intel)">
+    ```
+    movl    input(%rip), %eax   # eax = input
+    leal    3(%rax,%rax), %eax  # eax = 3 + eax + eax
+    movl    %eax, result(%rip)  # result = eax
+    xorl    %eax, %eax          # eax = 0 (the return value of main())
+    ret
+    ```
+  </TabItem>
+  <TabItem label="PowerPC (IBM)">
+    ```
+    lwz 9,LC..1(2)
+    li 3,0          # r3 = 0 (the return value of main())
+    lwz 11,0(9)     # r11 = input;
+    slwi 11,11,1    # r11 = r11 << 1;
+    addi 0,11,3     # r0 = r11 + 3;
+    stw 0,4(9)      # result = r0;
+    blr
+    ```
+  </TabItem>
+  <TabItem label="Sparc (Sun)">
+    ```
+    sethi   %hi(result), %g2
+    sethi   %hi(input), %g1
+    mov     0, %o0                 # o0 = 0 (the return value of main)
+    ld      [%g1+%lo(input)], %g1  # g1 = input
+    add     %g1, %g1, %g1          # g1 = g1 + g1
+    add     %g1, 3, %g1            # g1 = 3 + g1
+    st      %g1, [%g2+%lo(result)] # result = g1
+    jmp     %o7+8
+    nop
+    ```
+  </TabItem>
+</Tabs>
+
+In all cases, the side effects of `preinc()` were eliminated, and the entire `main()` function was reduced to the equivalent of `result = 2 * input + 3;`.
 
 ## See also
 
