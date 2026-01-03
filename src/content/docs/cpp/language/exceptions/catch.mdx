@@ -54,18 +54,18 @@ An <DocLink dest="/cpp/language/exceptions">exception</DocLink> can be handled b
   </ParamDoc>
   <ParamDoc name="compound-statement">
     a <DocLink dest="/cpp/language/statements#Compound_statements">compound statement</DocLink>
-    </ParamDoc>
+  </ParamDoc>
 </ParamDocList>
 
   The parameter declaration in a handler describes the type(s) of exceptions that can cause that handler to be entered.
 
   If the parameter is declared to have one of the following types, the program is ill-formed:
 
-  -   an <DocLink dest="/cpp/language/basic_concepts/definition#Incomplete_type">incomplete type</DocLink>
-  -   an <DocLink dest="/cpp/language/classes#Abstract_classes">abstract class type</DocLink>
-  -   an <DocLink dest="/cpp/language/reference#Rvalue_reference"><Revision since="C++11">rvalue reference type</Revision></DocLink>
-  -   a pointer to an incomplete type other than (possibly cv-qualified) `void`
-  -   an lvalue reference to an incomplete type
+  - an <DocLink dest="/cpp/language/basic_concepts/definition#Incomplete_type">incomplete type</DocLink>
+  - an <DocLink dest="/cpp/language/classes#Abstract_classes">abstract class type</DocLink>
+  - an <DocLink dest="/cpp/language/reference#Rvalue_reference"><Revision since="C++11">rvalue reference type</Revision></DocLink>
+  - a pointer to an incomplete type other than (possibly cv-qualified) `void`
+  - an lvalue reference to an incomplete type
 
   If the parameter is declared to have type “array of `T`” or function type `T`, the type is adjusted to “pointer to `T`”.
 
@@ -77,15 +77,15 @@ Each `try` block associates with a number of handlers, these handlers form a han
 
 A handler is a match for an <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">exception object</DocLink> of type `E` if any of the following conditions is satisfied:
 
--   The handler is of type “possibly cv-qualified `T`” or “lvalue reference to possibly cv-qualified `T`”, and any of the following conditions is satisfied:
--   `E` and `T` are the same type (ignoring the top-level cv-qualifiers).
--   `T` is an unambiguous public base class of `E`.
--   The handler is of type “possibly cv-qualified `T`” or `const T&` where `T` is a pointer or pointer-to-member type, and any of the following conditions is satisfied:
--   `E` is a pointer or pointer-to-member type that can be converted to `T` by at least one of the following conversions:
--   A <DocLink dest="/cpp/language/implicit_cast#Pointer_conversions">standard pointer conversion</DocLink> not involving conversions to pointers to private or protected or ambiguous classes.
--   <Revision since="C++17">A <DocLink dest="/cpp/language/implicit_cast#Function_pointer_conversions">function pointer conversion.</DocLink></Revision>
--   A <DocLink dest="/cpp/language/implicit_cast#Qualification_conversions">qualification conversion</DocLink>.
--   <Revision since="C++11">`E` is <DocLink dest="/cpp/types/nullptr_t">std::nullptr_t</DocLink>.</Revision>
+- The handler is of type “possibly cv-qualified `T`” or “lvalue reference to possibly cv-qualified `T`”, and any of the following conditions is satisfied:
+- `E` and `T` are the same type (ignoring the top-level cv-qualifiers).
+- `T` is an unambiguous public base class of `E`.
+- The handler is of type “possibly cv-qualified `T`” or `const T&` where `T` is a pointer or pointer-to-member type, and any of the following conditions is satisfied:
+- `E` is a pointer or pointer-to-member type that can be converted to `T` by at least one of the following conversions:
+- A <DocLink dest="/cpp/language/implicit_cast#Pointer_conversions">standard pointer conversion</DocLink> not involving conversions to pointers to private or protected or ambiguous classes.
+- <Revision since="C++17">A <DocLink dest="/cpp/language/implicit_cast#Function_pointer_conversions">function pointer conversion.</DocLink></Revision>
+- A <DocLink dest="/cpp/language/implicit_cast#Qualification_conversions">qualification conversion</DocLink>.
+- <Revision since="C++11">`E` is <DocLink dest="/cpp/types/nullptr_t">std::nullptr_t</DocLink>.</Revision>
 
 The `catch (...)` handler matches exceptions of any type. If present, it can only be the last handler in a handler sequence. This handler may be used to ensure that no uncaught exceptions can possibly escape from a function that offers <DocLink dest="/cpp/language/exceptions">nothrow exception guarantee</DocLink>.
 ```cpp
@@ -114,8 +114,8 @@ When an exception is thrown, control is transferred to the nearest handler with 
 
 The parameter declared in the parameter list (if any), of type “possibly cv-qualified `T`” or “lvalue reference to possibly cv-qualified `T`”, is initialized from the <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">exception object</DocLink>, of type `E`, as follows:
 
--   If `T` is a base class of `E`, the parameter is <DocLink dest="/cpp/language/copy_initialization">copy-initialized</DocLink> from an lvalue of type `T` designating the corresponding base class subobject of the exception object.
--   Otherwise, the parameter is copy-initialized from an lvalue of type `E` designating the exception object.
+- If `T` is a base class of `E`, the parameter is <DocLink dest="/cpp/language/copy_initialization">copy-initialized</DocLink> from an lvalue of type `T` designating the corresponding base class subobject of the exception object.
+- Otherwise, the parameter is copy-initialized from an lvalue of type `E` designating the exception object.
 
 The lifetime of the parameter ends when the handler exits, after the destruction of any objects with automatic <DocLink dest="/cpp/language/storage_duration">storage duration</DocLink> initialized within the handler.
 
@@ -159,7 +159,7 @@ void f()
 
 The exception thrown by the `throw` expression `throw 0` does not match a handler of pointer or pointer-to-member type.
 
--  <Revision since="C++11">`throw nullptr` can be used instead to throw a null pointer that matches such handlers.</Revision>
+- <Revision since="C++11">`throw nullptr` can be used instead to throw a null pointer that matches such handlers.</Revision>
 
 <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">Exception objects</DocLink> can never have array or function types, therefore a handler of reference to array or function type is never a match for any exception object.
 
@@ -200,7 +200,7 @@ catch (const float* pf)
 
 ### Keywords
 
--   <DocLink dest="/cpp/keyword/catch">`catch`</DocLink>
+- <DocLink dest="/cpp/keyword/catch">`catch`</DocLink>
 
 ### Example
 
