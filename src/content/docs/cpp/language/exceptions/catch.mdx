@@ -1,0 +1,326 @@
+---
+title: Handling exceptions
+sidebar:
+  order: 4
+---
+
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList, DocLink } from '@components/index';
+import { Revision, RevisionBlock } from "@components/revision";
+import { DR, DRList } from "@components/defect-report";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+
+An <DocLink dest="/cpp/language/exceptions">exception</DocLink> can be handled by a handler.
+
+### Handler
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    catch ( /*$s:attr*//*$opt*/ /*$s:type-specifier-seq*/ /*$s:declarator*/ ) /*$s:compound-statement*/
+    ```
+  </Decl>
+  A handler with a named parameter.
+</DeclDoc>
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    catch ( /*$s:attr*//*$opt*/ /*$s:type-specifier-seq*/ /*$s:abstract-declarator*//*$opt*/ ) /*$s:compound-statement*/
+    ```
+  </Decl>
+  A handler with an unnamed parameter.
+</DeclDoc>
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    catch ( ... ) /*$s:compound-statement*/
+    ```
+  </Decl>
+  A handler matching all kinds of exceptions.
+</DeclDoc>
+
+<ParamDocList>
+  <ParamDoc name="attr">
+    <Revision since="C++11"></Revision> any number of <DocLink dest="/cpp/language/attributes">attributes</DocLink>, applies to the parameter
+  </ParamDoc>
+  <ParamDoc name="type-specifier-seq">
+    part of a formal parameter declaration, same as in a function <DocLink dest="/cpp/language/functions/function#Parameter_list">parameter list</DocLink>
+  </ParamDoc>
+  <ParamDoc name="declarator">
+    part of a parameter declaration, same as in a function <DocLink dest="/cpp/language/functions/function#Parameter_list">parameter list</DocLink>
+  </ParamDoc>
+  <ParamDoc name="abstract-declarator">
+    part of an unnamed parameter declaration, same as in function <DocLink dest="/cpp/language/functions/function#Parameter_list">parameter list</DocLink>
+  </ParamDoc>
+  <ParamDoc name="compound-statement">
+    a <DocLink dest="/cpp/language/statements#Compound_statements">compound statement</DocLink>
+  </ParamDoc>
+</ParamDocList>
+
+The parameter declaration in a handler describes the type(s) of exceptions that can cause that handler to be entered.
+
+If the parameter is declared to have one of the following types, the program is ill-formed:
+
+- an <DocLink dest="/cpp/language/basic_concepts/definition#Incomplete_type">incomplete type</DocLink>
+- an <DocLink dest="/cpp/language/classes#Abstract_classes">abstract class type</DocLink>
+- an <DocLink dest="/cpp/language/reference#Rvalue_reference"><Revision since="C++11">rvalue reference type</Revision></DocLink>
+- a pointer to an incomplete type other than (possibly cv-qualified) `void`
+- an lvalue reference to an incomplete type
+
+If the parameter is declared to have type “array of `T`” or function type `T`, the type is adjusted to “pointer to `T`”.
+
+A handler with parameter type `T` can be abbreviated as “a handler of type `T`”.
+
+### Matching exceptions
+
+Each `try` block associates with a number of handlers, these handlers form a handler sequence. When an exception is thrown from a `try` block, the handlers in the sequence are tried in order of appearance to match the exception.
+
+A handler is a match for an <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">exception object</DocLink> of type `E` if any of the following conditions is satisfied:
+
+- The handler is of type “possibly cv-qualified `T`” or “lvalue reference to possibly cv-qualified `T`”, and any of the following conditions is satisfied:
+- `E` and `T` are the same type (ignoring the top-level cv-qualifiers).
+- `T` is an unambiguous public base class of `E`.
+- The handler is of type “possibly cv-qualified `T`” or `const T&` where `T` is a pointer or pointer-to-member type, and any of the following conditions is satisfied:
+- `E` is a pointer or pointer-to-member type that can be converted to `T` by at least one of the following conversions:
+- A <DocLink dest="/cpp/language/implicit_cast#Pointer_conversions">standard pointer conversion</DocLink> not involving conversions to pointers to private or protected or ambiguous classes.
+- <Revision since="C++17">A <DocLink dest="/cpp/language/implicit_cast#Function_pointer_conversions">function pointer conversion.</DocLink></Revision>
+- A <DocLink dest="/cpp/language/implicit_cast#Qualification_conversions">qualification conversion</DocLink>.
+- <Revision since="C++11">`E` is <DocLink dest="/cpp/types/nullptr_t">std::nullptr_t</DocLink>.</Revision>
+
+The `catch (...)` handler matches exceptions of any type. If present, it can only be the last handler in a handler sequence. This handler may be used to ensure that no uncaught exceptions can possibly escape from a function that offers <DocLink dest="/cpp/language/exceptions">nothrow exception guarantee</DocLink>.
+```cpp
+try
+{
+    f();
+}
+catch (const std::overflow_error& e)
+{} // this executes if f() throws std::overflow_error (same type rule)
+catch (const std::runtime_error& e)
+{} // this executes if f() throws std::underflow_error (base class rule)
+catch (const std::exception& e)
+{} // this executes if f() throws std::logic_error (base class rule)
+catch (...)
+{} // this executes if f() throws std::string or int or any other unrelated type
+  ```
+If no match is found among the handlers for a `try` block, the search for a matching handler continues in a dynamically surrounding `try` block<Revision since="C++11"> of the same thread</Revision>.
+
+If no matching handler is found, <DocLink dest="/cpp/error/terminate">std::terminate</DocLink> is invoked; whether or not the stack is <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Stack_unwinding">unwound</DocLink> before this invocation of <DocLink dest="/cpp/error/terminate">std::terminate</DocLink> is implementation-defined.
+
+### Handling exceptions
+
+When an exception is thrown, control is transferred to the nearest handler with a matching type; “nearest” means the handler for which the compound statement or the member initializer list (if present) following the `try` keyword was most recently entered by the thread of control and not yet exited.
+
+#### Initializing the handler parameter
+
+The parameter declared in the parameter list (if any), of type “possibly cv-qualified `T`” or “lvalue reference to possibly cv-qualified `T`”, is initialized from the <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">exception object</DocLink>, of type `E`, as follows:
+
+- If `T` is a base class of `E`, the parameter is <DocLink dest="/cpp/language/copy_initialization">copy-initialized</DocLink> from an lvalue of type `T` designating the corresponding base class subobject of the exception object.
+- Otherwise, the parameter is copy-initialized from an lvalue of type `E` designating the exception object.
+
+The lifetime of the parameter ends when the handler exits, after the destruction of any objects with automatic <DocLink dest="/cpp/language/storage_duration">storage duration</DocLink> initialized within the handler.
+
+When the parameter is declared as an object, any changes to that object will not affect the exception object.
+
+When the parameter is declared as a reference to an object, any changes to the referenced object are changes to the exception object and will have effect should that object be rethrown.
+
+#### Activating the handler
+
+A handler is considered _active_ when initialization is complete for the parameter (if any) of the handler.
+
+Also, an implicit handler is considered active when <DocLink dest="/cpp/error/terminate">std::terminate</DocLink> is entered due to a throw.
+
+A handler is no longer considered active when the handler exits.
+
+The exception with the most recently activated handler that is still active is called the _currently handled exception_. Such an exception can be <DocLink dest="/cpp/language/exceptions/throwing_exceptions#throw_expressions">rethrown</DocLink>.
+
+### Control flow
+
+The `compound-statement` of a handler is a <DocLink dest="/cpp/language/statements#Control-flow-limited_statements">control-flow-limited statement</DocLink>:
+
+```cpp
+void f()
+{
+    goto label;     // error
+    try
+    {
+        goto label; // error
+    }
+    catch (...)
+    {
+        goto label: // OK
+        label: ;
+    }
+}
+```
+
+### Notes
+
+<DocLink dest="/cpp/language/exceptions/throwing_exceptions#Stack_unwinding">Stack unwinding</DocLink> occurs while control is transferring to a handler. When a handler becomes active, stack unwinding is already completed.
+
+The exception thrown by the `throw` expression `throw 0` does not match a handler of pointer or pointer-to-member type.
+
+- <Revision since="C++11">`throw nullptr` can be used instead to throw a null pointer that matches such handlers.</Revision>
+
+<DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">Exception objects</DocLink> can never have array or function types, therefore a handler of reference to array or function type is never a match for any exception object.
+
+It is possible to write handlers that can never be executed, for example by placing a handler for a final derived class after a handler for a corresponding unambiguous public base class:
+
+```cpp
+try
+{
+    f();
+}
+catch (const std::exception& e)
+{} // will be executed if f() throws std::runtime_error
+catch (const std::runtime_error& e)
+{} // dead code!
+```
+
+Many implementations overly extend the resolution of <DocLink dest="https://cplusplus.github.io/CWG/issues/388.html">CWG issue 388</DocLink> to handlers of reference to non-const pointer types:
+
+```cpp
+int i;
+try
+{
+    try
+    {
+        throw static_cast<float*>(nullptr);
+    }
+    catch (void*& pv)
+    {
+        pv = &i;
+        throw;
+    }
+}
+catch (const float* pf)
+{
+    assert(pf == nullptr); // should pass, but fails on MSVC and Clang
+}
+```
+
+### Keywords
+
+- <DocLink dest="/cpp/keyword/catch">`catch`</DocLink>
+
+### Example
+
+The following example demonstrates several usage cases of the handlers:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main()
+{
+    try
+    {
+        std::cout << "Throwing an integer exception...\n";
+        throw 42;
+    }
+    catch (int i)
+    {
+        std::cout << " the integer exception was caught, with value: " << i << '\n';
+    }
+      
+    try
+    {
+        std::cout << "Creating a vector of size 5... \n";
+        std::vector<int> v(5);
+        std::cout << "Accessing the 11th element of the vector...\n";
+        std::cout << v.at(10); // vector::at() throws std::out_of_range
+    }
+    catch (const std::exception& e) // caught by reference to base
+    {
+        std::cout << " a standard exception was caught, with message: '"
+                  << e.what() << "'\n";
+    }
+}
+```
+
+Possible output:
+
+```text
+Throwing an integer exception...
+ the integer exception was caught, with value: 42
+Creating a vector of size 5...
+Accessing the 11th element of the vector...
+ a standard exception was caught, with message: 'out_of_range'
+```
+
+### Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="cwg" id={98} std="C++98">
+    <Fragment slot="behavior-published">
+      a `switch` statement can transfer control into a handler
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={210} std="C++98">
+    <Fragment slot="behavior-published">
+      `throw` expressions were matched against the handlers
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      exception objects are matched against the handlers
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={388} std="C++98">
+    <Fragment slot="behavior-published">
+      an exception of pointer or pointer to member type could not be matched by a const reference to a different type
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      made matchable when convertible
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={1166} std="C++98">
+    <Fragment slot="behavior-published">
+      the behavior was unspecified when a handler whose type is a reference to an abstract class type is matched
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      abstract class types are not allowed for handlers
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={1769} std="C++98">
+    <Fragment slot="behavior-published">
+      when the type of the handler is a base of the type of the exception object, a converting constructor might be used for the initialization of the handler parameter
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      the parameter is copy-initialized from the corresponding base class subobject of the exception object
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={2093} std="C++98">
+    <Fragment slot="behavior-published">
+      an exception object of pointer to object type could not match a handler of pointer to object type through qualification conversion
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      allowed
+    </Fragment>
+  </DR>
+</DRList>
+
+### References
+
+- C++23 standard (ISO/IEC 14882:2024):
+  - 14.4 Handling an exception [except.handle]
+- C++20 standard (ISO/IEC 14882:2020):
+  - 14.4 Handling an exception [except.handle]
+- C++17 standard (ISO/IEC 14882:2017):
+  - 18.3 Handling an exception [except.handle]
+- C++14 standard (ISO/IEC 14882:2014):
+  - 15.3 Handling an exception [except.handle]
+- C++11 standard (ISO/IEC 14882:2011):
+  - 15.3 Handling an exception [except.handle]
+- C++03 standard (ISO/IEC 14882:2003):
+  - 15.3 Handling an exception [except.handle]
+- C++98 standard (ISO/IEC 14882:1998):
+  - 15.3 Handling an exception [except.handle]
+
+### See also
+
+- <DocLink dest="/cpp/language/exceptions/try">`try` block</DocLink>
+- <DocLink dest="/cpp/language/exceptions/throw">Throwing exceptions</DocLink>
+- <DocLink dest="/cpp/error">Exception handling</DocLink>
