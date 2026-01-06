@@ -1,0 +1,250 @@
+---
+title: std::hash
+cppdoc:
+  revision:
+    since: C++11
+---
+
+import { CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Defined in header <CppHeader name="bitset" />.
+
+Defined in header <CppHeader name="coroutine" />.
+
+Defined in header <CppHeader name="chrono" />.
+
+Defined in header <CppHeader name="filesystem" />.
+
+Defined in header <CppHeader name="functional" />.
+
+Defined in header <CppHeader name="memory" />.
+
+Defined in header <CppHeader name="optional" />.
+
+Defined in header <CppHeader name="stacktrace" />.
+
+Defined in header <CppHeader name="string" />.
+
+Defined in header <CppHeader name="string_view" />.
+
+Defined in header <CppHeader name="system_error" />.
+
+Defined in header <CppHeader name="text_encoding" />.
+
+Defined in header <CppHeader name="thread" />.
+
+Defined in header <CppHeader name="typeindex" />.
+
+Defined in header <CppHeader name="variant" />.
+
+Defined in header <CppHeader name="vector" />.
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      template< class Key >
+      struct hash;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  The unordered associative containers `std::unordered_set`, `std::unordered_multiset`, `std::unordered_map`, `std::unordered_multimap` use specializations of the template std::hash as the default hash function.
+</DeclDoc>
+
+Given a type `Key`, each specialization `std::hash<Key>` is either _enabled_ or _disabled_ :
+
+-   If `std::hash<Key>` is not provided by the program or the user, it is disabled.
+-   Otherwise, `std::hash<Key>` is enabled if all following conditions are satisfied:
+    -   All following requirements are satisfied:
+        -   [Hash](../named_req/Hash.html "cpp/named req/Hash") (with `Key` as the function call argument type)
+        -   [DefaultConstructible](../named_req/DefaultConstructible.html "cpp/named req/DefaultConstructible")
+        -   [CopyAssignable](../named_req/CopyAssignable.html "cpp/named req/CopyAssignable")
+        -   [Swappable](../named_req/Swappable.html "cpp/named req/Swappable")
+
+    -   Given the following values:
+        -   h, an object of type `std::hash<Key>`.
+        -   k1 and k2, objects of type `Key`.
+    All following requirements are satisfied:
+        -   If k1 \== k2 is true, h(k1) \== h(k2) is also true.
+        -   Unless `std::hash<Key>` is a [program-defined specialization](../language/type-id.html#Program-defined_type "cpp/language/type"), h(k1) will never throw an exception.
+
+-   Otherwise, `std::hash<Key>` is disabled.
+
+Disabled specializations do not satisfy [Hash](../named_req/Hash.html "cpp/named req/Hash"), do not satisfy [FunctionObject](../named_req/FunctionObject.html "cpp/named req/FunctionObject"), and following values are all false:
+
+-   `std::is_default_constructible<std::hash<Key>>::value`
+-   `std::is_copy_constructible<std::hash<Key>>::value`
+-   `std::is_move_constructible<std::hash<Key>>::value`
+-   `std::is_copy_assignable<std::hash<Key>>::value`
+-   `std::is_move_assignable<std::hash<Key>>::value`
+
+In other words, they exist, but cannot be used.
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock until="C++20" noborder>
+    Nested types:
+    |Name|Definition|
+    |---|---|
+    |`argument_type` (deprecared in C++ 17)| Key|
+    |`result_type` (deprecared in C++ 17)| size_t|
+    </RevisionBlock>
+  </Decl>
+</DeclDoc>
+
+### Member functions
+| | |
+|---|---|
+|`constuctor` | constructs a hash function object <br/> (public member function)|
+|`operator()` | calculates the hash of the argument <br/> (public member function)|
+
+
+### Standard library specializations
+Each header that declares the template std::hash also provides enabled specializations of std::hash for the following types:
+
+- all cv-unqualified arithmetic types
+- all cv-unqualified enumeration types
+- all cv-unqualified pointer types
+- std::nullptr_t
+
+On top of that, some headers also provide other enabled std::hash specializations for library types (see below).
+
+
+
+<DeclDoc>
+  <Decl slot="decl">
+    <RevisionBlock since="C++17" noborder>
+      For all std::hash specializations provided by the standard library except the following, all their member functions are noexcept:
+      - `std::hash<std::optional>`
+      - `std::hash<std::variant>`
+      - `std::hash<std::unique_ptr>`
+
+      <RevisionBlock since="c++26">
+        - `std::hash<std::chrono::duration>`
+        - `std::hash<std::chrono::time_point>`
+        - `std::hash<std::chrono::zoned_time>`
+      </RevisionBlock>
+    </RevisionBlock>
+  </Decl>
+</DeclDoc>
+
+
+## Notes
+
+The actual hash functions are implementation-dependent and are not required to fulfill any other quality criteria except those specified above. Notably, some implementations use trivial (identity) hash functions which map an integer to itself. In other words, these hash functions are designed to work with unordered associative containers, but not as cryptographic hashes, for example.
+
+Hash functions are only required to produce the same result for the same input within a single execution of a program; this allows salted hashes that prevent collision denial-of-service attacks.
+
+There is no specialization for C strings. `std::hash<const char*>` produces a hash of the value of the pointer (the memory address), it does not examine the contents of any character array.
+
+Additional specializations for `std::pair` and the standard container types, as well as utility functions to compose hashes are available in `boost::hash`.
+
+
+## Example
+
+```cpp
+#include <cstddef>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <unordered_set>
+ 
+struct S
+{
+    std::string first_name;
+    std::string last_name;
+    bool operator==(const S&) const = default; // since C++20
+};
+ 
+// Before C++20.
+// bool operator==(const S& lhs, const S& rhs)
+// {
+//     return lhs.first_name == rhs.first_name && lhs.last_name == rhs.last_name;
+// }
+ 
+// Custom hash can be a standalone function object.
+struct MyHash
+{
+    std::size_t operator()(const S& s) const noexcept
+    {
+        std::size_t h1 = std::hash<std::string>{}(s.first_name);
+        std::size_t h2 = std::hash<std::string>{}(s.last_name);
+        return h1 ^ (h2 << 1); // or use boost::hash_combine
+    }
+};
+ 
+// Custom specialization of std::hash can be injected in namespace std.
+template<>
+struct std::hash<S>
+{
+    std::size_t operator()(const S& s) const noexcept
+    {
+        std::size_t h1 = std::hash<std::string>{}(s.first_name);
+        std::size_t h2 = std::hash<std::string>{}(s.last_name);
+        return h1 ^ (h2 << 1); // or use boost::hash_combine
+    }
+};
+ 
+int main()
+{
+    std::string str = "Meet the new boss...";
+    std::size_t str_hash = std::hash<std::string>{}(str);
+    std::cout << "hash(" << std::quoted(str) << ") =\t" << str_hash << '\n';
+ 
+    S obj = {"Hubert", "Farnsworth"};
+    // Using the standalone function object.
+    std::cout << "hash(" << std::quoted(obj.first_name) << ", "
+              << std::quoted(obj.last_name) << ") =\t"
+              << MyHash{}(obj) << " (using MyHash) or\n\t\t\t\t"
+              << std::hash<S>{}(obj) << " (using injected specialization)\n";
+ 
+    // Custom hash makes it possible to use custom types in unordered containers.
+    // The example will use the injected std::hash<S> specialization above,
+    // to use MyHash instead, pass it as a second template argument.
+    std::unordered_set<S> names = {obj, {"Bender", "Rodriguez"}, {"Turanga", "Leela"}};
+    for (auto const& s: names)
+        std::cout << std::quoted(s.first_name) << ' '
+                  << std::quoted(s.last_name) << '\n';
+}
+```
+
+Possible outputs:
+
+```cpp
+hash("Meet the new boss...") =  10656026664466977650
+hash("Hubert", "Farnsworth") =  12922914235676820612 (using MyHash) or
+                                12922914235676820612 (using injected specialization)
+"Bender" "Rodriguez"
+"Turanga" "Leela"
+"Hubert" "Farnsworth"
+```
+
+```cpp
+// Simple move constructor
+// the expression "arg.member" is lvalue
+A(A&& arg) : member(std::move(arg.member)) {}
+ 
+// Simple move assignment operator
+A& operator=(A&& other) {
+  member = std::move(other.member);
+  return *this;
+}
+```
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+| DR | Applied to | Behavior as published | Correct behavior |
+| --- | --- | --- | --- |
+| [LWG 2119](https://cplusplus.github.io/LWG/issue2119) | C++11 | specializations for extended integer types were missing | provided |
+| [LWG 2148](https://cplusplus.github.io/LWG/issue2148) | C++11 | specializations for enumerations were missing | provided |
+| [LWG 2543](https://cplusplus.github.io/LWG/issue2543) | C++11 | `std::hash` might not be SFINAE-friendly | made SFINAE-friendly |
+| [LWG 2817](https://cplusplus.github.io/LWG/issue2817) | C++11 | specialization for [std::nullptr\_t](../types/nullptr_t.html "cpp/types/nullptr_t") was missing | provided |
+
