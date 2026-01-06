@@ -48,7 +48,7 @@ Defined in header <CppHeader name="vector" />.
   <Decl slot="decl">
     <RevisionBlock since="C++11" noborder>
       ```cpp
-      template< class Key >
+      template<class Key>
       struct hash;
       ```
     </RevisionBlock>
@@ -68,10 +68,10 @@ Given a type `Key`, each specialization `std::hash<Key>` is either _enabled_ or 
         -   [Swappable](../named_req/Swappable.html "cpp/named req/Swappable")
 
     -   Given the following values:
-        -   h, an object of type `std::hash<Key>`.
-        -   k1 and k2, objects of type `Key`.
+        -   `h`, an object of type `std::hash<Key>`.
+        -   `k1` and `k2`, objects of type `Key`.
     All following requirements are satisfied:
-        -   If k1 \== k2 is true, h(k1) \== h(k2) is also true.
+        -   If `k1 == k2` is true, `h(k1) == h(k2)` is also true.
         -   Unless `std::hash<Key>` is a [program-defined specialization](../language/type-id.html#Program-defined_type "cpp/language/type"), h(k1) will never throw an exception.
 
 -   Otherwise, `std::hash<Key>` is disabled.
@@ -100,8 +100,8 @@ In other words, they exist, but cannot be used.
 ### Member functions
 | | |
 |---|---|
-|`constuctor` | constructs a hash function object <br/> (public member function)|
-|`operator()` | calculates the hash of the argument <br/> (public member function)|
+|(constuctor) | <Desc kind="public member function">constructs a hash function object </Desc>|
+|[`operator()`](./operator-call/) | <Desc kind="public member function">calculates the hash of the argument </Desc>|
 
 
 ### Standard library specializations
@@ -223,18 +223,6 @@ hash("Hubert", "Farnsworth") =  12922914235676820612 (using MyHash) or
 "Bender" "Rodriguez"
 "Turanga" "Leela"
 "Hubert" "Farnsworth"
-```
-
-```cpp
-// Simple move constructor
-// the expression "arg.member" is lvalue
-A(A&& arg) : member(std::move(arg.member)) {}
- 
-// Simple move assignment operator
-A& operator=(A&& other) {
-  member = std::move(other.member);
-  return *this;
-}
 ```
 
 ## Defect reports
