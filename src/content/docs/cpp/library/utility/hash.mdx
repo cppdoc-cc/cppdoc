@@ -16,24 +16,42 @@ import { Card } from "@astrojs/starlight/components";
 import FlexTable from "@components/FlexTable.astro";
 
 <Card title="Defined in header">
-  <FlexTable>
-    <CppHeader name="bitset" />
-    <CppHeader name="coroutine" />
-    <CppHeader name="chrono" />
-    <CppHeader name="filesystem" />
-    <CppHeader name="functional" />
-    <CppHeader name="memory" />
-    <CppHeader name="optional" />
-    <CppHeader name="stacktrace" />
-    <CppHeader name="string" />
-    <CppHeader name="string_view" />
-    <CppHeader name="system_error" />
-    <CppHeader name="text_encoding" />
-    <CppHeader name="thread" />
-    <CppHeader name="typeindex" />
-    <CppHeader name="variant" />
-    <CppHeader name="vector" />
-  </FlexTable>
+  <table>
+    <tbody>
+      <tr>
+        <td><CppHeader name="bitset" /></td>
+        <td><CppHeader name="coroutine" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="chrono" /></td>
+        <td><CppHeader name="filesystem" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="functional" /></td>
+        <td><CppHeader name="memory" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="optional" /></td>
+        <td><CppHeader name="stacktrace" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="string" /></td>
+        <td><CppHeader name="string_view" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="system_error" /></td>
+        <td><CppHeader name="text_encoding" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="thread" /></td>
+        <td><CppHeader name="typeindex" /></td>
+      </tr>
+      <tr>
+        <td><CppHeader name="variant" /></td>
+        <td><CppHeader name="vector" /></td>
+      </tr>
+    </tbody>
+  </table>
 </Card>
 
 
@@ -56,10 +74,10 @@ Given a type `Key`, each specialization `std::hash<Key>` is either _enabled_ or 
 - If `std::hash<Key>` is not provided by the program or the user, it is disabled.
 - Otherwise, `std::hash<Key>` is enabled if all following conditions are satisfied:
     - All following requirements are satisfied:
-        - <DocLink dest="/cpp/language/named_req/Hash"> `Hash` </DocLink> (with `Key` as the function call argument type)
-        - <DocLink dest="/cpp/language/named_req/DefaultConstructible"> `DefaultConstructible` </DocLink>
-        - [CopyAssignable](../named_req/CopyAssignable.html "cpp/named req/CopyAssignable")
-        - [Swappable](../named_req/Swappable.html "cpp/named req/Swappable")
+        - <DocLink dest="/cpp/language/named_req/hash"> _Hash_ </DocLink> (with `Key` as the function call argument type)
+        - <DocLink dest="/cpp/language/named_req/default-constructible"> _DefaultConstructible_ </DocLink>
+        - <DocLink dest="/cpp/language/named_req/copy-assignable"> _CopyAssignable_ </DocLink>
+        - <DocLink dest="/cpp/language/named_req/swappable"> _Swappable_ </DocLink>
 
     - Given the following values:
         - `h`, an object of type `std::hash<Key>`.
@@ -210,7 +228,7 @@ int main()
 
 Possible outputs:
 
-```cpp
+```
 hash("Meet the new boss...") =  10656026664466977650
 hash("Hubert", "Farnsworth") =  12922914235676820612 (using MyHash) or
                                 12922914235676820612 (using injected specialization)
