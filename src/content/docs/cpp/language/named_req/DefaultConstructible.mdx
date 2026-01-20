@@ -1,0 +1,91 @@
+---
+title: "C++ named requirements: DefaultConstructible"
+cppdoc:
+  revision:
+    since: C++11
+---
+
+import { DR, DRList } from "@components/defect-report";
+import { Desc, DescList } from "@components/desc-list";
+
+Specifies that an instance of the type can be default constructed.
+
+
+## Requirements
+The type `T` satisfies _DefaultConstructible_ if all following statements and expressions are valid and have their specified effects:
+
+Given
+
+- `u`, an expression of type `T`.
+
+- `u`, an lvalue expression of type `Key`.
+
+|Expression/Statement| Postcondition|
+|---|---|
+|`T u;`| The object `u` is default-initialized.|
+|`T u{};`| The object `u` is value-initialized or aggregate-initialized.|
+|`T()`| All resources owned by `u` are reclaimed, no exceptions are thrown.|
+|`T{}`| A temporary object of type `T` is value-initialized or aggregate-initialized.|
+
+## Notes
+
+For objects of non-aggregate class type, a public default constructor must be defined (either user-defined or implicitly defined) to satisfy _DefaultConstructible_.
+
+Non-const objects of non-class object type are always _DefaultConstructible_.
+
+Const non-class types are not _DefaultConstructible_.
+
+Const aggregate types are not _DefaultConstructible_ if any of their members is an object of non-class type.
+
+Non-object types (function types, reference types, and the (possibly cv-qualified) type void) as well as the const non-object types are never _DefaultConstructible_.
+
+# Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="lwg 724" id={1} std="C++98">
+    <Fragment slot="behavior-published">
+      the requirements of _DefaultConstructible_ were missing
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      added
+    </Fragment>
+  </DR>
+  <DR kind="lwg 2170" id={1} std="C++98">
+    <Fragment slot="behavior-published">
+      initialzing an object of a _DefaultConstructible_ type with an
+empty initializer could only result in value-initialization
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      can also lead to aggregate-initialization
+    </Fragment>
+  </DR>
+</DRList>
+## See also
+
+<DescList>
+  <Desc kind="class template">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" vertical>
+        <Missing> `std::is_default_constructible` </Missing>
+      </RevisionBlock>
+      <RevisionBlock noborder since="C++11" vertical>
+        <Missing> `std::is_trivially_default_constructible` </Missing>
+      </RevisionBlock>
+      <RevisionBlock noborder since="C++11" vertical>
+        <Missing> `std::is_nothrow_default_constructible` </Missing>
+      </RevisionBlock>
+    </Fragment>
+    checks if a type has a default constructor
+  </Desc>
+  <Desc kind="concept">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20" vertical>
+        <Missing> `default_initializable` </Missing>
+      </RevisionBlock>
+    </Fragment>
+    specifies that an object of a type can be default constructed
+  </Desc>
+</DescList>
+

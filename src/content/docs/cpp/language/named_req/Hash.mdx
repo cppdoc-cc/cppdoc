@@ -1,0 +1,58 @@
+---
+title: "C++ named requirements: Hash"
+cppdoc:
+  revision:
+    since: C++11
+---
+
+import { DR, DRList } from "@components/defect-report";
+import { Desc, DescList } from "@components/desc-list";
+
+A ***Hash*** is a function object for which the output depends only on the input and has a very low probability of yielding the same output given different input values.
+
+
+## Requirements
+The type `T` satisfies `Hash` if
+
+The type `T` satisfies `FunctionObject`, `CopyConstructible`, `Destructible`, and
+Given
+
+- `h`, a value of type `T` or const `T`, whose argument type is `Key`,
+- `k`, a value of type convertible to `Key` or `const Key`,
+- `u`, an lvalue expression of type `Key`.
+
+The following expressions must be valid and have their specified effects.
+
+|Expression| Return type| Requirements|
+|---|---|---|
+|`h(k)`| `std::size_t`|The returned value depends only on the value of `k` for the duration of the program. <br/> All evaluations of `h(k)` executed within a given execution of a program yield the same result for the same value of `k`.<br/> The probability of `h(a) == h(b)` for `a != b` should approach `1.0 / std::numeric_limits<std::size_t>::max()`.|
+|`h(u)` | `std::size_t` | `u` is not modified.|
+
+## Standard Library
+
+<DescList>
+  <Desc kind="class template">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11" vertical>
+        <DocLink dest="/cpp/library/utility/hash"> `hash` </DocLink>
+      </RevisionBlock>
+    </Fragment>
+    hash function object
+  </Desc>
+</DescList>
+
+# Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="lwg 2291" id={1} std="C++11">
+    <Fragment slot="behavior-published">
+      same results for same arguments were required in all cases
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      only required within a single execution
+    </Fragment>
+  </DR>
+</DRList>
+
