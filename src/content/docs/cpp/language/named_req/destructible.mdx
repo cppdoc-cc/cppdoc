@@ -7,6 +7,8 @@ cppdoc:
 
 import { DR, DRList } from "@components/defect-report";
 import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
 
 Specifies that an instance of the type can be destructed.
 
@@ -36,13 +38,13 @@ Thanks to pseudo destructor call, all scalar types meet the requirement of Destr
 <DescList>
   <Desc kind="class template">
     <Fragment slot="item">
-      <RevisionBlock noborder since="C++11" vertical>
+      <RevisionBlock noborder since="C++11">
         <Missing> `std::is_destructible` </Missing>
       </RevisionBlock>
-      <RevisionBlock noborder since="C++11" vertical>
+      <RevisionBlock noborder since="C++11">
         <Missing> `std::is_trivially_destructible` </Missing>
       </RevisionBlock>
-      <RevisionBlock noborder since="C++11" vertical>
+      <RevisionBlock noborder since="C++11">
         <Missing> `std::is_nothrow_destructible` </Missing>
       </RevisionBlock>
     </Fragment>
@@ -50,7 +52,7 @@ Thanks to pseudo destructor call, all scalar types meet the requirement of Destr
   </Desc>
   <Desc kind="concept">
     <Fragment slot="item">
-      <RevisionBlock noborder since="C++20" vertical>
+      <RevisionBlock noborder since="C++20">
         <Missing> `destructible` </Missing>
       </RevisionBlock>
     </Fragment>

@@ -7,6 +7,8 @@ cppdoc:
 
 import { DR, DRList } from "@components/defect-report";
 import { Desc, DescList } from "@components/desc-list";
+import DocLink from "@components/DocLink.astro"
+import { Revision, RevisionBlock } from "@components/revision";
 
 A ***Hash*** is a function object for which the output depends only on the input and has a very low probability of yielding the same output given different input values.
 
@@ -46,7 +48,7 @@ The following expressions must be valid and have their specified effects.
 The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
 
 <DRList>
-  <DR kind="lwg 2291" id={1} std="C++11">
+  <DR kind="lwg" id={2291} std="C++11">
     <Fragment slot="behavior-published">
       same results for same arguments were required in all cases
     </Fragment>

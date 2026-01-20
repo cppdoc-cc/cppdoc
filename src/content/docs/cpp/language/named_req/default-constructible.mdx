@@ -7,6 +7,8 @@ cppdoc:
 
 import { DR, DRList } from "@components/defect-report";
 import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
 
 Specifies that an instance of the type can be default constructed.
 
@@ -44,7 +46,7 @@ Non-object types (function types, reference types, and the (possibly cv-qualifie
 The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
 
 <DRList>
-  <DR kind="lwg 724" id={1} std="C++98">
+  <DR kind="lwg" id={724} std="C++98">
     <Fragment slot="behavior-published">
       the requirements of _DefaultConstructible_ were missing
     </Fragment>
@@ -52,7 +54,7 @@ The following behavior-changing defect reports were applied retroactively to pre
       added
     </Fragment>
   </DR>
-  <DR kind="lwg 2170" id={1} std="C++98">
+  <DR kind="lwg" id={2170} std="C++98">
     <Fragment slot="behavior-published">
       initialzing an object of a _DefaultConstructible_ type with an
 empty initializer could only result in value-initialization
@@ -67,13 +69,13 @@ empty initializer could only result in value-initialization
 <DescList>
   <Desc kind="class template">
     <Fragment slot="item">
-      <RevisionBlock noborder since="C++11" vertical>
+      <RevisionBlock noborder since="C++11">
         <Missing> `std::is_default_constructible` </Missing>
       </RevisionBlock>
-      <RevisionBlock noborder since="C++11" vertical>
+      <RevisionBlock noborder since="C++11">
         <Missing> `std::is_trivially_default_constructible` </Missing>
       </RevisionBlock>
-      <RevisionBlock noborder since="C++11" vertical>
+      <RevisionBlock noborder since="C++11">
         <Missing> `std::is_nothrow_default_constructible` </Missing>
       </RevisionBlock>
     </Fragment>
@@ -81,7 +83,7 @@ empty initializer could only result in value-initialization
   </Desc>
   <Desc kind="concept">
     <Fragment slot="item">
-      <RevisionBlock noborder since="C++20" vertical>
+      <RevisionBlock noborder since="C++20">
         <Missing> `default_initializable` </Missing>
       </RevisionBlock>
     </Fragment>
