@@ -15,6 +15,7 @@ import AutoCollapse from "@components/AutoCollapse.astro";
 import FlexTable from "@components/FlexTable.astro";
 import Incomplete from "@components/Incomplete.astro";
 import WG21PaperLink from "@components/WG21PaperLink.astro";
+import { KeywordColumn, KeywordGrid } from "@components/keyword-table";
 
 export {
   Behavior,
@@ -38,4 +39,6 @@ export {
   FlexTable,
   Incomplete,
   WG21PaperLink,
+  KeywordColumn,
+  KeywordGrid,
 };
