@@ -12,7 +12,7 @@ import { ParamDoc, ParamDocList } from "@components/param-doc";
 
 An <DocLink dest="cpp/language/exceptions">exception</DocLink> thrown in a `try` block can possibly be handled by an associated handler.
 
-### Syntax
+## Syntax
 
 <DeclDoc id = {1}>
   <Decl slot="decl">
@@ -38,18 +38,18 @@ An <DocLink dest="cpp/language/exceptions">exception</DocLink> thrown in a `try`
     A <DocLink dest="cpp/language/statements#Compound_statements">compound statement</DocLink>.
   </ParamDoc>
   <ParamDoc name="handler-seq">
-    A non-empty sequence of <DocLink dest="cpp/language/catch">handlers</DocLink>.
+    A non-empty sequence of <DocLink dest="cpp/language/exceptions/catch">handlers</DocLink>.
   </ParamDoc>
   <ParamDoc name="ctor-initializer">
     Member initializer list (for <DocLink dest="cpp/language/constructor#Member_initializer_list">constructors</DocLink> only).
   </ParamDoc>
 </ParamDocList>
 
-### Ordinary `try` block
+## Ordinary `try` block
 
 An ordinary `try` block is a <DocLink dest="cpp/language/statements">statement</DocLink>.
 
-If an exception is thrown from its `compound-statement`, the exception will be matched against the <DocLink dest="cpp/language/catch">handlers</DocLink> in its `handler-seq`:
+If an exception is thrown from its `compound-statement`, the exception will be matched against the <DocLink dest="cpp/language/exceptions/catch">handlers</DocLink> in its `handler-seq`:
 
 ```cpp
 void f()
@@ -67,11 +67,11 @@ void f()
 }
 ```
 
-### Function `try` block
+## Function `try` block
 
 A function `try` block is a special kind of <DocLink dest="cpp/language/function#Function_definition">function body</DocLink>.
 
-If an exception is thrown from its `compound-statement` or `ctor-initializer` (if any), the exception will be matched against the <DocLink dest="cpp/language/catch">handlers</DocLink> in its `handler-seq`:
+If an exception is thrown from its `compound-statement` or `ctor-initializer` (if any), the exception will be matched against the <DocLink dest="cpp/language/exceptions/catch">handlers</DocLink> in its `handler-seq`:
 
 ```cpp
 int f(bool cond)
@@ -108,11 +108,11 @@ Exceptions thrown in destructors of objects with static <DocLink dest="cpp/langu
 Exceptions thrown in destructors of objects with thread storage duration or in constructors of objects associated with non-block variables with thread storage duration are not caught by a function `try` block on the initial function of the thread.
 </RevisionBlock>
 
-Flowing off the end of the `compound-statement` of a <DocLink dest="cpp/language/catch">handler</DocLink> of a function `try` block is equivalent to flowing off the end of the `compound-statement` of that function `try` block, unless the function is a constructor or destructor (see below).
+Flowing off the end of the `compound-statement` of a <DocLink dest="cpp/language/exceptions/catch">handler</DocLink> of a function `try` block is equivalent to flowing off the end of the `compound-statement` of that function `try` block, unless the function is a constructor or destructor (see below).
 
-#### Constructor and destructor `try` block
+### Constructor and destructor `try` block
 
-For a class `C`, if the function body of its constructor or destructor definition is a function `try` block, and an exception is thrown during the initialization or destruction, respectively, of `C`'s subobjects, the exception will also be matched against the <DocLink dest="cpp/language/catch">handlers</DocLink> in the `handler-seq` of the function `try` block:
+For a class `C`, if the function body of its constructor or destructor definition is a function `try` block, and an exception is thrown during the initialization or destruction, respectively, of `C`'s subobjects, the exception will also be matched against the <DocLink dest="cpp/language/exceptions/catch">handlers</DocLink> in the `handler-seq` of the function `try` block:
 
 ```cpp
 int f(bool cond = true)
@@ -154,9 +154,9 @@ Referring to any non-static member or base class of an object in the handler for
 
 If a <DocLink dest="cpp/language/return">`return` statement</DocLink> appears in a handler of the function `try` block of a constructor, the program is ill-formed.
 
-The <DocLink dest="cpp/language/catch#Activating_the_handler">currently handled exception</DocLink> is rethrown if control reaches the end of a handler of the function `try` block of a constructor or destructor.
+The <DocLink dest="cpp/language/exceptions/catch#Activating_the_handler">currently handled exception</DocLink> is rethrown if control reaches the end of a handler of the function `try` block of a constructor or destructor.
 
-### Control flow
+## Control flow
 
 The `compound-statement` of a `try` block is a <DocLink dest="cpp/language/statements#Control-flow-limited_statements">control-flow-limited statement</DocLink>:
 
@@ -199,11 +199,11 @@ catch(...)
 label: ;
 ```
 
-### Keywords
+## Keywords
 
 - <DocLink dest="cpp/keyword/try">`try`</DocLink>
 
-### Defect reports
+## Defect reports
 
 The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
 
@@ -226,7 +226,7 @@ The following behavior-changing defect reports were applied retroactively to pre
   </DR>
 </DRList>
 
-### See also
+## See also
 
-- <DocLink dest="cpp/language/throw">Throwing exceptions</DocLink>
-- <DocLink dest="cpp/language/catch">Handling exceptions</DocLink>
+- <DocLink dest="cpp/language/exceptions/throw">Throwing exceptions</DocLink>
+- <DocLink dest="cpp/language/exceptions/catch">Handling exceptions</DocLink>

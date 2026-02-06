@@ -12,7 +12,7 @@ import { ParamDoc, ParamDocList } from "@components/param-doc";
 
 An <DocLink dest="/cpp/language/exceptions">exception</DocLink> can be handled by a handler.
 
-### Handler
+## Handler
 
 <DeclDoc id={1}>
   <Decl slot="decl">
@@ -71,7 +71,7 @@ If the parameter is declared to have type “array of `T`” or function type `T
 
 A handler with parameter type `T` can be abbreviated as “a handler of type `T`”.
 
-### Matching exceptions
+## Matching exceptions
 
 Each `try` block associates with a number of handlers, these handlers form a handler sequence. When an exception is thrown from a `try` block, the handlers in the sequence are tried in order of appearance to match the exception.
 
@@ -106,11 +106,11 @@ If no match is found among the handlers for a `try` block, the search for a matc
 
 If no matching handler is found, <DocLink dest="/cpp/error/terminate">std::terminate</DocLink> is invoked; whether or not the stack is <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Stack_unwinding">unwound</DocLink> before this invocation of <DocLink dest="/cpp/error/terminate">std::terminate</DocLink> is implementation-defined.
 
-### Handling exceptions
+## Handling exceptions
 
 When an exception is thrown, control is transferred to the nearest handler with a matching type; “nearest” means the handler for which the compound statement or the member initializer list (if present) following the `try` keyword was most recently entered by the thread of control and not yet exited.
 
-#### Initializing the handler parameter
+### Initializing the handler parameter
 
 The parameter declared in the parameter list (if any), of type “possibly cv-qualified `T`” or “lvalue reference to possibly cv-qualified `T`”, is initialized from the <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Exception_object">exception object</DocLink>, of type `E`, as follows:
 
@@ -123,7 +123,7 @@ When the parameter is declared as an object, any changes to that object will not
 
 When the parameter is declared as a reference to an object, any changes to the referenced object are changes to the exception object and will have effect should that object be rethrown.
 
-#### Activating the handler
+### Activating the handler
 
 A handler is considered _active_ when initialization is complete for the parameter (if any) of the handler.
 
@@ -133,7 +133,7 @@ A handler is no longer considered active when the handler exits.
 
 The exception with the most recently activated handler that is still active is called the _currently handled exception_. Such an exception can be <DocLink dest="/cpp/language/exceptions/throwing_exceptions#throw_expressions">rethrown</DocLink>.
 
-### Control flow
+## Control flow
 
 The `compound-statement` of a handler is a <DocLink dest="/cpp/language/statements#Control-flow-limited_statements">control-flow-limited statement</DocLink>:
 
@@ -153,7 +153,7 @@ void f()
 }
 ```
 
-### Notes
+## Notes
 
 <DocLink dest="/cpp/language/exceptions/throwing_exceptions#Stack_unwinding">Stack unwinding</DocLink> occurs while control is transferring to a handler. When a handler becomes active, stack unwinding is already completed.
 
@@ -198,11 +198,11 @@ catch (const float* pf)
 }
 ```
 
-### Keywords
+## Keywords
 
 - <DocLink dest="/cpp/keyword/catch">`catch`</DocLink>
 
-### Example
+## Example
 
 The following example demonstrates several usage cases of the handlers:
 
@@ -247,7 +247,7 @@ Accessing the 11th element of the vector...
  a standard exception was caught, with message: 'out_of_range'
 ```
 
-### Defect reports
+## Defect reports
 
 The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
 
@@ -302,7 +302,7 @@ The following behavior-changing defect reports were applied retroactively to pre
   </DR>
 </DRList>
 
-### References
+## References
 
 - C++23 standard (ISO/IEC 14882:2024):
   - 14.4 Handling an exception [except.handle]
@@ -319,7 +319,7 @@ The following behavior-changing defect reports were applied retroactively to pre
 - C++98 standard (ISO/IEC 14882:1998):
   - 15.3 Handling an exception [except.handle]
 
-### See also
+## See also
 
 - <DocLink dest="/cpp/language/exceptions/try">`try` block</DocLink>
 - <DocLink dest="/cpp/language/exceptions/throw">Throwing exceptions</DocLink>

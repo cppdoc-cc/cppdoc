@@ -22,13 +22,13 @@ It can be used within a function template's <DocLink dest="/cpp/language/excepti
   noexcept(/*$s:expression*/)
   ```
   </Decl>
+
+  Returns a <DocLink dest="/cpp/language/value_category#prvalue">prvalue</DocLink> of type `bool`. The result is `true` if <Revision until="C++17">the set of <DocLink dest="/cpp/language/exceptions/exception_specification/dynamic_specification" text="potential exceptions" /> of the _expression_ is empty</Revision><Revision since="C++17">_expression_ is specified to be <DocLink dest="/cpp/language/exceptions/exception_specification/noexcept_specification">non-throwing</DocLink></Revision>, and `false` otherwise.
+
+  _expression_ is an <DocLink dest="/cpp/language/expressions#Potentially-evaluated_expressions">unevaluated operand</DocLink>.
+
+  <Revision since="C++17">If _expression_ is a prvalue, <DocLink dest="/cpp/language/implicit_cast#Temporary_materialization">temporary materialization</DocLink> is applied.</Revision>
 </DeclDoc>
-
-Returns a <DocLink dest="/cpp/language/value_category#prvalue">prvalue</DocLink> of type `bool`. The result is `true` if <Revision until="C++17">the set of <DocLink dest="/cpp/language/exceptions/exception_specification/dynamic_specification" text="potential exceptions" /> of the _expression_ is empty</Revision><Revision since="C++17">_expression_ is specified to be <DocLink dest="/cpp/language/exceptions/exception_specification/noexcept_specification" text="non-throwing" /></Revision>, and `false` otherwise.
-
-_expression_ is an <DocLink dest="/cpp/language/expressions#Potentially-evaluated_expressions">unevaluated operand</DocLink>.
-
-<Revision since="C++17">If _expression_ is a prvalue, <DocLink dest="/cpp/language/implicit_cast#Temporary_materialization">temporary materialization</DocLink> is applied.</Revision>
 
 ## Notes
 
@@ -40,7 +40,7 @@ If _expression_ is of a class type or (possibly multidimensional) array thereof,
 
 ## Keywords
 
-*   <DocLink dest="/cpp/keywords/noexcept">`noexcept`</DocLink>
+* <DocLink dest="/cpp/keywords/noexcept">`noexcept`</DocLink>
 
 ## Example
 
@@ -119,22 +119,22 @@ V(lvalue V) is noexcept(false)
 The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
 
 <DRList>
-<DR kind="cwg" id={2722} std="C++17">
-  <Fragment slot="behavior-published">
-    it was unclear whether temporary materialization is applied if _expression_ is a prvalue
-  </Fragment>
-  <Fragment slot="correct-behavior">
-    it is applied in this case 
-  </Fragment>
-</DR>
-<DR kind="cwg" id={2792} std="C++11">
-  <Fragment slot="behavior-published">
-    the `noexcept` operator was required to determine whether exceptions may be thrown in the case of encountering undefined behavior
-  </Fragment>
-  <Fragment slot="correct-behavior">
-    not required 
-  </Fragment>
-</DR>
+  <DR kind="cwg" id={2722} std="C++17">
+    <Fragment slot="behavior-published">
+      it was unclear whether temporary materialization is applied if _expression_ is a prvalue
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      it is applied in this case 
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={2792} std="C++11">
+    <Fragment slot="behavior-published">
+      the `noexcept` operator was required to determine whether exceptions may be thrown in the case of encountering undefined behavior
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      not required 
+    </Fragment>
+  </DR>
 </DRList>
 
 ## See also
@@ -142,10 +142,12 @@ The following behavior-changing defect reports were applied retroactively to pre
 <DescList>
   <Desc>
     <DocLink slot="item" dest="/cpp/language/exceptions/noexcept_spec">noexcept specifier<Revision since="C++11"/></DocLink>
-    *   specifies whether a function could throw exceptions
+
+    specifies whether a function could throw exceptions
   </Desc>
   <Desc>
     <DocLink slot="item" dest="/cpp/language/exceptions/exception_spec">Dynamic exception specification<Revision until="C++17"/></DocLink>
-    *   specifies what exceptions are thrown by a function<Revision traits={[{ trait: "deprecated", since: "C++26" }]}/>
+
+    <Revision traits={[{ trait: "deprecated", since: "C++26" }]}>specifies what exceptions are thrown by a function</Revision>
   </Desc>
 </DescList>

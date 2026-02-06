@@ -13,14 +13,14 @@ import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-tes
 
 Exception handling provides a way of transferring control and information from some point in the execution of a program to a handler associated with a point previously passed by the execution (in other words, exception handling transfers control up the call stack).
 
-Evaluating a <DocLink dest="cpp/language/throw.html#throw_expressions">`throw` expression</DocLink> will throw an exception. Exceptions can also be thrown in <DocLink dest="cpp/language/throw.html#throw_expressions">other contexts</DocLink>.
+Evaluating a <DocLink dest="cpp/language/exceptions/throw.html#throw_expressions">`throw` expression</DocLink> will throw an exception. Exceptions can also be thrown in <DocLink dest="cpp/language/exceptions/throw.html#throw_expressions">other contexts</DocLink>.
 
-In order for an exception to be caught, the `throw` expression has to be inside a <DocLink dest="cpp/language/try">`try` block</DocLink>, and the `try` block has to contain a <DocLink dest="cpp/language/catch">handler</DocLink> that matches the type of the exception object.
+In order for an exception to be caught, the `throw` expression has to be inside a <DocLink dest="cpp/language/exceptions/try">`try` block</DocLink>, and the `try` block has to contain a <DocLink dest="cpp/language/exceptions/catch">handler</DocLink> that matches the type of the exception object.
 
 When declaring a function, the following specification(s) may be provided to limit the types of the exceptions a function may throw:
 
-- <Revision since="C++17"><DocLink dest="cpp/language/cpp/language/except_spec">dynamic exception specifications</DocLink></Revision>
-- <Revision since="C++11"><DocLink dest="cpp/language/cpp/language/noexcept_spec">noexcept specifications</DocLink></Revision>
+- <Revision until="C++17"><DocLink dest="cpp/language/exceptions/except_spec">dynamic exception specifications</DocLink></Revision>
+- <Revision since="C++11"><DocLink dest="cpp/language/exceptions/noexcept_spec">noexcept specifications</DocLink></Revision>
 
 Errors that arise during exception handling are handled by <DocLink dest="cpp/error/terminate">`std::terminate`</DocLink> and <Revision since="C++17"><DocLink dest="cpp/error/unexpected">`std::unexpected`</DocLink></Revision>.
 

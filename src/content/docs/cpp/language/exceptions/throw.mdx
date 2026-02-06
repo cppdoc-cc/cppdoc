@@ -12,7 +12,7 @@ import { ParamDoc, ParamDocList } from "@components/param-doc";
 
 Throwing an <DocLink dest="cpp/language/exceptions">exception</DocLink> transfers control to a <DocLink dest="cpp/language/catch">handler</DocLink>.
 
-An exception can be thrown from <DocLink dest="cpp/language/throw#throw_expressions">`throw` expressions</DocLink>, the following contexts may also throw exceptions:
+An exception can be thrown from <DocLink dest="cpp/language/exceptions/throw#throw_expressions">`throw` expressions</DocLink>, the following contexts may also throw exceptions:
 
 - <DocLink dest="cpp/memory/new/operator_new">allocation functions</DocLink>
 - <DocLink dest="cpp/language/dynamic_cast">`dynamic_cast`</DocLink>
@@ -20,7 +20,7 @@ An exception can be thrown from <DocLink dest="cpp/language/throw#throw_expressi
 - <DocLink dest="cpp/language/new">`new` expressions</DocLink>
 - <DocLink dest="cpp/standard_library">standard library</DocLink> functions
 
-### Exception object
+## Exception object
 
 Throwing an exception initializes an object with dynamic <DocLink dest="cpp/language/storage_duration">storage duration</DocLink>, called the *exception object*.
 
@@ -30,7 +30,7 @@ If the type of the exception object would be one of the following types, the pro
 - an <DocLink dest="cpp/language/abstract_class">abstract class type</DocLink>
 - a pointer to an incomplete type other than (possibly cv-qualified) `void`
 
-#### Constructing and destructing exception objects
+### Constructing and destructing exception objects
 
 Given the type of the exception object as `T`:
 
@@ -41,7 +41,7 @@ Given the type of the exception object as `T`:
 
 The memory for the exception object is allocated in an unspecified way. The only guarantee is that the storage will never be allocated by global <DocLink dest="cpp/memory/new/operator_new">allocation functions</DocLink>.
 
-If a <DocLink dest="cpp/language/catch">handler</DocLink> exits by <DocLink dest="cpp/language/throw#throw_expressions">rethrowing</DocLink>, control is passed to another handler for the same exception object. The exception object is not destructed in this case.
+If a <DocLink dest="cpp/language/catch">handler</DocLink> exits by <DocLink dest="cpp/language/exceptions/throw#throw_expressions">rethrowing</DocLink>, control is passed to another handler for the same exception object. The exception object is not destructed in this case.
 
 <RevisionBlock until="C++11">
 When the last remaining active handler for the exception exits by any means other than rethrowing, the exception object is destroyed and the implementation may deallocate the memory for the temporary object in an unspecified way.
@@ -57,7 +57,7 @@ The points of potential destruction for the exception object are:
 Among all points of potential destruction for the exception object, there is an unspecified last one where the exception object is destroyed. All other points <DocLink dest="cpp/language/multithread">happen before</DocLink> that last one. The implementation may then deallocate the memory for the exception object in an unspecified way.
 </RevisionBlock>
 
-### `throw` expressions
+## `throw` expressions
 
 <DeclDoc id = {1}>
   <Decl slot="decl">
@@ -104,7 +104,7 @@ catch (...) // catch all exceptions
 }
 ```
 
-### Stack unwinding
+## Stack unwinding
 
 Once the exception object is constructed, the control flow works backwards (up the call stack) until it reaches the start of a <DocLink dest="cpp/language/try">`try` block</DocLink>, at which point the parameters of all associated handlers are compared, in order of appearance, with the type of the exception object to find a <DocLink dest="cpp/language/catch#Matching_exceptions">match</DocLink>. If no match is found, the control flow continues to unwind the stack until the next `try` block, and so on. If a match is found, the control flow jumps to the matching handler.
 
@@ -124,7 +124,7 @@ If any function that is called directly by the stack unwinding mechanism, after 
 
 If an exception is thrown and not caught, including exceptions that escape the initial function of <DocLink dest="cpp/thread/thread">`std::thread`</DocLink>, the main function, and the constructor or destructor of any static or thread-local objects, then <DocLink dest="cpp/error/terminate">`std::terminate`</DocLink> is called. It is implementation-defined whether any stack unwinding takes place for uncaught exceptions.
 
-### Notes
+## Notes
 
 When rethrowing exceptions, the second form must be used to avoid object slicing in the (typical) case where exception objects use inheritance:
 
@@ -162,11 +162,11 @@ int main()
 }
 ```
 
-### Keywords
+## Keywords
 
 - <DocLink dest="cpp/keyword/throw">`throw`</DocLink>
 
-### Example
+## Example
 
 ```cpp
 #include <iostream>
@@ -242,7 +242,7 @@ C::C() exiting with exception
 main() failed to create C with: error
 ```
 
-### Defect reports
+## Defect reports
 
 The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
 
@@ -297,7 +297,7 @@ The following behavior-changing defect reports were applied retroactively to pre
   </DR>
 </DRList>
 
-### References
+## References
 
 
 - C++23 standard (ISO/IEC 14882:2024): 
@@ -318,7 +318,7 @@ The following behavior-changing defect reports were applied retroactively to pre
 - C++98 standard (ISO/IEC 14882:1998): 
   - 15.1 Throwing an exception [except.throw] 
 
-### See also
+## See also
 
 - <DocLink dest="cpp/language/copy elision">copy elision</DocLink>
 - <DocLink dest="cpp/language/try">`try` block</DocLink>
