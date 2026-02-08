@@ -1,0 +1,31 @@
+---
+import { isLinkMissing, normalizeLink } from "../lib/doc-link";
+
+interface Props {
+  dest: string;
+  section?: string;
+}
+
+const { dest, section } = Astro.props;
+
+const missing = await isLinkMissing(dest);
+const link = normalizeLink(dest) + (section ? "#" + section : "");
+---
+
+{
+  missing ? (
+    <span class="doc-link missing" title={`${dest} (missing)`}>
+      <slot />
+    </span>
+  ) : (
+    <a class="doc-link" href={link} title={dest}>
+      <slot />
+    </a>
+  )
+}
+
+<style>
+  .doc-link.missing {
+    color: var(--cppdoc-color-missing-link);
+  }
+</style>

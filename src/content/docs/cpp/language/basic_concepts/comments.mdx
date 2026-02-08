@@ -1,0 +1,110 @@
+---
+title: Comments
+description: Auto‑generated from cppreference
+---
+
+import { Desc, DescList, DocLink } from '@components/index';
+import { Decl, DeclDoc } from "@components/decl-doc";
+
+Comments serve as a sort of in-code documentation. When inserted into a program, they are effectively ignored by the compiler; they are solely intended to be used as notes by the humans that read source code. Although specific documentation is not part of the C++ standard, several utilities exist that parse comments with different documentation formats.
+
+## Syntax
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    /* comment */
+    ```
+  </Decl>
+
+  Often known as "C-style" or "multi-line" comments.
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    // comment
+    ```
+  </Decl>
+  Often known as "C++-style" or "single-line" comments.
+</DeclDoc>
+
+All comments are removed from the program at <DocLink dest="/cpp/language/translation_phases">translation phase 3</DocLink> by replacing each comment with a single whitespace character.
+
+## C-style
+
+C-style comments are usually used to comment large blocks of text, however, they can be used to comment single lines. To insert a C-style comment, simply surround text with `/*` and `*/`; this will cause the contents of the comment to be ignored by the compiler. Although it is not part of the C++ standard, `/**` and `*/` are often used to indicate documentation blocks; this is legal because the second asterisk is simply treated as part of the comment. C-style comments cannot be nested.
+
+## C++-style
+
+C++-style comments are usually used to comment single lines, however, multiple C++-style comments can be placed together to form multi-line comments. C++-style comments tell the compiler to ignore all content between `//` and a new line.
+
+## Notes
+
+Because comments <DocLink dest="/cpp/language/translation_phases">are removed</DocLink> before the preprocessor stage, a macro cannot be used to form a comment and an unterminated C-style comment doesn't spill over from an #include'd file.
+
+Besides commenting out, other mechanisms used for source code exclusion are
+
+```cpp
+#if 0
+    std::cout << "this will not be executed or even compiled\n";
+#endif
+```
+
+and
+
+```cpp
+if (false)
+{
+    std::cout << "this will not be executed\n";
+}
+```
+
+## Example
+
+```cpp
+#include <iostream>
+
+/* C-style comments can contain
+multiple lines */
+/* or just one */
+
+/**************
+ *  you can insert any *, but
+ *  you can't make comments nested
+ */
+
+// C++-style comments can comment one line
+
+// or, they can
+// be strung together
+
+int main()
+{
+    // comments are removed before preprocessing,
+    // so ABC is "1", not "1//2134", and "1 hello world"
+    // will be printed
+#define ABC 1//2134
+    std::cout << ABC << " hello world\n";
+
+    // The below code won't be run
+    // return 1;
+
+    // The below code will be run
+    return 0;
+}
+```
+
+Output:
+
+```text
+1 hello world
+```
+
+## See also
+
+<DescList>
+<Desc>
+<DocLink slot="item" dest="/c/comment">C documentation</DocLink> for <span>comment</span>
+</Desc>
+</DescList>
