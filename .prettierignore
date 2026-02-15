@@ -1,0 +1,3 @@
+# We don't format .md/.mdx files with Prettier
+*.md
+*.mdx

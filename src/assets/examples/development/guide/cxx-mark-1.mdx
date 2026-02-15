@@ -1,0 +1,8 @@
+```cpp cxx-mark
+// syntax of for statement
+/*$s:attr*//*$opt*/ for ( /*$s:init-statement*/ /*$s:condition*//*$opt*/ ; /*$s:expression*//*$opt*/ ) /*$s:statement*/
+
+// exposition only alias template of conditionally const type
+template< bool Const, class T >
+using /*$e:maybe-const*/ = std::conditional_t<Const, const T, T>;
+```
