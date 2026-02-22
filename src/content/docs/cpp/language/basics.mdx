@@ -1,0 +1,32 @@
+---
+title: Overview
+sidebar:
+  order: 1
+---
+
+import { Revision } from "@components/revision";
+import DocLink from "@components/DocLink.astro";
+
+# Basic concepts
+
+This section provides definitions for the specific terminology and the concepts used when describing the C++ programming language.
+
+A C++ program is a sequence of text files (typically header and source files) that contain <DocLink dest="/cpp/language/declarations">declarations</DocLink>. They undergo <DocLink dest="/cpp/language/translation_phases">translation</DocLink> to become an executable program, which is executed when the C++ implementation calls its <DocLink dest="/cpp/language/main_function">main function</DocLink>.
+
+Certain words in a C++ program have special meaning, and these are known as <DocLink dest="/cpp/keyword">keywords</DocLink>. Others can be used as <DocLink dest="/cpp/language/identifiers">identifiers</DocLink>. <DocLink dest="/cpp/comment">Comments</DocLink> are ignored during translation. C++ programs also contain <DocLink dest="/cpp/language/expressions">literals</DocLink>, the values of characters inside them are determined by <DocLink dest="/cpp/language/charset">character sets and encodings</DocLink>. Certain characters in the program have to be represented with <DocLink dest="/cpp/language/escape">escape sequences</DocLink>.
+
+The *entities* of a C++ program are values, <DocLink dest="/cpp/language/objects">objects</DocLink>, <DocLink dest="/cpp/language/reference">references</DocLink><Revision since="C++17">, <DocLink dest="/cpp/language/structured_binding">structured bindings</DocLink></Revision><Revision since="C++26">, <DocLink dest="/cpp/language/function">result bindings</DocLink></Revision>, <DocLink dest="/cpp/language/functions">functions</DocLink>, <DocLink dest="/cpp/language/enum">enumerators</DocLink>, <DocLink dest="/cpp/language/type">types</DocLink>, class members, <DocLink dest="/cpp/language/templates">templates</DocLink>, <DocLink dest="/cpp/language/template_specialization">template specializations</DocLink><Revision since="C++11">, <DocLink dest="/cpp/language/pack">packs</DocLink></Revision>, and <DocLink dest="/cpp/language/namespace">namespaces</DocLink>. Preprocessor <DocLink dest="/cpp/preprocessor/replace">macros</DocLink> are not C++ entities.
+
+<DocLink dest="/cpp/language/declarations">Declarations</DocLink> may introduce entities, associate them with <DocLink dest="/cpp/language/name">names</DocLink> and define their properties. The declarations that define all properties required to use an entity are <DocLink dest="/cpp/language/definition">definitions</DocLink>. A program must contain only one definition of any non-inline function or variable that is <DocLink dest="/cpp/language/definition">odr-used</DocLink>.
+
+Definitions of functions usually include sequences of <DocLink dest="/cpp/language/statements">statements</DocLink>, some of which include <DocLink dest="/cpp/language/expressions">expressions</DocLink>, which specify the computations to be performed by the program.
+
+Names encountered in a program are associated with the declarations that introduced them using <DocLink dest="/cpp/language/lookup">name lookup</DocLink>. Each name is only valid within a part of the program called its <DocLink dest="/cpp/language/scope">scope</DocLink>. Some names have <DocLink dest="/cpp/language/storage_duration">linkage</DocLink> which makes them refer to the same entities when they appear in different scopes or translation units.
+
+Each object, reference, function, expression in C++ is associated with a <DocLink dest="/cpp/language/type">type</DocLink>, which may be <DocLink dest="/cpp/language/types">fundamental</DocLink>, compound, or <DocLink dest="/cpp/language/classes">user-defined</DocLink>, complete or <DocLink dest="/cpp/language/incomplete_type">incomplete</DocLink>, etc.
+
+Declared objects and declared references that are not <DocLink dest="/cpp/language/data_members">non-static data members</DocLink> are *variables ​*.
+
+## See also
+
+C documentation for <DocLink dest="/c/language/basic_concepts">Basic concepts</DocLink>

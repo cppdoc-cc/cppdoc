@@ -1,0 +1,22 @@
+---
+import type { CxxRevision } from "@src/types";
+
+interface Props {
+  value: string;
+  since: CxxRevision;
+}
+
+const { value, since } = Astro.props;
+---
+
+<tr>
+  <td>{value}</td>
+  <td class="ftm-since-cell">{since}</td>
+  <td><slot /></td>
+</tr>
+
+<style>
+  .ftm-since-cell {
+    color: var(--cppdoc-color-revision);
+  }
+</style>
