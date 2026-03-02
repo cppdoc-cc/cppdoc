@@ -1,0 +1,92 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+
+interface Props {
+  maxHeight?: number;
+}
+
+const maxHeight = Astro.props.maxHeight ?? 200;
+const autoCollapseMaxHeight = maxHeight + "px";
+---
+
+<div class="auto-collapse" data-max-height={maxHeight}>
+  <div class="content">
+    <slot />
+  </div>
+  <button class="expand-button hidden">
+    Expand
+    <Icon class="expand-icon" name="down-caret" size="1em" />
+  </button>
+</div>
+
+<script>
+  function initAutoCollapse() {
+    const collapseWrappers = document.querySelectorAll(".auto-collapse");
+
+    collapseWrappers.forEach((wrapper) => {
+      const contentElement = wrapper.querySelector(".content") as HTMLElement;
+      const button = wrapper.querySelector(".expand-button") as HTMLElement;
+
+      if (!contentElement || !button) return;
+
+      const maxHeight = Number.parseInt(
+        (wrapper as HTMLElement).dataset.maxHeight || "200",
+        10
+      );
+      if (contentElement.scrollHeight <= maxHeight)
+        return;
+
+      // The document content is longer than the maximum height, collapse it.
+      contentElement.classList.add("collapsed");
+      button.classList.remove("hidden");
+
+      button.addEventListener("click", () => {
+        contentElement.classList.remove("collapsed");
+        button.classList.add("hidden");
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", initAutoCollapse);
+  document.addEventListener("astro:page-load", initAutoCollapse);
+</script>
+
+<style define:vars={{ autoCollapseMaxHeight }}>
+  .auto-collapse > .content.collapsed {
+    max-height: var(--autoCollapseMaxHeight);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .auto-collapse > .content.collapsed::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--sl-color-bg));
+    pointer-events: none;
+  }
+
+  .auto-collapse > .expand-button {
+    display: block;
+    margin: 0 auto var(--sl-content-gap-y);
+    padding: 0.25rem 1rem;
+    background-color: var(--sl-color-text-accent);
+    color: var(--sl-color-black);
+    border: none;
+    border-radius: 999rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .auto-collapse > .expand-button.hidden {
+    display: none;
+  }
+
+  .auto-collapse > .expand-button > .expand-icon {
+    display: inline;
+    vertical-align: middle;
+  }
+</style>

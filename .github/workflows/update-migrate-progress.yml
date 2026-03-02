@@ -1,0 +1,45 @@
+name: Update Migration Progress
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force update even if no changes"
+        required: false
+        type: boolean
+
+jobs:
+  update-progress:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run update migration progress script
+        run: npm run update-migrate-progress
+
+      - name: Create orphan branch and force push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan migrate-progress
+          git add CPPREF_MIGRATE_PROGRESS.md
+          git commit -m "chore: update migration progress [skip ci]"
+          git push --force origin migrate-progress

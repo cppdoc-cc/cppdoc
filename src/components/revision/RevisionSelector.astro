@@ -1,0 +1,82 @@
+---
+import type { CxxRevision } from "@src/types";
+
+interface Props {
+  revisions: CxxRevision[];
+}
+
+const { revisions } = Astro.props;
+---
+
+<select id="revision-selector" class="revision-selector">
+  <option value="">Select a revision ...</option>
+  {revisions.map((rev) => <option value={rev}>{rev}</option>)}
+</select>
+
+<style>
+  .revision-selector {
+    font-size: 0.9em;
+    background-color: var(--sl-color-bg-nav);
+    box-shadow: var(--sl-shadow-sm);
+    padding-block: 0.3rem;
+    margin-bottom: 0.625rem;
+    padding-inline: 0.5rem calc(var(--sl-caret-size) + 0.5rem);
+    border: 1px solid var(--sl-color-hairline-light);
+    text-overflow: ellipsis;
+    color: inherit;
+    cursor: pointer;
+    appearance: menulist-button;
+  }
+</style>
+
+<style is:global>
+  .autorev-hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  import { selectedRevision } from "./store";
+  import { isRevisionInRange } from "@src/lib/revision";
+  import type { CxxRevision } from "@src/types";
+
+  const selector = document.getElementById(
+    "revision-selector"
+  ) as HTMLSelectElement | null;
+  if (selector) {
+    selector.addEventListener("change", () => {
+      if (selector.value === "") {
+        // The user selects the "Select a revision ..." option.
+        selectedRevision.set(null);
+      } else {
+        selectedRevision.set(selector.value as CxxRevision);
+      }
+    });
+  }
+
+  selectedRevision.subscribe((rev) => {
+    // Toggle all HTML elements with data-autorev-since and data-autorev-until
+    // attributes.
+    const elements = document.querySelectorAll<HTMLElement>(
+      "[data-autorev-since], [data-autorev-until]"
+    );
+    elements.forEach((el) => {
+      if (!rev) {
+        el.classList.remove("autorev-hidden");
+        return;
+      }
+
+      const since = el.dataset.autorevSince as CxxRevision | undefined;
+      const until = el.dataset.autorevUntil as CxxRevision | undefined;
+      const inRangeTest = isRevisionInRange(rev, { since, until });
+      if (inRangeTest === undefined || inRangeTest) {
+        // An undefined inRangeTest indicates that the revisions associated with
+        // the element are of a language different than the page's language. We
+        // should always display such elements.
+        el.classList.remove("autorev-hidden");
+      } else {
+        el.classList.add("autorev-hidden");
+      }
+    });
+  });
+</script>

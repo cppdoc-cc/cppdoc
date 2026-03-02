@@ -1,0 +1,49 @@
+---
+type BehaviorKind =
+  | "well-def"
+  | "impl-def"
+  | "unspec"
+  | "undef"
+  | "ill-formed"
+  | "ifndr";
+
+interface Props {
+  kind: BehaviorKind;
+}
+
+const { kind } = Astro.props;
+---
+
+<span class={`behavior behavior-${kind}`}>
+  <slot />
+</span>
+
+<style>
+  .behavior {
+    font-weight: bold;
+  }
+
+  .behavior-well-def {
+    color: var(--cppdoc-color-well-def);
+  }
+
+  .behavior-impl-def {
+    color: var(--cppdoc-color-impl-def);
+  }
+
+  .behavior-unspec {
+    color: var(--cppdoc-color-unspec);
+  }
+
+  .behavior-undef {
+    color: var(--cppdoc-color-undef);
+  }
+
+  .behavior-ill-formed {
+    color: var(--cppdoc-color-ill-formed);
+  }
+
+  .behavior-ifndr {
+    color: var(--cppdoc-color-ifndr);
+  }
+</style>
