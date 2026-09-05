@@ -1,0 +1,23 @@
+---
+title: Overview
+sidebar:
+  order: 1
+cppdoc:
+  keys: ["c.lang.basic"]
+---
+
+import DocLink from "@components/DocLink.astro";
+
+# Basic concepts
+
+This section provides definitions for the specific terminology and the concepts used when describing the C programming language.
+
+A C program is a sequence of text files (typically header and source files) that contain <DocLink dest="/c/language/declarations">declarations</DocLink>. They undergo <DocLink dest="/c/language/translation_phases">translation</DocLink> to become an executable program, which is executed when the OS calls its <DocLink dest="/c/language/main_function">main function</DocLink> (unless it is itself the OS or another *freestanding* program, in which case the entry point is implementation-defined).
+
+Certain words in a C program have special meaning, they are <DocLink dest="/c/keyword">keywords</DocLink>. Others can be used as <DocLink dest="/c/language/identifier">identifiers</DocLink>, which may be used to identify <DocLink dest="/c/language/object">objects</DocLink>, <DocLink dest="/c/language/functions">functions</DocLink>, <DocLink dest="/c/language/struct">struct</DocLink>, <DocLink dest="/c/language/union">union</DocLink>, or <DocLink dest="/c/language/enum">enumeration</DocLink> tags, their members, <DocLink dest="/c/language/typedef">typedef</DocLink> names, <DocLink dest="/c/language/statements">labels</DocLink>, or  <DocLink dest="/c/preprocessor/replace">macros</DocLink>.
+
+Each identifier (other than macro) is only valid within a part of the program called its <DocLink dest="/c/language/scope">scope</DocLink> and belongs to one of four kinds of <DocLink dest="/c/language/name_space">name spaces</DocLink>. Some identifiers have <DocLink dest="/c/language/storage_duration">linkage</DocLink> which makes them refer to the same entities when they appear in different scopes or translation units.
+
+Definitions of functions include sequences of <DocLink dest="/c/language/statements">statements</DocLink> and <DocLink dest="/c/language/declarations">declarations</DocLink>, some of which include <DocLink dest="/c/language/expressions">expressions</DocLink>, which specify the computations to be performed by the program.
+
+<DocLink dest="/c/language/declarations">Declarations</DocLink> and <DocLink dest="/c/language/expressions">expressions</DocLink> create, destroy, access, and manipulate <DocLink dest="/c/language/object">objects</DocLink>. Each <DocLink dest="/c/language/object">object</DocLink>, <DocLink dest="/c/language/functions">function</DocLink>, and <DocLink dest="/c/language/expressions">expression</DocLink> in C is associated with a <DocLink dest="/c/language/type">type</DocLink>.

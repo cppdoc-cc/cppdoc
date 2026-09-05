@@ -1,0 +1,29 @@
+---
+title: CppDoc
+# Remove the following line to display the site sidebar on this page.
+template: splash
+hero:
+  tagline: An open documentation for the C/C++ programming languages and their standard libraries.
+  image:
+    file: ../../assets/cpp-logo.svg
+  actions:
+    - text: Reference
+      link: /cpp/language/basics/
+      variant: primary
+      icon: right-arrow
+    - text: GitHub Repository
+      link: https://github.com/cppdoc-cc/cppdoc
+      icon: github
+      variant: minimal
+banner:
+  content: We're looking for your contributions!
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <LinkCard title="C++ Language Reference" href="/cpp/language/basics/" />
+  <LinkCard title="C++ Library Reference" href="/cpp/library/" />
+  <LinkCard title="C Language Reference" href="/c/language/basic_concepts/" />
+  <LinkCard title="C Library Reference" />
+</CardGrid>

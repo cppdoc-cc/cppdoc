@@ -1,0 +1,59 @@
+---
+title: "CopyAssignable"
+cppdoc:
+  revision:
+    since: C++11
+---
+
+import { DR, DRList } from "@components/defect-report";
+import { Desc, DescList } from "@components/desc-list";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+Specifies that an instance of the type can be copy-assigned from an lvalue expression.
+
+
+## Requirements
+
+The type T satisfies _CopyAssignable_ if
+
+- The type T satisfies _MoveAssignable_, and
+
+Given
+
+- `t`, a modifiable lvalue expression of type `T`,
+- `v`, an lvalue expression of type `T` or `const T` or an rvalue expression of type `const T`.
+
+The following expressions must be valid and have their specified effects.
+
+|Expression| Return type | Return value |Post-conditions|
+|---|---|---|---|
+|`t=v`| `T&` | `t` |The value of t is equivalent to the value of v.<br/> The value of v is unchanged.  |
+
+## See also
+
+<DescList>
+  <Desc kind="class template">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++11">
+        <Missing> `std::is_copy_assignable` </Missing>
+      </RevisionBlock>
+      <RevisionBlock noborder since="C++11">
+        <Missing> `std::is_trivially_copy_assignable` </Missing>
+      </RevisionBlock>
+      <RevisionBlock noborder since="C++11">
+        <Missing> `std::is_nothrow_copy_assignable` </Missing>
+      </RevisionBlock>
+    </Fragment>
+    checks if a type has a copy assignment operator
+  </Desc>
+  <Desc kind="concept">
+    <Fragment slot="item">
+      <RevisionBlock noborder since="C++20">
+        <Missing> `assignable_from` </Missing>
+      </RevisionBlock>
+    </Fragment>
+    specifies that an object of a type can be default constructed
+  </Desc>
+</DescList>
+
