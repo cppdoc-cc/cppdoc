@@ -1,0 +1,743 @@
+---
+title: Overview
+sidebar:
+  order: 1
+---
+
+import { Card } from "@astrojs/starlight/components";
+
+import Behavior from "@components/Behavior.astro";
+import { CppHeader } from "@components/header";
+import { DR, DRList } from "@components/defect-report";
+import {
+  FeatureTestMacro,
+  FeatureTestMacroValue,
+} from "@components/feature-test-macro";
+import FlexTable from "@components/FlexTable.astro";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+The C++ standard library provides a wide range of facilities that are usable in standard C++.
+
+## Category
+
+The <Missing>language support library</Missing> provides components that are required by certain parts of the C++ language, such as memory allocation (<Missing>new</Missing>/<Missing>delete</Missing>) and <Missing>exception processing</Missing>.
+
+<RevisionBlock since="C++20">
+  The <Missing>concepts library</Missing> describes library components that C++ programs may use to perform compile-time validation of <Missing>template arguments</Missing> and perform function dispatch based on properties of types.
+</RevisionBlock>
+
+The <Missing>diagnostics library</Missing> provides a consistent framework for reporting errors in a C++ program, including <Missing>predefined exception classes</Missing>.
+
+The <Missing>memory management library</Missing> provides components for memory management, including <Missing>smart pointers</Missing> <Revision since="C++11">and scoped allocator</Revision>.
+
+<RevisionBlock since="C++11">
+  The <Missing>metaprogramming library</Missing> describes facilities for use in <Missing>templates</Missing> and during constant evaluation, including <Missing>type traits</Missing>, <Revision since="C++14"><Missing>integer sequence</Missing></Revision>, and <Missing>rational arithmetic</Missing>.
+</RevisionBlock>
+
+The <Missing>general utilities library</Missing> includes components used by other library elements, such as a <Missing>predefined storage allocator</Missing> for dynamic storage management, and components used as infrastructure in C++ programs, such as <Revision since="C++11"><Missing>tuples</Missing> and</Revision> <Missing>function wrappers</Missing>.
+
+The <Missing>containers</Missing>, <Missing>iterators</Missing>, <Revision since="C++20"><Missing>ranges</Missing></Revision>, and <Missing>algorithms</Missing> libraries provide a C++ program with access to a subset of the most widely used algorithms and data structures.
+
+The <Missing>strings library</Missing> provides support for manipulating text represented as homogeneous sequences of following types: `char`, <Revision since="C++20">`char8_t`</Revision>, <Revision since="C++11">`char16_t`, `char32_t`</Revision>, `wchar_t`, and any other character-like types.
+
+The <Missing>text processing library</Missing> provides <Revision since="C++11"><Missing>regular expression</Missing> matching and searching</Revision>, <Revision since="C++20">utilities for <Missing>text formatting</Missing></Revision>, <Revision since="C++26">identifying text encodings</Revision>, and <Missing>localization facilities</Missing>.
+
+The <Missing>numerics library</Missing> provides <Missing>numeric algorithms</Missing> and <Missing>complex number</Missing> components that extend support for numeric processing. The <Missing>valarray</Missing> component provides support for n-at-a-time processing, potentially implemented as parallel operations on platforms that support such processing. <Revision since="C++11">The <Missing>random number component</Missing> provides facilities for generating pseudo-random numbers.</Revision>
+
+The <Missing>time library</Missing> provides generally useful time utilities.
+
+The <Missing>input/output library</Missing> provides the <Missing>iostream components</Missing> that are the primary mechanism for C++ program input and output. They can be used with other elements of the library, particularly strings, locales, and iterators.
+
+<RevisionBlock since="C++11">
+  The <Missing>thread support library</Missing> provides components to create and manage threads, including <Missing>atomic operations</Missing>, <Missing>mutual exclusion</Missing>, and inter-thread communication.
+</RevisionBlock>
+
+<RevisionBlock since="C++26">
+  The <Missing>execution support</Missing> library provides a framework for managing asynchronous execution on generic execution resources.
+</RevisionBlock>
+
+## Library contents
+
+The C++ standard library provides definitions for the <Missing>entities</Missing> and <Missing>macros</Missing> described in the synopses of the <Missing>C++ standard library headers</Missing>, unless otherwise specified.
+
+All library entities except <Missing>`operator new`</Missing> and <Missing>`operator delete`</Missing> are defined within the <Missing>namespace</Missing> `std` or namespaces nested within namespace `std` (except the entities for the C standard library facilities, see below). <Revision since="C++11">It is <Behavior kind="unspec">unspecified</Behavior> whether names declared in a specific namespace are declared directly in that namespace or in an <Missing>inline namespace</Missing> inside that namespace.</Revision>
+
+### Headers
+
+Each element of the C++ standard library is declared or defined (as appropriate) in a _header_. A header is not necessarily a source file, nor are the sequences delimited by `<` and `>` in header names necessarily valid source file names.
+
+The C++ standard library provides the _C++ library headers_ and _additional C++ headers for C library facilities_ (see "<Missing>headers</Missing>" page for descriptions):
+
+<Card title="C++ library headers">
+  <FlexTable>
+    <CppHeader name="algorithm" />
+    <CppHeader name="bitset" />
+    <CppHeader name="complex" />
+    <CppHeader name="deque" />
+    <CppHeader name="exception" />
+    <CppHeader name="fstream" />
+    <CppHeader name="functional" />
+    <CppHeader name="iomanip" />
+    <CppHeader name="ios" />
+    <CppHeader name="iosfwd" />
+    <CppHeader name="iostream" />
+    <CppHeader name="istream" />
+    <CppHeader name="iterator" />
+    <CppHeader name="limits" />
+    <CppHeader name="list" />
+    <CppHeader name="locale" />
+    <CppHeader name="map" />
+    <CppHeader name="memory" />
+    <CppHeader name="new" />
+    <CppHeader name="numeric" />
+    <CppHeader name="ostream" />
+    <CppHeader name="queue" />
+    <CppHeader name="set" />
+    <CppHeader name="sstream" />
+    <CppHeader name="stack" />
+    <CppHeader name="stdexcept" />
+    <CppHeader name="streambuf" />
+    <CppHeader name="string" />
+    <CppHeader name="typeinfo" />
+    <CppHeader name="utility" />
+    <CppHeader name="valarray" />
+    <CppHeader name="vector" />
+  </FlexTable>
+
+  <RevisionBlock since="C++11">
+    <FlexTable>
+      <CppHeader name="array" />
+      <CppHeader name="atomic" />
+      <CppHeader name="chrono" />
+      <CppHeader name="codecvt" />
+      <CppHeader name="condition_variable" />
+      <CppHeader name="forward_list" />
+      <CppHeader name="future" />
+      <CppHeader name="initializer_list" />
+      <CppHeader name="mutex" />
+      <CppHeader name="random" />
+      <CppHeader name="ratio" />
+      <CppHeader name="regex" />
+      <CppHeader name="scoped_allocator" />
+      <CppHeader name="system_error" />
+      <CppHeader name="thread" />
+      <CppHeader name="tuple" />
+      <CppHeader name="type_traits" />
+      <CppHeader name="typeindex" />
+      <CppHeader name="unordered_map" />
+      <CppHeader name="unordered_set" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <RevisionBlock since="C++14">
+    <FlexTable>
+      <CppHeader name="shared_mutex" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <RevisionBlock since="C++17">
+    <FlexTable>
+      <CppHeader name="any" />
+      <CppHeader name="charconv" />
+      <CppHeader name="execution" />
+      <CppHeader name="filesystem" />
+      <CppHeader name="memory_resource" />
+      <CppHeader name="optional" />
+      <CppHeader name="string_view" />
+      <CppHeader name="variant" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <RevisionBlock since="C++20">
+    <FlexTable>
+      <CppHeader name="barrier" />
+      <CppHeader name="bit" />
+      <CppHeader name="compare" />
+      <CppHeader name="concepts" />
+      <CppHeader name="coroutine" />
+      <CppHeader name="format" />
+      <CppHeader name="latch" />
+      <CppHeader name="numbers" />
+      <CppHeader name="ranges" />
+      <CppHeader name="semaphore" />
+      <CppHeader name="source_location" />
+      <CppHeader name="span" />
+      <CppHeader name="stop_token" />
+      <CppHeader name="syncstream" />
+      <CppHeader name="version" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <details>
+    <summary>Removed headers</summary>
+
+    <RevisionBlock
+      since="C++11"
+      traits={[{ trait: "deprecated", since: "C++17" }]}
+      removed="C++26"
+    >
+      <CppHeader name="codecvt" />
+    </RevisionBlock>
+    
+    <RevisionBlock
+      traits={[{ trait: "deprecated", since: "C++98" }]}
+      removed="C++26"
+    >
+      <CppHeader name="strstream" />
+    </RevisionBlock>
+  </details>
+</Card>
+
+<Card title="C++ headers for C library facilities">
+  <FlexTable>
+    <CppHeader name="cassert" />
+    <CppHeader name="cctype" />
+    <CppHeader name="cerrno" />
+    <CppHeader name="cfloat" />
+    <CppHeader name="climits" />
+    <CppHeader name="clocale" />
+    <CppHeader name="cmath" />
+    <CppHeader name="csetjmp" />
+    <CppHeader name="csignal" />
+    <CppHeader name="cstdarg" />
+    <CppHeader name="cstddef" />
+    <CppHeader name="cstdio" />
+    <CppHeader name="cstdlib" />
+    <CppHeader name="cstring" />
+    <CppHeader name="ctime" />
+    <CppHeader name="cwchar" />
+    <CppHeader name="cwctype" />
+  </FlexTable>
+
+  <RevisionBlock since="C++11">
+    <FlexTable>
+      <CppHeader name="cfend" />
+      <CppHeader name="cinttypes" />
+      <CppHeader name="cstdint" />
+      <CppHeader name="cuchar" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <details>
+    <summary>Removed headers</summary>
+
+    <RevisionBlock
+      since="C++11"
+      traits={[{ trait: "deprecated", since: "C++17" }]}
+      removed="C++20"
+    >
+      <CppHeader name="ccomplex" />
+    </RevisionBlock>
+    
+    <RevisionBlock removed="C++20">
+      <CppHeader name="ciso646" />
+    </RevisionBlock>
+
+    <RevisionBlock
+      since="C++11"
+      traits={[{ trait: "deprecated", since: "C++17" }]}
+      removed="C++20"
+    >
+      <CppHeader name="cstdalign" />
+    </RevisionBlock>
+
+    <RevisionBlock
+      since="C++11"
+      traits={[{ trait: "deprecated", since: "C++17" }]}
+      removed="C++20"
+    >
+      <CppHeader name="cstdbool" />
+    </RevisionBlock>
+
+    <RevisionBlock
+      since="C++11"
+      traits={[{ trait: "deprecated", since: "C++17" }]}
+      removed="C++20"
+    >
+      <CppHeader name="ctgmath" />
+    </RevisionBlock>
+  </details>
+</Card>
+
+A <Missing>freestanding implementation</Missing> has an <Behavior kind="impl-def">implementation-defined</Behavior> set of headers, see <Missing>here</Missing> for the minimal requirement on the set of headers.
+
+## C standard library
+
+The C++ standard library also makes available the facilities of the C standard library, suitably adjusted to ensure static type safety. The descriptions of many library functions rely on the C standard library for the semantics of those functions.
+
+In some cases, the signatures specified in standard C++ may be different from the signatures in the C standard library, and additional overloads may be declared, but the behavior and the preconditions <Revision since="C++17">(including those implied by C's <Missing>restrict</Missing>)</Revision> are the same unless otherwise stated.
+
+For compatibility with the C standard library, the C++ standard library provides the C headers listed below. The intended use of these headers is for interoperability only. It is possible that C++ source files need to include one of these headers in order to be valid ISO C. Source files that are not intended to also be valid ISO C should not use any of the C headers. See <Missing>here</Missing> for descriptions.
+
+<Card title="C headers">
+  <FlexTable>
+    <CppHeader name="cassert" displayName="assert.h" />
+    <CppHeader name="cctype" displayName="ctype.h" />
+    <CppHeader name="cerrno" displayName="errno.h" />
+    <CppHeader name="cfloat" displayName="float.h" />
+    <CppHeader name="ciso646" displayName="iso646.h" />
+    <CppHeader name="climits" displayName="limits.h" />
+    <CppHeader name="clocale" displayName="locale.h" />
+    <CppHeader name="cmath" displayName="math.h" />
+    <CppHeader name="csetjmp" displayName="setjmp.h" />
+    <CppHeader name="csignal" displayName="signal.h" />
+    <CppHeader name="cstdarg" displayName="stdarg.h" />
+    <CppHeader name="cstddef" displayName="stddef.h" />
+    <CppHeader name="cstdio" displayName="stdio.h" />
+    <CppHeader name="cstdlib" displayName="stdlib.h" />
+    <CppHeader name="cstring" displayName="string.h" />
+    <CppHeader name="ctime" displayName="time.h" />
+    <CppHeader name="cwchar" displayName="wchar.h" />
+    <CppHeader name="cwctype" displayName="wctype.h" />
+  </FlexTable>
+
+  <RevisionBlock since="C++11">
+    <FlexTable>
+      <CppHeader name="ccomplex" displayName="complex.h" />
+      <CppHeader name="cfenv" displayName="fenv.h" />
+      <CppHeader name="cinttypes" displayName="inttypes.h" />
+      <CppHeader name="cstdalign" displayName="stdalign.h" />
+      <CppHeader name="cstdbool" displayName="stdbool.h" />
+      <CppHeader name="cstdint" displayName="stdint.h" />
+      <CppHeader name="ctgmath" displayName="tgmath.h" />
+      <CppHeader name="cuchar" displayName="uchar.h" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <RevisionBlock since="C++23">
+    <FlexTable>
+      <CppHeader name="cstdatomic" displayName="stdatomic.h" />
+    </FlexTable>
+  </RevisionBlock>
+
+  <RevisionBlock since="C++26">
+    <FlexTable>
+      <CppHeader name="cstdbit" displayName="stdbit.h" />
+      <CppHeader name="cstdchkint" displayName="stdchkint.h" />
+    </FlexTable>
+  </RevisionBlock>
+</Card>
+
+Except otherwise noted, the contents of each header `cxxx` is the same as that of the corresponding header `xxx.h` as specified in the <Missing>C standard library</Missing>. In the C++ standard library, however, the declarations (except for names which are defined as macros in C) are within namespace scope of the namespace `std`. It is unspecified whether these names (including any overloads added) are first declared within the global namespace scope and are then injected into namespace `std` by explicit <Missing>using-declarations</Missing>.
+
+Names which are defined as macros in C (<Missing>`assert`</Missing>, <Missing>`offsetof`</Missing>, <Missing>`setjmp`</Missing>, <Missing>`va_arg`</Missing>, <Missing>`va_end`</Missing>, and <Missing>`va_start`</Missing>) must be defined as macros in the C++ standard library, even if C grants license for implementation as functions.
+
+Names that are defined as functions in C must be defined as functions in the C++ standard library. This disallows the practice, allowed in C, of providing a masking macro in addition to the function prototype. The only way to achieve equivalent inline behavior in C++ is to provide a definition as an extern <Missing>inline function</Missing>.
+
+Identifiers that are keywords or operators in C++ cannot be defined as macros in C++ standard library headers. In particular, including the standard header <CppHeader name="ciso646" displayName="iso646.h" /> has no effect.
+
+### Names associated with safe functions in standard C :badge[C++17]
+
+If any C++ header is included, it is <Behavior kind="impl-def">implementation-defined</Behavior> whether any of the following C standard Annex K names is declared in the global namespace (none of them is declared in namespace `std`):
+
+<Card title="C standard Annex K names">
+  <Missing>`abort_handler_s`</Missing>
+  <Missing>`abort_handler_s`</Missing>
+  <Missing>`asctime_s`</Missing>
+  <Missing>`bsearch_s`</Missing>
+  <Missing>`constraint_handler_t`</Missing>
+  <Missing>`ctime_s`</Missing>
+  <Missing>`errno_t`</Missing>
+  <Missing>`fopen_s`</Missing>
+  <Missing>`fprintf_s`</Missing>
+  <Missing>`freopen_s`</Missing>
+  <Missing>`fscanf_s`</Missing>
+  <Missing>`fwprintf_s`</Missing>
+  <Missing>`fwscanf_s`</Missing>
+  <Missing>`gets_s`</Missing>
+  <Missing>`gmtime_s`</Missing>
+  <Missing>`ignore_handler_s`</Missing>
+  <Missing>`L_tmpnam_s`</Missing> 	
+  <Missing>`localtime_s`</Missing>
+  <Missing>`mbsrtowcs_s`</Missing> 	
+  <Missing>`mbstowcs_s`</Missing>
+  <Missing>`mbstowcs_s`</Missing>
+  <Missing>`memcpy_s`</Missing>
+  <Missing>`memmove_s`</Missing>
+  <Missing>`memset_s`</Missing>
+  <Missing>`printf_s`</Missing>
+  <Missing>`qsort_s`</Missing>
+  <Missing>`RSIZE_MAX`</Missing>
+  <Missing>`rsize_t`</Missing>
+  <Missing>`scanf_s`</Missing>
+  <Missing>`set_constraint_handler_s`</Missing>
+  <Missing>`snprintf_s`</Missing>
+  <Missing>`snwprintf_s`</Missing>
+  <Missing>`sscanf_s`</Missing>
+  <Missing>`strcat_s`</Missing>
+  <Missing>`strcpy_s`</Missing>
+  <Missing>`strerror_s`</Missing>
+  <Missing>`strerrorlen_s`</Missing>
+  <Missing>`strlen_s`</Missing>
+  <Missing>`strncat_s`</Missing>
+  <Missing>`strncpy_s`</Missing>
+  <Missing>`strtok_s`</Missing>
+  <Missing>`swprintf_s`</Missing>
+  <Missing>`swscanf_s`</Missing>
+  <Missing>`TMP_MAX_S`</Missing>
+  <Missing>`tmpfile_s`</Missing>
+  <Missing>`tmpnam_s`</Missing>
+  <Missing>`vfprintf_s`</Missing>
+  <Missing>`vfscanf_s`</Missing>
+  <Missing>`vfwprintf_s`</Missing>
+  <Missing>`vfwscanf_s`</Missing>
+  <Missing>`vprintf_s`</Missing>
+  <Missing>`vscanf_s`</Missing>
+  <Missing>`vsnprintf_s`</Missing>
+  <Missing>`vsnwprintf_s`</Missing>
+  <Missing>`vsprintf_s`</Missing>
+  <Missing>`vsscanf_s`</Missing>
+  <Missing>`vswprintf_s`</Missing>
+  <Missing>`vswscanf_s`</Missing>
+  <Missing>`vswscanf_s`</Missing>
+  <Missing>`vwprintf_s`</Missing>
+  <Missing>`vwscanf_s`</Missing>
+  <Missing>`wcrtomb_s`</Missing>
+  <Missing>`wcscat_s`</Missing>
+  <Missing>`wcscpy_s`</Missing>
+  <Missing>`wcsncat_s`</Missing>
+  <Missing>`wcsncpy_s`</Missing>
+  <Missing>`wcsnlen_s`</Missing>
+  <Missing>`wcsrtombs_s`</Missing>
+  <Missing>`wcstok_s`</Missing>
+  <Missing>`wcstombs_s`</Missing>
+  <Missing>`wmemcpy_s`</Missing>
+  <Missing>`wmemmove`</Missing>
+  <Missing>`wprintf_s`</Missing>
+  <Missing>`wscanf_s`</Missing>
+</Card>
+
+## Using the library
+
+### Including headers
+
+The entities in the C++ standard library are defined in headers, whose contents are made available to a translation unit when it contains the appropriate <Missing>`#include`</Missing> preprocessing directive.
+
+A translation unit may include library headers in any order. Each may be included more than once, with no effect different from being included exactly once, except that the effect of including either <CppHeader name="cassert" /> or <CppHeader name="cassert" displayName="assert.h" /> depends each time on the lexically current definition of `NDEBUG`.
+
+A translation unit can only include a header outside of any declaration or definition, and lexically before the first reference in that translation unit to any of the entities declared in that header. <Behavior kind="ifndr">No diagnostic is required.</Behavior> 
+
+<RevisionBlock since="C++20">
+  In <Missing>module units</Missing>, headers can only be included in <Missing>global module fragments</Missing>.
+</RevisionBlock>
+
+### Importing headers :badge[C++20]
+
+The <Missing>C++ library headers</Missing>, or, for a freestanding implementation, the subset of such headers that are provided by the implementation, are collectively known as the _importable C++ library headers_.
+
+The contents of importable C++ library headers are made available to a translation unit when it contains the appropriate <Missing>import declaration</Missing>. 
+
+### Importing modules :badge[C++23]
+
+The C++ standard library provides the following _C++ library modules_:
+
+- The <Missing>named module</Missing> `std` exports declarations in namespace std that are provided by the importable C++ library headers (e.g. <Missing>`std::rotr`</Missing> from <CppHeader name="bit" />) and the <Missing>C++ headers for C library facilities</Missing> (e.g. <Missing>`std::puts`</Missing> from <CppHeader name="cstdio" />). It additionally exports declarations in the global namespace for the storage <Missing>allocation</Missing> and <Missing>deallocation</Missing> functions that are provided by <CppHeader name="new" /> (e.g. <Missing>`::operator new`</Missing>).
+- The named module `std.compat` exports the same declarations as the named module `std`, and additionally exports declarations in the global namespace corresponding to the declarations in namespace std that are provided by the C++ headers for C library facilities (e.g. <Missing>`::fclose`</Missing>).
+
+For each declaration in the standard library,
+
+- the module it <Missing>attaches to</Missing> is <Behavior kind="unspec">unspecified</Behavior>, and
+- it denotes the same <Missing>entity</Missing> regardless of whether it was made reachable through including a header, importing a header unit, or importing a C++ library module.
+
+### Linkage
+
+Entities in the C++ standard library have <Missing>external linkage</Missing>. Unless otherwise specified, objects and functions have the default `extern "C++"` <Missing>linkage</Missing>.
+
+Whether a name from the C standard library declared with external linkage has `extern "C"` or `extern "C++"` linkage is <Behavior kind="impl-def">implementation-defined</Behavior>. The C++ standard recommends using `extern "C++"` in this case.
+
+Objects and functions defined in the library and required by a C++ program are included in the program prior to program startup. 
+
+## Requirements on standard library implementations
+
+### Guarantees
+
+A C++ header must provide <Missing>declarations</Missing> and <Missing>definitions</Missing> that appear in
+
+  - the synopsis of that header, or
+  - the synopsis of another header which is appeared to be included in the synopsis of that header. 
+
+For types and macros defined in multiple headers (such as <Missing>`NULL`</Missing>), including any number of these headers in any order never violates the <Missing>one definition rule</Missing>.
+
+Unless otherwise specified, all <Missing>object-like macros</Missing> defined by the C standard library that expand to integral <Missing>constant expressions</Missing> can be used in <Missing>`#if`</Missing> preprocessing directives.
+
+Calling a standard library non-member function signature always results in actually calling that function. Therefore a conforming standard library implementation cannot define additional non-member functions that may be called by a valid C++ program.
+
+Non-member function signatures are never declared with additional <Missing>default arguments</Missing>.
+
+Unless otherwise specified, calls made by functions in the standard library to non-operator, non-member functions do not use functions from another <Missing>namespace</Missing> which are found through <Missing>argument-dependent name lookup</Missing>.
+
+For each <Missing>friend declaration</Missing> of a function (template) within a class (template) definition, no other declaration is provided for that function (template). 
+
+<RevisionBlock since="C++11">
+  Standard library function signatures can only be declared as `constexpr` if they are required to be <Missing>constexpr</Missing> (libstdc++ cmath [is notably non-conforming](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102916) here). If a header provides any non-defining declarations of constexpr functions or constructors, the corresponding definitions should also be provided within that header.
+
+  Unless otherwise specified, each standard library function should meet each of the following requirements to prevent <Missing>data races</Missing>: 
+
+  - A C++ standard library function cannot (directly or indirectly) access objects accessible by threads other than the current thread unless the objects are accessed (directly or indirectly) via the function’s arguments, including `this`.
+  - A C++ standard library function cannot (directly or indirectly) modify objects accessible by threads other than the current thread unless the objects are accessed (directly or indirectly) via the function’s non-const arguments, including `this`.
+    - For example, an object with static storage duration cannot be used for internal purposes without synchronization because doing so can cause a data race even in programs that do not explicitly share objects between threads.
+  - A C++ standard library function cannot access objects indirectly accessible via its arguments or via elements of its <Missing>container</Missing> arguments except by invoking functions required by its specification on those container elements.
+  - An operation on <Missing>iterators</Missing> obtained by calling a standard library container or string member function can access, but not modify, the underlying container.
+    - In particular, container operations that invalidate iterators conflict with operations on iterators associated with that container.
+  - A C++ standard library function can only perform all operations solely within the current thread if those operations have effects that are <Missing>visible</Missing> to users.
+    - Operations without visible side effects can be parallelized.
+</RevisionBlock>
+
+For each class defined in the C++ standard library required to be derived from another class defined in the C++ standard library,
+
+- the base class must be <Missing>virtual</Missing> if it is specified as `virtual`,
+- the base class cannot be virtual if it is not specified as `virtual`, and
+- unless otherwise specified, types with distinct names shall be distinct types. 
+
+<RevisionBlock since="C++11">
+  Unless otherwise specified, all types specified in the C++ standard library are non-<Missing>final</Missing> types.
+</RevisionBlock>
+
+If a function defined in the C++ standard library is specified to throw an <Missing>exception</Missing> (in a particular situation) of a given type, the exception thrown can only have that type or a type derived from that type so that an exception handler for the base type can catch it.
+
+Functions from the C standard library can only throw exceptions when such a function calls a program-supplied function that throws an exception (<Missing>`qsort()`</Missing> and <Missing>`bsearch()`</Missing> meet this condition).
+
+Destructor operations defined in the C++ standard library never throw exceptions. Every destructor in the C++ standard library behaves as if it had a <Missing>non-throwing exception specification</Missing>. 
+
+<RevisionBlock since="C++11">
+  If a function in the C++ standard library report errors via a <Missing>`std::error_code`</Missing> object, that object's <Missing>`category()`</Missing> member must return <Missing>`std::system_category()`</Missing> for errors originating from the operating system, or a reference to an <Behavior kind="impl-def">implementation-defined</Behavior> <Missing>`std::error_category`</Missing> object for errors originating elsewhere. The possible values of <Missing>`value()`</Missing> for each of these error categories should be defined.
+
+  Objects of types defined in the C++ standard library may be <Missing>moved from</Missing>. Move operations can either be explicitly specified or implicitly generated. Unless otherwise specified, such moved-from objects will be placed in a <Behavior kind="unspec">valid but unspecified</Behavior> state.
+
+  An object of a type defined in the C++ standard library may be <Missing>move-assigned</Missing> to itself. Unless otherwise specified, such an assignment places the object in a <Behavior kind="unspec">valid but unspecified</Behavior> state. 
+</RevisionBlock>
+
+### Implementation freedom
+
+It is <Behavior kind="unspec">unspecified</Behavior> whether any member or non-member functions in the C++ standard library are defined as <Missing>inline</Missing>.
+
+For a non-<Missing>virtual</Missing> C++ standard library member function, a different set of member function signatures can be declared, provided that any call to that member function that would select an overload from the given set of declarations behaves as if that overload was selected. This allows, for instance:
+
+- adding parameters with default arguments,
+- replacing a member function with default arguments with two or more member functions with equivalent behavior, or
+- adding additional signatures for a member function name. 
+
+Unless otherwise specified, it is <Behavior kind="impl-def">implementation-defined</Behavior> which functions in the C++ standard library may be recursively reentered.
+
+<RevisionBlock since="C++11">
+  C++ standard library implementations can share their own internal objects between threads if the objects are not visible to users and are protected against data races.
+</RevisionBlock>
+
+It is unspecified whether any function signature or class in the C++ standard library is a friend of another class in the C++ standard library.
+
+The names and global function signatures described <Missing>here</Missing> are reserved to the implementation.
+
+Any class in the C++ standard library can be derived from a class with a name reserved to the implementation. If a class defined in the C++ standard library is required to be derived from other classes in the C++ standard library, that class can be derived directly from the required base or indirectly through a hierarchy of base classes with names reserved to the implementation.
+
+If a function defined in the C++ standard library is not specified to throw an exception but does not have a non-throwing exception specification, the exception thrown is <Behavior kind="impl-def">implementation-defined</Behavior>, but its type should be <Missing>`std::exception`</Missing> or any type derived from <Missing>`std::exception`</Missing>.
+
+The exception specification for a non-virtual function can be strengthened by adding a non-throwing exception specification.
+
+  ## Standard library hardening :badge[C++26]
+
+An implementation can be a _hardened implementation_, whether the implementation is hardened is <Behavior kind="impl-def">implementation-defined</Behavior>.
+
+Some standard library member functions (and member function templates) have _hardened precondition_. When such a function is invoked:
+
+- If the implementation is hardened, prior to any other observable side effects of the function, one or more <Missing>contract assertions</Missing> whose predicates are as described in the hardened precondition are evaluated with a checking semantic. If any of these assertions is evaluated with a non-terminating semantic and the <Missing>contract-violation handler</Missing> returns, the behavior is <Behavior kind="undef">undefined</Behavior>.
+- If the implementation is not hardened, when a hardened precondition is violated, the behavior is <Behavior kind="undef">undefined</Behavior>.
+
+## Notes
+
+[libstdc++](https://www.gnu.org/software/gcc/gcc-15/changes.html#libstdcxx), [libc++](https://releases.llvm.org/19.1.0/projects/libcxx/docs/UsingLibcxx.html#extensions-to-the-c-23-modules-std-and-std-compat), and [STL](https://github.com/microsoft/STL/issues/3945) all support using standard library modules in C++20 mode.
+
+<FeatureTestMacro name="__cpp_lib_modules">
+  <FeatureTestMacroValue value="202207L" since="C++23">
+    Standard library modules `std` and `std.compat`
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_array">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::array`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_basic_string">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::basic_string`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_basic_string_view">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::basic_string_view`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_bitset">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::bitset`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_deque">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::deque`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_expected">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::expected`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_forward_list">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::forward_list`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_inplace_vector">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::inplace_vector`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_list">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::list`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_mdspan">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::mdspan`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_optional">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::optional`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_span">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::span`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_valarray">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::valarray`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_hardened_vector">
+  <FeatureTestMacroValue value="202502L" since="C++26">
+    Hardened <Missing>`std::vector`</Missing>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="lwg" id={1} std="C++98">
+    <Fragment slot="behavior-published">
+      the language linkages of the names from the C standard library were unspecified
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      they are <Behavior kind="impl-def">implementation-defined</Behavior>
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={119} std="C++98">
+    <Fragment slot="behavior-published">
+      the exception specifications of virtual functions could be strengthened
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      only allowed for non-virtual functions
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={147} std="C++98">
+    <Fragment slot="behavior-published">
+      the specification on non-member functions only considered global functions
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      also considers non-global functions
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={225} std="C++98">
+    <Fragment slot="behavior-published">
+      standard library functions might call non-member functions from other namespaces due to argument-dependent lookup
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited unless otherwise specified
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={336} std="C++98">
+    <Fragment slot="behavior-published">
+      <CppHeader name="strstream" /> was not a C++ library header
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      it is a C++ library header
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={343} std="C++98">
+    <Fragment slot="behavior-published">
+      library header dependencies were not specified
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      specified (listed in synopses)
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={456} std="C++98">
+    <Fragment slot="behavior-published">
+      C++ headers for C library facilities could only provide definitions in namespace `std`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      allowed to define in global namespace and then inject into namespace `std`
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={465} std="C++98">
+    <Fragment slot="behavior-published">
+      identifiers that are keywords or operators in C++ could be defined as macros in C++ standard library headers (only <CppHeader name="ciso646" /> is required not to define them as macros)
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      all C++ standard library headers cannot define them as macros
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={1178} std="C++98">
+    <Fragment slot="behavior-published">
+      C++ headers must include a C++ header that contains any needed definition
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      C++ headers must provide declarations and definitions that are directly or indirectly included in its synopsis
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={2013} std="C++11">
+    <Fragment slot="behavior-published">
+      it was unspecified whether the functions not required by the standard to be constexpr can be declared `constexpr` by the standard library
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+
+  <DR kind="lwg" id={2225} std="C++98">
+    <Fragment slot="behavior-published">
+      a diagnostic was required if a header is included at an incorrect position
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      <Behavior kind="ifndr">no diagnostic is required</Behavior> in this case
+    </Fragment>
+  </DR>
+</DRList>

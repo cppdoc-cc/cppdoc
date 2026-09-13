@@ -1,0 +1,379 @@
+---
+title: Overview
+sidebar:
+  order: 1
+cppdoc:
+  keys: ["c.library.headers"]
+---
+
+import { CHeader } from "@components/header";
+import { Desc, DescList } from "@src/components/desc-list";
+import {
+  FeatureTestMacro,
+  FeatureTestMacroValue,
+} from "@components/feature-test-macro";
+import Missing from "@components/Missing.astro";
+import { Revision, RevisionBlock } from "@components/revision";
+
+The interface of C standard library is defined by the following collection of headers.
+
+<DescList>
+  <Desc>
+    <CHeader slot="item" name="assert" />
+    Conditionally compiled macro that compares its argument to zero
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock slot="item" noborder since="C99" vertical>
+      <CHeader name="complex" />
+    </RevisionBlock>
+    Complex number arithmetic
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="ctype" />
+    Functions to determine the type contained in character data
+  </Desc>
+  
+  <Desc>
+    <CHeader slot="item" name="errno" />
+    Macros reporting error conditions
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock slot="item" noborder since="C99" vertical>
+      <CHeader name="fenv" />
+    </RevisionBlock>
+    Floating-point environment
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="float" />
+    Limits of floating-point types
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock slot="item" noborder since="C99" vertical>
+      <CHeader name="inttypes" />
+    </RevisionBlock>
+    Format conversion of integer types
+  </Desc>
+
+  <Desc autorevSince="C95">
+    <RevisionBlock slot="item" noborder since="C95" vertical>
+      <CHeader name="iso646" />
+    </RevisionBlock>
+    Alternative operator spellings
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="limits" />
+    Ranges of integer types
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="locale" />
+    Localization utilities
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="math" />
+    Common mathematical functions
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="setjmp" />
+    Nonlocal jumps
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="signal" />
+    Signal handling
+  </Desc>
+
+  <Desc autorevSince="C11">
+    <RevisionBlock
+      slot="item"
+      noborder
+      since="C11"
+      vertical
+      traits={[ { trait: "deprecated", since: "C23" } ]}
+    >
+      <CHeader name="stdalign" />
+    </RevisionBlock>
+    <Missing>alignas</Missing> and <Missing>alignof</Missing> convenience macros
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="stdarg" />
+    Variable arguments
+  </Desc>
+
+  <Desc autorevSince="C11">
+    <RevisionBlock slot="item" noborder since="C11" vertical>
+      <CHeader name="stdatomic" />
+    </RevisionBlock>
+    Atomic operations
+  </Desc>
+
+  <Desc autorevSince="C23">
+    <RevisionBlock slot="item" noborder since="C23" vertical>
+      <CHeader name="stdbit" />
+    </RevisionBlock>
+    Macros to work with the byte and bit representations of types
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock
+      slot="item"
+      noborder
+      since="C99"
+      vertical
+      traits={[ { trait: "deprecated", since: "C23" } ]}
+    >
+      <CHeader name="stdbool" />
+    </RevisionBlock>
+    Macros for boolean type
+  </Desc>
+
+  <Desc autorevSince="C23">
+    <RevisionBlock slot="item" noborder since="C23" vertical>
+      <CHeader name="stdckdint" />
+    </RevisionBlock>
+    Macros for performing checked integer arithmetic
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="stddef" />
+    Common macro definitions
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock slot="item" noborder since="C99" vertical>
+      <CHeader name="stdint" />
+    </RevisionBlock>
+    Fixed-width integer types
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="stdio" />
+    Input/output
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="stdlib" />
+    General utilities: <Missing>memory management</Missing>, <Missing>program utilities</Missing>, <Missing>string conversions</Missing>, <Missing>random numbers</Missing>, <Missing>algorithms</Missing>
+  </Desc>
+
+  <Desc autorevSince="C29">
+    <RevisionBlock slot="item" noborder since="C29" vertical>
+      <CHeader name="stdmchar" />
+    </RevisionBlock>
+    Text transcode
+  </Desc>
+
+  <Desc autorevSince="C11">
+    <RevisionBlock
+      slot="item"
+      noborder
+      since="C11"
+      vertical
+      traits={[ { trait: "deprecated", since: "C23" } ]}
+    >
+      <CHeader name="stdnoreturn" />
+    </RevisionBlock>
+    <Missing>noreturn</Missing> convenience macro
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="string" />
+    String handling
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock slot="item" noborder since="C99" vertical>
+      <CHeader name="tgmath" />
+    </RevisionBlock>
+    Type-generic math (macros wrapping <CHeader name="math" /> and <CHeader name="complex" />)
+  </Desc>
+
+  <Desc autorevSince="C11">
+    <RevisionBlock slot="item" noborder since="C11" vertical>
+      <CHeader name="threads" />
+    </RevisionBlock>
+    Thread library
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="time" />
+    Time/date utilities
+  </Desc>
+
+  <Desc autorevSince="C11">
+    <RevisionBlock slot="item" noborder since="C11" vertical>
+      <CHeader name="uchar" />
+    </RevisionBlock>
+    UTF-16 and UTF-32 character utilities
+  </Desc>
+
+  <Desc autorevSince="C95">
+    <RevisionBlock slot="item" noborder since="C95" vertical>
+      <CHeader name="wchar" />
+    </RevisionBlock>
+    Extended multibyte and wide character utilities
+  </Desc>
+
+  <Desc autorevSince="C95">
+    <RevisionBlock slot="item" noborder since="C95" vertical>
+      <CHeader name="wctype" />
+    </RevisionBlock>
+    Functions to determine the type contained in wide character data
+  </Desc>
+</DescList>
+
+## Feature test macros :badge[C23]
+
+<FeatureTestMacro name="__STDC_VERSION_ASSERT_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="assert" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_COMPLEX_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="complex" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_FENV_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="fenv" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_FLOAT_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="float" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_INTTYPES_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="inttypes" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_LIMITS_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="limits" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_MATH_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="math" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_SETJMP_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="setjmp" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDARG_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdarg" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDATOMIC_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdatomic" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDBIT_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdbit" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDCKDINT_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdckdint" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDDEF_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stddef" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDINT_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdint" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDIO_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdio" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDLIB_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdlib" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STDMCHAR_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="stdmchar" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_STRING_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="string" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_TGMATH_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="tgmath" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_TIME_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="time" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_UCHAR_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="uchar" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__STDC_VERSION_WCHAR_H__">
+  <FeatureTestMacroValue value="202311L" since="C23">
+    <CHeader name="wchar" />
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## References
+
+- C23 standard (ISO/IEC 9899:2024):
+  - 7.1.2 Standard headers (p: 191-192)
+- C17 standard (ISO/IEC 9899:2018):
+  - 7.1.2 Standard headers (p: 131-132)
+- C11 standard (ISO/IEC 9899:2011):
+  - 7.1.2 Standard headers (p: 181-182)
+- C99 standard (ISO/IEC 9899:1999):
+  - 7.1.2 Standard headers (p: 165)
+- C89/C90 standard (ISO/IEC 9899:1990):
+  - 4.1.2 Standard headers

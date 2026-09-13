@@ -1,0 +1,86 @@
+---
+title: Getting Started
+sidebar:
+  order: 1
+---
+
+import { Aside, FileTree, Tabs, TabItem } from "@astrojs/starlight/components";
+
+**Thanks for your interest in contributing to CppDoc!**
+
+CppDoc is an open documentation for the C/C++ programming languages and their standard libraries. It is built on top of the [Starlight] [Astro] theme, and maintained by C/C++ enthusiasts in an open community.
+
+[Starlight]: https://starlight.astro.build/
+[Astro]: https://astro.build/
+
+<Aside type="tip">
+  Currently CppDoc community members are working hard on migrating [cppreference](https://en.cppreference.com/index.html) pages to CppDoc. You're more than welcomed to join us if you want to help!
+</Aside>
+
+## Quick Start
+
+### Clone the source
+
+The source code of CppDoc is hosted on [GitHub](https://github.com/cppdoc-cc/cppdoc). You can clone the repository to your local by running the following command in your terminal:
+
+```bash
+git clone https://github.com/cppdoc-cc/cppdoc.git
+```
+
+### Start the development server
+
+When working locally, a development server allows you to preview your changes and automatically refreshes your browser when you make changes.
+
+Inside the `cppdoc` project directory, run the following command to start the development server:
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm i
+    npm run dev
+    ```
+  </TabItem>
+</Tabs>
+
+### Add content and make changes
+
+Documentation pages are typically written in MDX files. All these files are kept under the `src/content/docs` directory, which has a directory hierarchy as follows:
+
+<FileTree>
+
+- src/content/docs
+  - c
+    - language Documentation for the C programming language
+      - …
+    - library Documentation for the C standard library
+      - …
+  - cpp
+    - language Documentation for the C++ programming language
+      - …
+    - library Documentation for the C++ standard library
+      - …
+
+</FileTree>
+
+Read more about our documentation development guidelines in the [Development Guideline](./guide) section.
+
+### Next steps
+
+Once you have made a change, you can [issue a pull request](https://github.com/cppdoc-cc/cppdoc/compare) to submit your change to the CppDoc community. Community members will review your change, and deploy it to the live CppDoc site.
+
+## Build Static Website
+
+CppDoc is a static website. To build a static site from the source code, run the following commands in the project directory:
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm i
+    npm run build
+    ```
+  </TabItem>
+</Tabs>
+
+## Troubleshooting
+
+If you met any problems, please check out our [Development Guideline](./guide). If you cannot find what you're looking for, feel free to ask for help in our community.
