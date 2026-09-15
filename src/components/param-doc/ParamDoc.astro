@@ -1,0 +1,19 @@
+---
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<div class="param-doc-cell"><code>{name}</code></div>
+<div class="param-doc-cell">-</div>
+<div class="param-doc-cell">
+  <slot />
+</div>
+
+<style>
+  .param-doc-cell {
+    margin-top: 0;
+  }
+</style>

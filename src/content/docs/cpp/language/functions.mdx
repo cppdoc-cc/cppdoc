@@ -1,0 +1,56 @@
+---
+title: Overview
+sidebar:
+  order: 1
+---
+
+import { Revision, RevisionBlock } from "@components/revision";
+import DocLink from "@components/DocLink.astro";
+import NamedReq from "@components/NamedReq.astro";
+
+Functions are C++ entities that associate a sequence of <DocLink dest="/cpp/language/statements">statements</DocLink> (a _function body_) with a _name_ and a list of zero or more _function parameters_.
+
+```cpp
+// function name: "isodd"
+// parameter list has one parameter, with name "n" and type int
+// the return type is bool
+bool isodd(int n) { // the body of the function begins
+  return n % 2;
+}                   // the body of the function ends
+```
+
+When a function is invoked, e.g. in a <DocLink dest="/cpp/language/expressions/operator_other" section="built-in-function-call-operator">function-call expression</DocLink>, the parameters are initialized from the arguments (either provided at the place of call or <DocLink dest="/cpp/language/functions/default_arguments">defaulted</DocLink>) and the statements in the function body are executed. If the <DocLink dest="/cpp/language/functions/function" section="parameter-list">parameter list</DocLink> ends with `...`, extra arguments can be supplied to the function, such a function is called <DocLink dest="/cpp/language/functions/variadic_arguments">variadic function</DocLink>.
+
+```cpp
+int main() {
+  for (int arg : {-3, -2, -1, 0, 1, 2, 3})
+    std::cout << isodd(arg) << ' '; // isodd called 7 times, each
+                                    // time n is copy-initialized from arg
+}
+```
+
+<DocLink dest="/cpp/language/basic_concepts/unqualified_lookup">Unqualified</DocLink> function names in function-call expressions are looked up with an extra set of rules called <DocLink dest="/cpp/language/functions/adl">"argument-dependent lookup" (ADL)</DocLink>.
+
+A function can terminate by <DocLink dest="/cpp/language/statements/return">returning</DocLink> or by <DocLink dest="/cpp/language/exceptions/throw">throwing</DocLink> an <DocLink dest="/cpp/language/exceptions">exception</DocLink>.
+
+<RevisionBlock since="C++20">
+  A function may be a <DocLink dest="/cpp/language/functions/coroutines">coroutine</DocLink>, in which case it can suspend execution to be resumed later.
+</RevisionBlock>
+
+A <DocLink dest="/cpp/language/functions/function">function declaration</DocLink> may appear in any scope, but a <DocLink dest="/cpp/language/functions/function">function definition</DocLink> may only appear in namespace scope or, for <DocLink dest="/cpp/language/classes/member_functions">member</DocLink> and <DocLink dest="/cpp/language/classes/friend">friend</DocLink> functions, in class scope. A function that is declared in a class body without a friend specifier is a class member function. Such functions have many additional properties, see <DocLink dest="/cpp/language/classes/member_functions">member functions</DocLink> for details.
+
+Functions are not objects: there are no arrays of functions and functions cannot be passed by value or returned from other functions. Pointers and references to functions (except for the <DocLink dest="/cpp/language/basic_concepts/main_function">main function</DocLink><Revision since="C++20"> and <DocLink dest="/cpp/language/extending_std" section="addressing-restriction">most standard library functions</DocLink></Revision>) are allowed, and may be used where these functions themselves cannot. Therefore we say these functions are "addressable".
+
+Each function has a type, which consists of the function's return type, the types of all parameters (after array-to-pointer and function-to-pointer transformations, see <DocLink dest="/cpp/language/functions/function" section="parameter-list">parameter list</DocLink>) <Revision since="C++17">, whether the function is <DocLink dest="/cpp/language/exceptions/noexcept_spec">noexcept</DocLink> or not</Revision>, and, for non-static member functions, cv-qualification <Revision since="C++11">and ref-qualification</Revision>. Function types also have <DocLink dest="/cpp/language/declarations/language_linkage">language linkage</DocLink>. There are no cv-qualified function types (not to be confused with the types of <DocLink dest="/cpp/language/declarations/language_linkage">cv-qualified functions</DocLink> such as `int f() const;` or functions returning <DocLink dest="/cpp/language/declarations/cv">cv-qualified types</DocLink>, such as `std::string const f();`). Any cv-qualifier is ignored if it is added to an alias for a function type.
+
+Multiple functions in the same scope may have the same name, as long as their parameter lists and, for non-static member functions, cv<Revision since="C++11">/ref</Revision>-qualifications are different. This is known as <DocLink dest="/cpp/language/functions/overload_resolution">function overloading</DocLink>. Function declarations that differ only in the return type <Revision since="C++17">and the noexcept specification</Revision> cannot be overloaded. The <DocLink dest="/cpp/language/functions/overloaded_address">address of an overloaded function</DocLink> is determined differently.
+
+<RevisionBlock since="C++11">
+  C++ implements [anonymous functions](https://en.wikipedia.org/wiki/anonymous_function) using <DocLink dest="/cpp/language/functions/lambda">lambda-expressions</DocLink>.
+</RevisionBlock>
+
+## Function objects
+
+Besides function lvalues, the function call expression supports pointers to functions, and any value of class type that overloads the function-call operator or is convertible to function pointer<Revision since="C++11">( including <DocLink dest="/cpp/language/functions/lambda">lambda-expressions</DocLink>)</Revision>. Together, these types are known as <NamedReq name="FunctionObjects" />, and they are used ubiquitously through the C++ standard library, see for example, usages of <NamedReq name="BinaryPredicate" /> and <NamedReq name="Compare" />.
+
+The standard library also provides a number of predefined <DocLink dest="/cpp/library/utility/functional">function object templates</DocLink> as well as the methods to compose new ones (including <DocLink dest="/cpp/library/utility/functional/less">`std::less`</DocLink><Revision since="C++11">, <DocLink dest="/cpp/library/utility/functional/mem_fn">`std::mem_fn`</DocLink>, <DocLink dest="/cpp/library/utility/functional/bind">`std::bind`</DocLink>, <DocLink dest="/cpp/library/utility/functional/function">`std::function`</DocLink></Revision><Revision since="C++17">, <DocLink dest="/cpp/library/utility/functional/not_fn">`std::not_fn`</DocLink></Revision><Revision since="C++20">, <DocLink dest="/cpp/library/utility/functional/bind_front">`std::bind_front`</DocLink></Revision><Revision since="C++23">, `std::bind_back`, `std::move_only_function`</Revision><Revision since="C++26">, `std::copyable_function`, and `std::function_ref`</Revision>).
