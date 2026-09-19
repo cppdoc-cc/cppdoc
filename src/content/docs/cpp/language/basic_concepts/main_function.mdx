@@ -1,0 +1,191 @@
+---
+title: Main function
+---
+
+import Code from "@astrojs/starlight/components";
+
+import Behavior from "@components/Behavior.astro";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { DR, DRList } from "@components/defect-report";
+import { Desc, DescList, DocLink } from '@components/index';
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import { Revision } from "@components/revision";
+import WG21PaperLink from "@components/WG21PaperLink.astro";
+
+A program shall contain a global namespace function named `main`, which is the designated start of the program in hosted environment. It shall have one of the following forms:
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    int main() { /* body */ }
+    ```
+  </Decl>
+
+  A `main` function running independently of environment-provided arguments.
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    int main(int argc, char *argv[]) { /* body */ }
+    ```
+  </Decl>
+
+  A `main` function accepting environment-provided arguments.
+
+  The names of `argc` and `argv` are arbitrary, as well as the representation of the types of the parameters: `int main(int ac, char** av)` is equally valid.
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    int main(/* implementation-defined */) { /* body */ }
+    ```
+  </Decl>
+
+  A main function of implement-defined type, returning `int`.
+</DeclDoc>
+
+The C++ standard recommends implementation-defined main functions to place the extra (optional) parameters after `argv`.
+
+<ParamDocList>
+  <ParamDoc name="argc">
+    Non-negative value representing the number of arguments passed to the program from the environment in which the program is run.
+  </ParamDoc>
+  <ParamDoc name="argv">
+    Pointer to the first element of an array of `argc + 1` pointers, of which the last one is null and the previous ones, if any, point to <DocLink dest="/cpp/library/text/multibyte">null-terminated multibyte strings</DocLink> that represent the arguments passed to the program from the execution environment. If `argv[0]` is not a null pointer (or, equivalently, if `argc > 0`), it points to a string that represents the name used to invoke the program, or to an empty string.
+  </ParamDoc>
+  <ParamDoc name="body">
+    The body of the `main` function.
+  </ParamDoc>
+</ParamDocList>
+
+## Explanation
+
+The `main` function is called at program startup after <DocLink dest="/cpp/language/initialization">initialization</DocLink> of the non-local objects with static <DocLink dest="/cpp/language/declarations/storage_duration">storage duration</DocLink>. It is the designated entry point to a program that is executed in <DocLink dest="/cpp/library/freestanding">hosted</DocLink> environment (that is, with an operating system). The entry points to <DocLink dest="/cpp/library/freestanding">freestanding</DocLink> programs (boot loaders, OS kernels, etc) are <Behavior type="impl-def">implementation-defined</Behavior>.
+
+The parameters of the two-parameter form of the `main` function allow arbitrary multibyte character strings to be passed from the execution environment (these are typically known as _command line arguments_), the pointers [`argv[1]`, `argv[argc - 1]`] point at the first characters in each of these strings. `argv[0]` (if non-null) is the pointer to the initial character of a null-terminated multibyte string that represents the name used to invoke the program itself (or an empty string `""` if this is not supported by the execution environment). The strings are modifiable, although these modifications do not propagate back to the execution environment: they can be used, for example, with <DocLink dest="/cpp/library/text/byte/strtok">`std::strtok`</DocLink>. The size of the array pointed to by `argv` is at least `argc + 1`, and the last element, `argv[argc]`, is guaranteed to be a null pointer.
+
+The `main` function has the following several special properties:
+
+- The body of the `main` function does not need to contain the <DocLink dest="/cpp/language/statements/return">`return` statement</DocLink>: if control reaches the end of main without encountering a `return` statement, the effect is that of executing `return 0;`.
+- Execution of the return (or the implicit return upon reaching the end of main) is equivalent to first leaving the function normally (which destroys the objects with automatic storage duration<Revision since="C++26"> and evaluates any <DocLink dest="/cpp/language/functions/function" section="postcondition-assertions">postcondition assertions</DocLink> of main</Revision>) and then calling <DocLink dest="/cpp/library/utility/program/exit">`std::exit`</DocLink> with the same argument as the argument of the <DocLink dest="/cpp/language/statements/return">return</DocLink> (<DocLink dest="/cpp/library/utility/program/exit">`std::exit`</DocLink> then destroys static objects and terminates the program).
+
+The `main` function has several restrictions (violation of which renders the program <Behavior kind="ill-formed">ill-formed</Behavior>):
+
+- It cannot be <DocLink dest="/cpp/language/basic_concepts/definition" section="naming-a-function">named</DocLink> anywhere in the program
+  - in particular, it cannot be called recursively
+  - its address cannot be taken
+  - it cannot be used in a <DocLink dest="/cpp/language/expressions/typeid">`typeid`</DocLink> expression<Revision since="C++11"> or a <DocLink dest="/cpp/language/declarations/decltype">`decltype`</DocLink> specifier</Revision>
+- It cannot be predefined and cannot be overloaded: effectively, the name `main` in the global namespace is reserved for functions (although it can be used to name classes, namespaces, enumerations, and any entity in a non-global namespace, except that an entity named `main` cannot be declared with C <DocLink dest="/cpp/language/declarations/language_linkage">language linkage</DocLink> in any namespace).
+- It cannot be<Revision since="C++11"> defined as deleted or</Revision> declared with any language linkage<Revision since="C++11">, <DocLink dest="/cpp/language/declarations/constexpr">constexpr</DocLink></Revision><Revision since="C++20">, <DocLink dest="/cpp/language/declarations/consteval">consteval</DocLink></Revision>, <DocLink dest="/cpp/language/declarations/inline">inline</DocLink>, or <DocLink dest="/cpp/language/classes/static">static</DocLink>.
+- <Revision since="C++14">The return type of the `main` function cannot be deduced (`auto main() {...}` is not allowed).</Revision>
+- <Revision since="C++20">The `main` function cannot be a <DocLink dest="/cpp/language/functions/coroutines">coroutine</DocLink>.</Revision>
+- <Revision since="C++20">The `main` function cannot attach to a named <DocLink dest="/cpp/language/basic_concepts/modules">module</DocLink>.</Revision>
+
+## Notes
+
+If the `main` function is defined with a <DocLink dest="/cpp/language/exceptions/try">function `try` block</DocLink>, the exceptions thrown by the destructors of static objects (which are destroyed by the implied <DocLink dest="/cpp/library/utility/program/exit">`std::exit`</DocLink>) are not <DocLink dest="/cpp/language/exceptions/catch">caught</DocLink> by it.
+
+The manner in which the arguments given at the OS command line are converted into the multibyte character arrays referenced by `argv` may involve implementation-defined processing: 
+
+- MSDN: [Parsing C++ Command-Line Arguments](https://docs.microsoft.com/en-us/cpp/cpp/main-function-command-line-args)
+- POSIX: [Shell Introduction](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_01)
+
+A very common implementation-defined form of `main()` has a third argument (in addition to `argc` and `argv`), of type `char**`, pointing at [an array of pointers to the execution environment variables](https://pubs.opengroup.org/onlinepubs/9699919799/functions/exec.html).
+
+## Example
+
+Demonstrates how to inform a program about where to find its input and where to write its results. A possible invocation: `./convert table_in.dat table_out.dat`
+
+```cpp
+#include <cstdlib>
+#include <iomanip>
+#include <iostream>
+
+int main(int argc, char *argv[]) {
+  std::cout << "argc == " << argc << '\n';
+
+  for (int ndx{}; ndx != argc; ++ndx)
+    std::cout << "argv[" << ndx << "] == " << std::quoted(argv[ndx]) << '\n';
+  std::cout << "argv[" << argc << "] == "
+            << static_cast<void*>(argv[argc]) << '\n';
+
+  /* ... */
+
+  return argc == 3 ? EXIT_SUCCESS : EXIT_FAILURE; // optional return value
+}
+```
+
+Possible output:
+
+```
+argc == 3
+argv[0] == "./convert"
+argv[1] == "table_in.dat"
+argv[2] == "table_out.dat"
+argv[3] == 0
+```
+
+## References
+
+<DeclDoc style="text-align: center;">
+  <Decl slot="decl">
+    <div style="text-align: center;">
+      <strong>Extended Content</strong>
+    </div>
+  </Decl>
+
+- C++23 standard (ISO/IEC 14882:2024)
+  - 6.9.3.1 main function [basic.start.main]
+</DeclDoc>
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="cwg" id={1003} std="C++98">
+    <Fragment slot="behavior-published">
+      supported parameter names of `main` were overly restricted
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      all valid parameter names are supported
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1886} std="C++98">
+    <Fragment slot="behavior-published">
+      the `main` function could be declared with a language linkage
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2479} std="C++20">
+    <Fragment slot="behavior-published">
+      the `main` function could be declared `consteval`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2811} std="C++98">
+    <Fragment slot="behavior-published">
+      whether the `main` function is used after <WG21PaperLink paper="N3214" /> was unclear
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      it is considered used when named
+    </Fragment>
+  </DR>
+</DRList>
+
+## See also
+
+<DescList>
+<Desc>
+  <DocLink slot="item" dest="/c/language/basic_concepts/main_function"> C documentation</DocLink> for <span> **main function** </span>
+</Desc>
+</DescList>
