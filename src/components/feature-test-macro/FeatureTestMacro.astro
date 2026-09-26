@@ -1,0 +1,30 @@
+---
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<div class="ftm-card">
+  <h5>Feature test macro <code>{name}</code></h5>
+  <table>
+    <thead>
+      <tr>
+        <th>Value</th>
+        <th>Since</th>
+        <th>Feature</th>
+      </tr>
+    </thead>
+    <tbody>
+      <slot />
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .ftm-card {
+    border: 1px solid var(--sl-color-gray-5);
+    padding: 1em;
+  }
+</style>

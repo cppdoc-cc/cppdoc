@@ -1,0 +1,577 @@
+---
+title: Component Documentation for LLM
+sidebar:
+  order: 4
+---
+
+This document provides comprehensive documentation for all custom components used in CppDoc. Each section includes a description, props, and usage examples.
+
+## Behavior
+
+The `Behavior` component gives highlight colors to its content, used for emphasizing keywords related to program behaviors.
+
+### Props
+
+- `kind` (required): One of `"well-def"`, `"impl-def"`, `"unspec"`, `"undef"`, `"ill-formed"`, `"ifndr"`.
+
+### Usage
+
+
+import Behavior from "@components/Behavior.astro";
+
+It is <Behavior kind="well-def">well-defined</Behavior> to do this.
+
+It is <Behavior kind="impl-def">implementation-defined</Behavior> how this is achieved.
+
+It is <Behavior kind="unspec">unspecified</Behavior> which function argument will be evaluated first.
+
+The behavior is <Behavior kind="undef">undefined</Behavior> to add two signed integers that overflows the result.
+
+It is <Behavior kind="ill-formed">ill-formed</Behavior> to use an undefined identifier.
+
+The program is <Behavior kind="ifndr">ill-formed no diagnostics required</Behavior> if it violates the one-definition rule.
+
+## Declaration Documentation
+
+### DeclDoc
+
+The `DeclDoc` component gives brief introduction to a C/C++ declaration. It can contain multiple `Decl` components.
+
+#### Props
+
+- `autorevSince` (optional): The revision since which the declaration is available (e.g., `"C++11"`). Enables autorev.
+- `id` (optional): A numeric identifier to display as "Declaration #id".
+
+#### Slots
+
+- `decl` (named): One or more `Decl` components.
+- Default slot: The description text.
+
+#### Usage
+
+
+import { Decl, DeclDoc } from "@components/decl-doc";
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    int main() { /* body */ }
+    ```
+  </Decl>
+  A `main` function running independently of environment-provided arguments.
+</DeclDoc>
+
+Multiple declarations:
+
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    int main() { /* body */ }
+    ```
+  </Decl>
+  <Decl slot="decl">
+    ```cpp
+    int main(int argc, char *argv[]) { /* body */ }
+    ```
+  </Decl>
+  A `main` function is the entry point of a program.
+</DeclDoc>
+
+With revision:
+
+
+import { RevisionBlock } from "@components/revision";
+
+<DeclDoc autorevSince="C++11">
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" until="C++14" noborder>
+      ```cpp
+      template <typename T>
+      typename std::remove_reference<T>::type&& move(T&& t) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++14" noborder>
+      ```cpp
+      template <class T>
+      constexpr std::remove_reference_t<T>&& move(T&& t) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  `std::move` is used to _indicate_ that an object `t` may be "moved from".
+</DeclDoc>
+
+
+### Decl
+
+The `Decl` component wraps a code block inside a `DeclDoc`. It has no props.
+
+#### Usage
+
+See above.
+
+## Description List
+
+### DescList
+
+The `DescList` component is a general component for displaying a list of items and their descriptions.
+
+#### Props
+
+None.
+
+#### Slots
+
+- Default slot: One or more `Desc` components.
+
+#### Usage
+
+
+import { DescList, Desc } from "@components/desc-list";
+import { CHeader } from "@components/header";
+
+<DescList>
+  <Desc>
+    <CHeader slot="item" name="assert" />
+    Conditionally compiled macro that compares its argument to zero
+  </Desc>
+  <Desc>
+    <CHeader slot="item" name="ctype" />
+    Functions to determine the type contained in character data
+  </Desc>
+</DescList>
+
+### Desc
+
+The `Desc` component represents a single item in a description list.
+
+#### Props
+
+- `autorevSince` (optional): Enables autorev for this item.
+- `kind` (optional): A string displayed in parentheses after the description.
+
+#### Slots
+
+- `item` (named): The item being described (e.g., a header link).
+- Default slot: The description text.
+
+#### Usage
+
+
+<Desc>
+  <CHeader slot="item" name="assert" />
+  Conditionally compiled macro that compares its argument to zero
+</Desc>
+
+
+With revision:
+
+
+<Desc autorevSince="C99">
+  <RevisionBlock slot="item" noborder since="C99" vertical>
+    <CHeader name="complex" />
+  </RevisionBlock>
+  Complex number arithmetic
+</Desc>
+
+
+### DescItem
+
+Internal component used by `Desc`. Not typically used directly.
+
+## Parameters
+
+### ParamDocList
+
+The `ParamDocList` component displays a list of function or template parameters.
+
+#### Props
+
+None.
+
+#### Slots
+
+- Default slot: One or more `ParamDoc` components.
+
+#### Usage
+
+
+import { ParamDocList, ParamDoc } from "@components/param-doc";
+
+<ParamDocList>
+  <ParamDoc name="argc">
+    Non-negative value representing the number of arguments passed to the program.
+  </ParamDoc>
+  <ParamDoc name="argv">
+    Pointer to the first element of an array of `argc + 1` pointers.
+  </ParamDoc>
+</ParamDocList>
+
+
+### ParamDoc
+
+The `ParamDoc` component documents a single parameter.
+
+#### Props
+
+- `name` (required): The parameter name.
+
+#### Slots
+
+- Default slot: The parameter description.
+
+#### Usage
+
+See above.
+
+## Links
+
+### DocLink
+
+The `DocLink` component renders an inline link to a page associated with a doc key or absolute path.
+
+#### Props
+
+- `dest` (required): The absolute path (e.g., `"/cpp/library/utilities/move"`).
+- `section` (optional): The `id` of the HTML element to jump to, typically the `id` of heading tags generated from Markdown headings.
+
+#### Slots
+
+- Default slot: The link text.
+
+#### Usage
+
+
+import DocLink from "@components/DocLink.astro";
+
+Check out <DocLink dest="/cpp/library/utilities/move">this page</DocLink> for more information.
+
+
+If the doc key does not exist, the component renders as plain text with missing styling.
+
+### CHeader
+
+The `CHeader` component renders an inline link to a C standard library header.
+
+#### Props
+
+- `name` (required): The header name without the `.h` suffix (e.g., `"stdio"`).
+- `displayName` (optional): Custom display text.
+- `nolink` (optional): If `true`, renders as plain text without a link.
+
+#### Usage
+
+
+<CHeader name="stdio" /> is a C standard library header.
+
+
+### CppHeader
+
+The `CppHeader` component renders an inline link to a C++ standard library header.
+
+#### Props
+
+Same as `CHeader`.
+
+#### Usage
+
+
+import { CppHeader } from "@components/header";
+
+<CppHeader name="vector" /> is a C++ standard library header.
+
+
+### Header
+
+Base component for `CHeader` and `CppHeader`. Not used directly.
+
+### NamedReq
+
+The `NamedReq` component renders an inline link to a named requirement.
+
+#### Props
+
+- `name` (required): The name of the requirement.
+- `bold` (optional): If `true`, the text renders bold.
+- `displayName` (optional): Custom display text.
+- `nolink` (optional): If `true`, renders as plain text without a link.
+
+#### Usage
+
+
+import NamedReq from "@components/NamedReq.astro"
+
+A <NamedReq name="FunctionObject" /> type is the type of an object
+that can be used on the left of the function call operator.
+
+
+## Feature Test Macros
+
+### FeatureTestMacro
+
+The `FeatureTestMacro` component renders a box that shows information about a feature test macro.
+
+#### Props
+
+- `name` (required): The macro name (e.g., `"__cpp_consteval"`).
+
+#### Slots
+
+- Default slot: One or more `FeatureTestMacroValue` components.
+
+#### Usage
+
+
+import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+
+<FeatureTestMacro name="__cpp_consteval">
+  <FeatureTestMacroValue value="201811L" since="C++20">
+    Immediate functions
+  </FeatureTestMacroValue>
+  <FeatureTestMacroValue value="202211L" since="C++23">
+    Making `consteval` propagate up
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+
+### FeatureTestMacroValue
+
+The `FeatureTestMacroValue` component represents a single value of a feature test macro.
+
+#### Props
+
+- `value` (required): The macro value (e.g., `"201811L"`).
+- `since` (required): The revision since which this value is defined (e.g., `"C++20"`).
+
+#### Slots
+
+- Default slot: The feature description.
+
+#### Usage
+
+See above.
+
+## Defect Reports
+
+### DRList
+
+The `DRList` component shows a list of defect reports.
+
+#### Props
+
+None.
+
+#### Slots
+
+- Default slot: One or more `DR` components.
+
+#### Usage
+
+
+import { DR, DRList } from "@components/defect-report";
+
+<DRList>
+  <DR kind="cwg" id={1003} std="C++98">
+    <Fragment slot="behavior-published">
+      supported parameter names of `main` were overly restricted
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      all valid parameter names are supported
+    </Fragment>
+  </DR>
+</DRList>
+
+
+### DR
+
+The `DR` component renders a single defect report.
+
+#### Props
+
+- `kind` (required): Either `"cwg"` (Core Working Group) or `"lwg"` (Library Working Group).
+- `id` (required): The defect report number.
+- `std` (required): The standard revision to which the defect applies (e.g., `"C++98"`).
+
+#### Slots
+
+- `behavior-published` (named): Description of the behavior as published.
+- `correct-behavior` (named): Description of the correct behavior.
+
+#### Usage
+
+See above.
+
+## Incomplete
+
+The `Incomplete` component marks a section to be incomplete.
+
+#### Props
+
+- `reason` (required): The reason why the section is incomplete.
+
+#### Usage
+
+
+import Incomplete from "@components/Incomplete.astro"
+
+<Incomplete reason="no usage" />
+
+
+## Missing Content
+
+### Missing
+
+The `Missing` component marks content that is still missing.
+
+#### Props
+
+None.
+
+#### Slots
+
+- Default slot: The text to mark as missing.
+
+#### Usage
+
+
+import Missing from "@components/Missing.astro";
+
+See <Missing>this page</Missing> for more information.
+
+
+## Revision Components
+
+### Revision
+
+The `Revision` component renders an inline span with revision-specific content.
+
+#### Props
+
+- `since` (optional): The revision since which the content applies.
+- `until` (optional): The revision until which the content applies.
+- `removed` (optional): Alternative to `until`, indicates removal revision.
+- `traits` (optional): Array of `{ trait: string, since: CxxRevision }` for traits like "deprecated".
+
+#### Slots
+
+- Default slot: The revision-specific content.
+
+#### Usage
+
+
+import { Revision } from "@components/revision";
+
+Some words here. <Revision since="C++20">This is introduced in C++20.</Revision> Some more words here.
+
+<Revision until="C++20">This is removed in C++20.</Revision>
+
+<Revision since="C++11" until="C++20">This applies from C++11 to C++17.</Revision>
+
+<Revision since="C++11" traits={[{ trait: "deprecated", since: "C++17" }]}>
+  This is introduced in C++11 and deprecated since C++17.
+</Revision>
+
+
+### RevisionBlock
+
+The `RevisionBlock` component renders a block-level container with revision-specific content.
+
+#### Props
+
+- `since`, `until`, `removed`, `traits`: Same as `Revision`.
+- `noborder` (optional): If `true`, removes the border.
+- `vertical` (optional): If `true`, uses vertical layout.
+
+#### Slots
+
+- Default slot: The content.
+
+#### Usage
+
+<RevisionBlock since="C++11" until="C++20">
+  This paragraph applies from C++11 to C++17.
+</RevisionBlock>
+
+<RevisionBlock vertical since="C++11" traits={[{ trait: "deprecated", since: "C++20" }]}>
+  This paragraph is introduced in C++11, deprecated in C++20.
+</RevisionBlock>
+
+
+### RevisionSelector
+
+The `RevisionSelector` component renders a dropdown for selecting a revision.
+
+#### Props
+
+- `revisions` (required): Array of `CxxRevision` strings.
+
+#### Usage
+
+Typically used automatically by the TableOfContents component.
+
+### RevisionTags
+
+Internal component used by `Revision` and `RevisionBlock`. Not used directly.
+
+## AutoCollapse
+
+The `AutoCollapse` component automatically collapses content that exceeds a maximum height, with an expand button.
+
+#### Props
+
+- `maxHeight` (optional): Maximum height in pixels before collapsing (default: 200).
+
+#### Slots
+
+- Default slot: The content to collapse.
+
+#### Usage
+
+
+import AutoCollapse from "@components/AutoCollapse.astro";
+
+<AutoCollapse maxHeight={300}>
+  Long content here...
+</AutoCollapse>
+
+
+## FlexTable
+
+The `FlexTable` component creates a flexible table layout using CSS flexbox.
+
+#### Props
+
+None.
+
+#### Slots
+
+- Default slot: The table cells.
+
+#### Usage
+
+
+import FlexTable from "@components/FlexTable.astro";
+
+<FlexTable>
+  <div>Cell 1</div>
+  <div>Cell 2</div>
+  <div>Cell 3</div>
+</FlexTable>
+
+
+## WG21PaperLink
+
+The `WG21PaperLink` component renders a link to a WG21 paper.
+
+#### Props
+
+- `paper` (required): The paper identifier (e.g., `"P1234R0"`).
+
+#### Usage
+
+
+import WG21PaperLink from "@components/WG21PaperLink.astro";
+
+See <WG21PaperLink paper="P1234R0" /> for details.

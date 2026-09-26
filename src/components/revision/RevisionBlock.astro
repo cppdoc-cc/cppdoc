@@ -1,0 +1,66 @@
+---
+import RevisionTags from "./RevisionTags.astro";
+import { autoRev } from ".";
+import type { RevisionInfo } from "./types";
+
+interface Props extends RevisionInfo {
+  noborder?: boolean;
+  vertical?: boolean;
+}
+
+const { since, until, noborder } = Astro.props;
+const vertical = Astro.props.vertical ?? false;
+const horizontal = !vertical;
+---
+
+<div
+  class:list={["revision-block", { noborder, horizontal, vertical }]}
+  {...autoRev({ autorevSince: since, autorevUntil: until })}
+>
+  <div class="revision-content">
+    <slot />
+  </div>
+  <div class="revision-tags">
+    <RevisionTags as="div" {...Astro.props} />
+  </div>
+</div>
+
+<style>
+  .revision-block {
+    display: flex;
+  }
+
+  .revision-block.autorev-hidden {
+    display: none;
+  }
+
+  .revision-block:not(.noborder) {
+    border: 1px solid var(--sl-color-gray-4);
+    padding-left: calc(var(--sl-content-gap-y) * 0.5);
+    padding-right: calc(var(--sl-content-gap-y) * 0.5);
+    padding-top: calc(var(--sl-content-gap-y) * 0.25);
+    padding-bottom: calc(var(--sl-content-gap-y) * 0.25);
+  }
+
+  .revision-block .revision-tags {
+    margin: 0;
+  }
+
+  .revision-block.horizontal {
+    align-items: center;
+    column-gap: 1em;
+  }
+
+  .revision-block.horizontal > .revision-content {
+    flex-grow: 1;
+  }
+
+  .revision-block.horizontal > .revision-tags {
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  .revision-block.vertical {
+    flex-direction: column;
+  }
+</style>
