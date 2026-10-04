@@ -1,0 +1,10 @@
+---
+interface Props {
+  paper: string;
+}
+
+const { paper } = Astro.props;
+const url = `https://wg21.link/${paper}`;
+---
+
+<a href={url} target="_blank">{paper}</a>

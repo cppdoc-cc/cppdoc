@@ -1,0 +1,1468 @@
+---
+title: Function declaration
+sidebar:
+  order: 2
+---
+
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { DR, DRList } from "@components/defect-report";
+import {
+  FeatureTestMacro,
+  FeatureTestMacroValue,
+} from "@components/feature-test-macro";
+import { Desc, DescList, DocLink } from '@components/index';
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import { autoRev, Revision, RevisionBlock } from "@components/revision";
+import Behavior from "@components/Behavior.astro";
+
+A function declaration introduces the function name and its type. A function definition associates the function name/type with the function body.
+
+## Function declaration
+
+Function declarations may appear in any scope. A function declaration at class scope introduces a class member function (unless the `friend` specifier is used), see <DocLink dest="/cpp/language/classes/member_functions">member functions</DocLink> and <DocLink dest="/cpp/language/classes/friend">friend functions</DocLink> for details.
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:noptr-declarator*/ ( /*$s:parameter-list*/ )
+        /*$s:cv*//*$opt*/
+        /*$s:except*//*$opt*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:noptr-declarator*/ ( /*$s:parameter-list*/ )
+        /*$s:cv*//*$opt*/
+        /*$s:ref*//*$opt*/
+        /*$s:except*//*$opt*/
+        /*$s:attr*//*$opt*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Regular function declarator syntax.
+</DeclDoc>
+
+<DeclDoc id={2} autorevSince="C++11">
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:noptr-declarator*/ ( /*$s:parameter-list*/ )
+        /*$s:cv*//*$opt*/
+        /*$s:ref*//*$opt*/
+        /*$s:except*//*$opt*/
+        /*$s:attr*//*$opt*/
+        -> /*$s:trailing*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Trailing return type declaration. The `decl-specifier-seq` in this case must contain the keyword `auto`.
+</DeclDoc>
+
+(see <DocLink dest="/cpp/language/declarations">Declarations</DocLink> for the other forms of the `declarator` syntax)
+
+<ParamDocList>
+  <ParamDoc name="noptr-declarator">
+    any valid `declarator`, but if it begins with `*`, `&`, or `&&`, it has to be surrounded by parentheses.
+  </ParamDoc>
+  <ParamDoc name="parameter-list">
+    possibly empty, comma-separated list of the function parameters (see below for details)
+  </ParamDoc>
+  <ParamDoc name="cv">
+    const/volatile qualification, only allowed in non-static member function declarations
+  </ParamDoc>
+  <ParamDoc name="except">
+    <RevisionBlock until="C++11">
+      <DocLink dest="/cpp/language/exceptions/except_spec">dynamic exception specification</DocLink>
+    </RevisionBlock>
+    <RevisionBlock since="C++11" until="C++17">
+      either <DocLink dest="/cpp/language/exceptions/except_spec">dynamic exception specification</DocLink> or <DocLink dest="/cpp/language/exceptions/noexcept_spec">noexcept specification</DocLink>
+    </RevisionBlock>
+    <RevisionBlock since="C++17">
+      <DocLink dest="/cpp/language/exceptions/noexcept_spec">noexcept specification</DocLink>
+    </RevisionBlock>
+  </ParamDoc>
+</ParamDocList>
+
+<RevisionBlock since="C++11">
+  <ParamDocList>
+    <ParamDoc name="attr">
+      a list of <DocLink dest="/cpp/language/declarations/attributes">attributes</DocLink>. These attributes are applied to the type of the function, not the function itself. The attributes for the function appear after the identifier within the declarator and are combined with the attributes that appear in the beginning of the declaration, if any.
+    </ParamDoc>
+    <ParamDoc name="ref">
+      const/volatile qualification, only allowed in non-static member function declarations
+    </ParamDoc>
+    <ParamDoc name="trailing">
+      Trailing return type, useful if the return type depends on argument names, such as `template<class T, class U> auto add(T t, U u) -> decltype(t + u);` or is complicated, such as in `auto fpif(int)->int(*)(int)`
+    </ParamDoc>
+  </ParamDocList>
+</RevisionBlock>
+
+<RevisionBlock since="C++20">
+  As mentioned in <DocLink dest="/cpp/language/declarations" section="declarators">Declarations</DocLink>, the declarator can be followed by a <DocLink dest="/cpp/language/templates/constraints" section="requires-clauses">requires clause</DocLink>, which declares the associated <DocLink dest="/cpp/language/templates/constraints">constraints</DocLink> for the function, which must be satisfied in order for the function to be selected by <DocLink dest="/cpp/language/functions/overload_resolution">overload resolution</DocLink>. (example: `void f1(int a) requires true;`) Note that the associated constraint is part of function signature, but not part of function type.
+</RevisionBlock>
+
+Function declarators can be mixed with other declarators, where the <DocLink dest="/cpp/language/declarations" section="specifiers">declaration specifier sequence</DocLink> allows:
+
+```cpp
+// declares an int, an int*, a function, and a pointer to a function
+int a = 1, *p = NULL, f(), (*pf)(double);
+// decl-specifier-seq is int
+// declarator f() declares (but doesn't define)
+//                a function taking no arguments and returning int
+
+struct S {
+  virtual int f(char) const, g(int) &&; // declares two non-static member functions
+  virtual int f(char), x; // compile-time error: virtual (in decl-specifier-seq)
+                          // is only allowed in declarations of non-static
+                          // member functions
+};
+```
+
+<RevisionBlock since="C++20">
+  Using a volatile-qualified object type as parameter type or return type is deprecated.
+</RevisionBlock>
+
+The return type of a function cannot be a function type or an array type (but can be a pointer or reference to those).
+
+<RevisionBlock since="C++11" vertical>
+  As with any declaration, attributes that appear before the declaration and the attributes that appear immediately after the identifier within the declarator both apply to the entity being declared or defined (in this case, to the function):
+
+  ```cpp
+  [[noreturn]] void f [[noreturn]] (); // OK: both attributes apply to the function f
+  ```
+
+  However, the attributes that appear after the declarator (in the syntax above), apply to the type of the function, not to the function itself:
+
+  ```cpp
+  void f() [[noreturn]]; // Error: this attribute has no effect on the function itself
+  ```
+</RevisionBlock>
+
+<div {...autoRev({ autorevSince: "C++14" })}>
+  ## Return type deduction :badge[C++14]
+
+  f the `decl-specifier-seq` of the function declaration contains the keyword `auto`, trailing return type may be omitted, and will be deduced by the compiler from the type of the operand used in the <DocLink dest="/cpp/language/statements/if" section="constexpr-if">non-discarded</DocLink> <DocLink dest="/cpp/language/statements/return">return</DocLink> statement. If the return type does not use `decltype(auto)`, the deduction follows the rules of <DocLink dest="/cpp/language/templates/template_argument_deduction" section="other-contexts">template argument deduction</DocLink>:
+
+  ```cpp
+  int x = 1;
+  auto f() { return x; }        // return type is int
+  const auto& f() { return x; } // return type is const int&
+  ```
+
+  If the return type is `decltype(auto)`, the return type is as what would be obtained if the operand used in the return statement were wrapped in <DocLink dest="/cpp/language/declarations/decltype">decltype</DocLink>:
+
+  ```cpp
+  int x = 1;
+  decltype(auto) f() { return x; } // return type is int, same as decltype(x)
+  decltype(auto) f() { return(x); } // return type is int&, same as decltype((x))
+  ```
+
+  (note: `const decltype(auto)&` is an error, `decltype(auto)` must be used on its own)
+
+  If there are multiple return statements, they must all deduce to the same type:
+
+  ```cpp
+  auto f(bool val) {
+    if (val) return 123; // deduces return type int
+    else return 3.14f; // Error: deduces return type float
+  }
+  ```
+
+  If there is no return statement or if the operand of the return statement is a void expression (including return statements with no operand), the declared return type must be either `decltype(auto)`, in which case the deduced return type is `void`, or (possibly cv-qualified) `auto`, in which case the deduced return type is then (identically cv-qualified) `void`:
+
+  ```cpp
+  auto f() {}              // returns void
+  auto g() { return f(); } // returns void
+  auto* x() {}             // Error: cannot deduce auto* from void
+  ```
+
+  Once a return statement has been seen in a function, the return type deduced from that statement can be used in the rest of the function, including in other return statements:
+
+  ```cpp
+  auto sum(int i) {
+    if (i == 1)
+      return i;              // sum’s return type is int
+    else
+      return sum(i - 1) + i; // OK: sum’s return type is already known
+  }
+  ```
+
+  If the return statement uses a <DocLink dest="/cpp/language/initialization">brace-enclosed initializer list</DocLink>, deduction is not allowed:
+
+  ```cpp
+  auto func() { return {1, 2, 3}; } // Error
+  ```
+
+  <DocLink dest="/cpp/language/classes/virtual">Virtual functions</DocLink><Revision since="C++20"> and <DocLink dest="/cpp/language/functions/coroutines">coroutines</DocLink></Revision> cannot use return type deduction:
+
+  ```cpp
+  struct F {
+    virtual auto f() { return 2; } // Error
+  };
+  ```
+
+  <DocLink dest="/cpp/language/templates/function_template">Function templates</DocLink> other than <DocLink dest="/cpp/language/expressions/cast_operator">user-defined conversion functions</DocLink> can use return type deduction. The deduction takes place at instantiation even if the expression in the return statement is not <DocLink dest="/cpp/language/templates/dependent_name">dependent</DocLink>. This instantiation is not in an immediate context for the purposes of <DocLink dest="/cpp/language/templates/sfinae">SFINAE</DocLink>.
+
+  ```cpp
+  template<class T>
+  auto f(T t) { return t; }
+  typedef decltype(f(1)) fint_t;    // instantiates f<int> to deduce return type
+
+  template<class T>
+  auto f(T* t) { return *t; }
+  void g() { int (*p)(int*) = &f; } // instantiates both fs to determine return types,
+                                    // chooses second template overload
+  ```
+
+  Redeclarations or specializations of functions or function templates that use return type deduction must use the same return type placeholders:
+
+  ```cpp
+  auto f(int num) { return num; }
+  // int f(int num);            // Error: no placeholder return type
+  // decltype(auto) f(int num); // Error: different placeholder
+
+  template<typename T>
+  auto g(T t) { return t; }
+  template auto g(int);     // OK: return type is int
+  // template char g(char); // Error: not a specialization of the primary template g
+  ```
+
+  Similarly, redeclarations or specializations of functions or function templates that do not use return type deduction must not use a placeholder:
+
+  ```cpp
+  int f(int num);
+  // auto f(int num) { return num; }  // Error: not a redeclaration of f
+
+  template<typename T>
+  T g(T t) { return t; }
+  template int g(int);      // OK: specialize T as int
+  // template auto g(char); // Error: not a specialization of the primary template g
+  ```
+
+  <DocLink dest="/cpp/language/templates/function_template" section="explicit-instantiation">Explicit instantiation declarations</DocLink> do not themselves instantiate function templates that use return type deduction:
+
+  ```cpp
+  template<typename T>
+  auto f(T t) { return t; }
+  extern template auto f(int); // does not instantiate f<int>
+
+  int (*p)(int) = f;  // instantiates f<int> to determine its return type,
+                      // but an explicit instantiation definition 
+                      // is still required somewhere in the program
+  ```
+</div>
+
+## Parameter List
+
+The parameter list determines the arguments that can be specified when the function is called. It is a comma-separated list of _parameter declarations_, each of which has the following syntax:
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:decl-specifier-seq*/ /*$s:declarator*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*/ /*$s:declarator*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Declares a named (formal) parameter. For the meanings of `decl-specifier-seq` and `declarator`, see <DocLink dest="/cpp/language/declarations">declarations</DocLink>.
+
+  ```cpp
+  int f(int a, int* p, int (*(*x)(double))[3]);
+  ```
+</DeclDoc>
+
+<DeclDoc id={2} autorevSince="C++23">
+  <Decl slot="decl">
+    <RevisionBlock since="C++23" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      this /*$s:decl-specifier-seq*/ /*$s:declarator*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Declares a named [explicit object parameter](#explicit-object-parameter).
+</DeclDoc>
+
+<DeclDoc id={3}>
+  <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:decl-specifier-seq*/ /*$s:declarator*/
+        = /*$s:initializer*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*/ /*$s:declarator*/
+        = /*$s:initializer*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Declares a named (formal) parameter with a <DocLink dest="/cpp/language/functions/default_arguments">default value</DocLink>.
+  
+  ```cpp
+  int f(int a = 7, int* p = nullptr, int (*(*x)(double))[3] = nullptr);
+  ```
+</DeclDoc>
+
+<DeclDoc id={4}>
+  <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:decl-specifier-seq*/ /*$s:abstract-declarator*//*$opt*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*/ /*$s:abstract-declarator*//*$opt*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Declares an unnamed parameter.
+  
+  ```cpp
+  int f(int, int*, int (*(*)(double))[3]);
+  ```
+</DeclDoc>
+
+<DeclDoc id={5} autorevSince="C++23">
+  <Decl slot="decl">
+    <RevisionBlock since="C++23" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      this /*$s:decl-specifier-seq*/ /*$s:abstract-declarator*//*$opt*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Declares an unnamed [explicit object parameter](#explicit-object-parameter).
+</DeclDoc>
+
+<DeclDoc id={6}>
+  <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:decl-specifier-seq*/ /*$s:abstract-declarator*//*$opt*/
+        = /*$s:initializer*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*/ /*$s:abstract-declarator*//*$opt*/
+        = /*$s:initializer*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Declares an unnamed parameter with a <DocLink dest="/cpp/language/functions/default_arguments">default value</DocLink>.
+
+  ```cpp
+  int f(int = 7, int* = nullptr, int (*(*)(double))[3] = nullptr);
+  ```
+</DeclDoc>
+
+<DeclDoc id={7}>
+  <Decl slot="decl">
+    ```cpp
+    void
+    ```
+  </Decl>
+
+  Indicates that the function takes no parameters, it is the exact synonym for an empty parameter list: `int f(void);` and `int f();` declare the same function.
+
+  `void` is the only syntax equivalent to an empty parameter list, other usages of `void` parameters are <Behavior kind="ill-formed">ill-formed</Behavior>:
+
+  <table>
+    <tr>
+      <td>**Incorrect usage**</td>
+      <td>**Example**</td>
+    </tr>
+    <tr>
+      <td>multiple parameters are present</td>
+      <td>`int f1(void, int);`</td>
+    </tr>
+    <tr>
+      <td>the `void` parameter is named</td>
+      <td>`inf f2(void param);`</td>
+    </tr>
+    <tr>
+      <td>`void` is cv-qualified</td>
+      <td>`int f3(const void);`</td>
+    </tr>
+    <tr>
+      <td>`void` is <DocLink dest="/cpp/language/templates/dependent_name">dependent</DocLink></td>
+      <td>`int f4(T);` (where `T` is `void`)</td>
+    </tr>
+    <tr {...autoRev({ autorevSince: "C++23" })}>
+      <td>
+        <RevisionBlock slot="item" since="C++23" vertical noborder>
+          the `void` parameter is an [explicit object parameter](#explicit-object-parameter)
+        </RevisionBlock>
+      </td>
+      <td>`int f5(this void);`</td>
+    </tr>
+  </table>
+</DeclDoc>
+
+<RevisionBlock until="C++17">
+  Although `decl-specifier-seq` implies there can exist <DocLink dest="/cpp/language/declarations" section="specifiers">specifiers</DocLink> other than type specifiers, the only other specifier allowed is `register` <Revision until="C++11">as well as `auto`</Revision>, and it has no effect.
+</RevisionBlock>
+
+<RevisionBlock since="C++20" vertical>
+  If any of the function parameters uses a placeholder (either `auto` or a <DocLink dest="/cpp/library/concepts">concept type</DocLink>), the function declaration is instead an <DocLink dest="/cpp/language/templates/function_template" section="abbreviated-function-template">abbreviated function template</DocLink> declaration:
+
+  ```cpp
+  void f1(auto);    // same as template<class T> void f1(T)
+  void f2(C1 auto); // same as template<C1 T> void f2(T), if C1 is a concept
+  ```
+</RevisionBlock>
+
+<RevisionBlock since="C++23" vertical>
+  <span id="explicit-object-parameter" />
+
+  A parameter declaration with the specifier `this` (syntax (2)/(5)) declares an _explicit object parameter_.
+
+  An explicit object parameter cannot be a <DocLink dest="/cpp/language/templates/parameter_pack">function parameter pack</DocLink>, and it can only appear as the first parameter of the parameter list in the following declarations:
+
+  - a declaration of a <DocLink dest="/cpp/language/classes/member_functions">member function</DocLink> or member function template
+  - an <DocLink dest="/cpp/language/templates/function_template" section="explicit-instantiation">explicit instantiation</DocLink> or <DocLink dest="/cpp/language/templates/template_specialization">explicit specialization</DocLink> of a templated member function
+  - a <DocLink dest="/cpp/language/functions/lambda">lambda</DocLink> declaration
+
+  A member function with an explicit object parameter has the following restrictions:
+
+  - The function is not <DocLink dest="/cpp/language/classes/static">static</DocLink>.
+  - The function is not <DocLink dest="/cpp/language/classes/virtual">virtual</DocLink>.
+  - The declarator of the function does not contain `cv` and `ref`.
+
+  ```cpp
+  struct C {
+    void f(this C& self);     // OK
+
+    template<typename Self>
+    void g(this Self&& self); // also OK for templates
+
+    void p(this C) const;     // Error: “const” not allowed here
+    static void q(this C);    // Error: “static” not allowed here
+    void r(int, this C);      // Error: an explicit object parameter
+                              //        can only be the first parameter
+  };
+  
+  // void func(this C& self);   // Error: non-member functions cannot have
+                                //        an explicit object parameter
+  ```
+</RevisionBlock>
+
+Parameter names declared in function declarations are usually for only self-documenting purposes. They are used (but remain optional) in function definitions.
+
+An ambiguity arises in a parameter list when a type name is nested in parentheses<Revision since="C++11"> (including <DocLink dest="/cpp/language/functions/lambda">lambda expressions</DocLink>)</Revision>. In this case, the choice is between the declaration of a parameter of type pointer to function and the declaration of a parameter with redundant parentheses around the identifier of the `declarator`. The resolution is to consider the type name as a <DocLink dest="/cpp/language/declarations" section="specifiers">simple type specifier</DocLink> (which is the pointer to function type):
+
+```cpp
+class C {};
+ 
+void f(int(C)) {} // void f(int(*fp)(C param)) {}
+                  // NOT void f(int C) {}
+ 
+void g(int *(C[10])); // void g(int *(*fp)(C param[10]));
+                      // NOT void g(int *C[10]);
+```
+
+Parameter type cannot be a type that includes a reference or a pointer to array of unknown bound, including a multi-level pointers/arrays of such types, or a pointer to functions whose parameters are such types.
+
+### Using an ellipsis
+
+The last parameter in the parameter list can be an ellipsis (`...`); this declares a <DocLink dest="/cpp/language/functions/variadic_arguments">variadic function</DocLink><Revision traits={[{ trait: "deprecated", since: "C++26" }]}>. The comma preceding the ellipsis can be omitted</Revision>:
+
+```cpp
+int printf(const char* fmt, ...); // a variadic function
+int printf(const char* fmt...);   // same as above, but deprecated since C++26
+ 
+template<typename... Args>
+void f(Args..., ...); // a variadic function template with a parameter pack
+ 
+template<typename... Args>
+void f(Args... ...);  // same as above, but deprecated since C++26
+ 
+template<typename... Args>
+void f(Args......);   // same as above, but deprecated since C++26
+```
+
+## Function type
+
+### Parameter-type-list
+
+A function’s _parameter-type-list_ is determined as follows:
+
+1. The type of each parameter<Revision since="C++11"> (including function <DocLink dest="/cpp/language/templates/parameter_pack">parameter packs</DocLink>)</Revision> is determined from its own [parameter declaration](#parameter-list).
+2. After determining the type of each parameter, any parameter of type “array of T” or of function type T is adjusted to be “pointer to T”.
+3. After producing the list of parameter types, any top-level <DocLink dest="/cpp/language/declarations/cv">cv-qualifiers</DocLink> modifying a parameter type are deleted when forming the function type.
+4. The resulting list of transformed parameter types and the presence or absence of the [ellipsis](#using-an-ellipsis)<Revision since="C++11"> or a function <DocLink dest="/cpp/language/templates/parameter_pack">parameter pack</DocLink></Revision> is the function’s parameter-type-list.
+
+```cpp
+void f(char*);         // #1
+void f(char[]) {}      // defines #1
+void f(const char*) {} // OK, another overload
+void f(char* const) {} // Error: redefines #1
+ 
+void g(char(*)[2]);   // #2
+void g(char[3][2]) {} // defines #2
+void g(char[3][3]) {} // OK, another overload
+ 
+void h(int x(const int)); // #3
+void h(int (*)(int)) {}   // defines #3
+```
+
+### Determining function type
+
+In syntax (1), assuming `noptr-declarator` as a standalone declaration, given the type of the `qualified-id` or `unqualified-id` in `noptr-declarator` as “derived-declarator-type-list T”:
+
+<RevisionBlock since="C++17">
+  - If the exception specification is <DocLink dest="/cpp/language/exceptions/noexcept_spec">non-throwing</DocLink>, the type of the function declared is “derived-declarator-type-list `noexcept` function of parameter-type-list `cv` (optional) `ref` (optional) returning T”.
+</RevisionBlock>
+
+- <Revision until="C++17">The</Revision><Revision since="C++17">Otherwise, the</Revision> type of the function declared is “derived-declarator-type-list function of parameter-type-list `cv` (optional)<Revision since="C++11"> `ref` (optional)</Revision> returning T”.
+
+<RevisionBlock since="C++11">
+  In syntax (2), assuming `noptr-declarator` as a standalone declaration, given the type of the `qualified-id` or `unqualified-id` in `noptr-declarator` as “derived-declarator-type-list T” (T must be `auto` in this case):
+</RevisionBlock>
+
+<RevisionBlock since="C++17">
+  - If the exception specification is <DocLink dest="/cpp/language/exceptions/noexcept_spec">non-throwing</DocLink>, the type of the function declared is “derived-declarator-type-list `noexcept` function of parameter-type-list `cv` (optional) `ref` (optional) returning `trailing`”.
+</RevisionBlock>
+
+<RevisionBlock since="C++11">
+  - <Revision until="C++17">The</Revision><Revision since="C++17">Otherwise, the</Revision> type of the function declared is “derived-declarator-type-list function of parameter-type-list `cv` (optional) `ref` (optional) returning `trailing`”.
+
+  `attr`, if present, applies to the function type.
+</RevisionBlock>
+
+```cpp
+// the type of “f1” is
+// “function of int returning void, with attribute noreturn”
+void f1(int a) [[noreturn]];
+ 
+// the type of “f2” is
+// “constexpr noexcept function of pointer to int returning int”
+constexpr auto f2(int[] b) noexcept -> int;
+ 
+struct X {
+  // the type of “f3” is
+  // “function of no parameter const returning const int”
+  const int f3() const;
+};
+```
+
+### Trailing qualifiers
+
+A function type with `cv`<Revision since="C++11"> or `ref`</Revision> (including a type named by <DocLink dest="/cpp/language/declarations/typedef">typedef</DocLink> name) can appear only as:
+
+- the function type for a <DocLink dest="/cpp/language/classes/member_functions">non-static member function</DocLink>,
+- the function type to which a pointer to member refers,
+- the top-level function type of a function `typedef` declaration<Revision since="C++11"> or <DocLink dest="/cpp/language/declarations/type_alias">alias declaration</DocLink></Revision>,
+- the <DocLink dest="/cpp/language/basic_concepts/type-id" section="type-naming">type-id</DocLink> in the default argument of a <DocLink dest="/cpp/language/templates/template_parameters" section="type-template-parameter">template type parameter</DocLink>, or
+- the type-id of a template argument for a template type parameter.
+
+```cpp
+typedef int FIC(int) const;
+FIC f;     // Error: does not declare a member function
+ 
+struct S {
+  FIC f; // OK
+};
+ 
+FIC S::*pm = &S::f; // OK
+```
+
+## Function signature
+
+Every function has a signature.
+
+The signature of a function consists of its name and [parameter-type-list](#parameter-type-list). Its signature also contains the enclosing <DocLink dest="/cpp/language/declarations/namespace">namespace</DocLink>, with the following exceptions:
+
+- If the function is a <DocLink dest="/cpp/language/classes/member_functions">member function</DocLink>, its signature contains the class of which the function is a member instead of the enclosing namespace. Its signature also contains the following components, if exists:
+  - `cv`
+  <RevisionBlock since="C++11">
+    - `ref`
+  </RevisionBlock>
+  <RevisionBlock since="C++20">
+    - trailing requires clause
+  </RevisionBlock>
+
+<RevisionBlock since="C++20">
+  - If the function is a non-template <DocLink dest="/cpp/language/classes/friend">friend</DocLink> function with a trailing requires clause, its signature contains the enclosing class instead of the enclosing namespace. The signature also contains the trailing requires clause.
+</RevisionBlock>
+
+`except`<Revision since="C++11"> and `attr`</Revision> doesn't involve function signature<Revision since="C++17">, although <DocLink dest="/cpp/language/exceptions/noexcept_spec">noexcept specification</DocLink> affects the function type</Revision>.
+
+## Function definition
+
+A non-member function definition may appear at namespace scope only (there are no nested functions). A member function definition may also appear in the body of a class definition. They have the following syntax:
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    <RevisionBlock until="C++11" noborder>
+      ```cpp cxx-mark
+      /*$s:decl-specifier-seq*//*$opt*/
+      /*$s:declarator*/
+      /*$s:function-body*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" until="C++26" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*//*$opt*/
+      /*$s:declarator*/
+      /*$s:virt-specs*//*$opt*/
+      /*$s:function-body*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++26" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*//*$opt*/
+      /*$s:declarator*/
+      /*$s:virt-specs*//*$opt*/
+      /*$s:contract-specs*//*$opt*/
+      /*$s:function-body*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  A function definition without constraints.
+</DeclDoc>
+
+<DeclDoc id={2} autorevSince="C++20">
+  <Decl slot="decl">
+    <RevisionBlock since="C++20" until="C++26" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*//*$opt*/
+      /*$s:declarator*/
+      /*$s:require-clause*/
+      /*$s:function-body*/
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++26" noborder>
+      ```cpp cxx-mark
+      /*$s:attr*//*$opt*/
+      /*$s:decl-specifier-seq*//*$opt*/
+      /*$s:declarator*/
+      /*$s:require-clause*/
+      /*$s:contract-specs*//*$opt*/
+      /*$s:function-body*/
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  A function definition with constraints.
+</DeclDoc>
+
+<ParamDocList>
+  <ParamDoc name="decl-specifier-seq">
+    the return type with specifiers, as in the <DocLink dest="/cpp/language/declarations">declaration grammar</DocLink>
+  </ParamDoc>
+  <ParamDoc name="declarator">
+    function declarator, same as in the function declaration grammar above (can be parenthesized)
+  </ParamDoc>
+  <ParamDoc name="function-body">
+    the function body (see below)
+  </ParamDoc>
+</ParamDocList>
+
+<RevisionBlock since="C++11">
+  <ParamDocList>
+    <ParamDoc name="attr">
+      a list of <DocLink dest="/cpp/language/declarations/attributes">attributes</DocLink>. These attributes are combined with the attributes after the identifier in the `declarator` (see top of this page), if any.
+    </ParamDoc>
+    <ParamDoc name="virt-specs">
+      <DocLink dest="/cpp/language/classes/override">override</DocLink>, <DocLink dest="/cpp/language/classes/final">final</DocLink>, or their combination in any order
+    </ParamDoc>
+  </ParamDocList>
+</RevisionBlock>
+
+<RevisionBlock since="C++20">
+  <ParamDocList>
+    <ParamDoc name="requires-clause">
+      a <DocLink dest="/cpp/language/templates/constraints" section="requires-clauses">requires clause</DocLink>
+    </ParamDoc>
+  </ParamDocList>
+</RevisionBlock>
+
+<RevisionBlock since="C++26">
+  <ParamDocList>
+    <ParamDoc name="contract-specs">
+      a list of [function contract specifiers](#function-contract-specifiers)
+    </ParamDoc>
+  </ParamDocList>
+</RevisionBlock>
+
+`function-body` is one of the following:
+
+<DeclDoc id={1}>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    /*$s:ctor-initializer*//*$opt*/ /*$s:compound-statement*/
+    ```
+  </Decl>
+
+  Regular function body.
+</DeclDoc>
+
+<DeclDoc id={2}>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    /*$s:function-try-block*/
+    ```
+  </Decl>
+
+  <DocLink dest="cpp/language/try" section="function-try-block">Function try block</DocLink>.
+</DeclDoc>
+
+<DeclDoc id={3} autorevSince="C++11">
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      = default ;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Explicitly defaulted function definition.
+</DeclDoc>
+
+<DeclDoc id={4} autorevSince="C++11">
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" noborder>
+      ```cpp
+      = delete ;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Explicitly deleted function definition.
+</DeclDoc>
+
+<DeclDoc id={5} autorevSince="C++26">
+  <Decl slot="decl">
+    <RevisionBlock since="C++26" noborder>
+      ```cpp cxx-mark
+      = delete ( /*$s:string-literal*/ );
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  Explicitly deleted function definition with error message.
+</DeclDoc>
+
+<ParamDocList>
+  <ParamDoc name="ctor-initializer">
+    <DocLink dest="/cpp/language/classes/initializer_list">member initializer list</DocLink>, only allowed in constructors
+  </ParamDoc>
+  <ParamDoc name="compound-statement">
+    the brace-enclosed <DocLink dest="/cpp/language/statements" section="compound-statements">sequence of statements</DocLink> that constitutes the body of a function
+  </ParamDoc>
+  <ParamDoc name="function-try-block">
+    a <DocLink dest="/cpp/language/exceptions/try" section="function-try-blocks">function try block</DocLink>
+  </ParamDoc>
+</ParamDocList>
+
+<RevisionBlock since="C++26">
+  <ParamDocList>
+    <ParamDoc name="string-literal">
+      an <DocLink dest="/cpp/language/expressions/string_literal" section="unevaluated-strings">unevaluated string literal</DocLink> that could be used to explain the rationale for why the function is deleted
+    </ParamDoc>
+  </ParamDocList>
+</RevisionBlock>
+
+```cpp
+int max(int a, int b, int c) {
+  int m = (a > b) ? a : b;
+  return (m > c) ? m : c;
+}
+ 
+// decl-specifier-seq is “int”
+// declarator is “max(int a, int b, int c)”
+// body is { ... }
+```
+
+The function body is a <DocLink dest="/cpp/language/statements" section="compound-statements">compound statement</DocLink> (sequence of zero or more statements surrounded by a pair of curly braces), which is executed when the function call is made. Moreover, the function body of a <DocLink dest="/cpp/language/classes/initializer_list">constructor</DocLink> also includes the following:
+
+- For all non-static data members whose identifiers are absent in the constructor's <DocLink dest="/cpp/language/classes/initializer_list">member initializer list</DocLink>, the<Revision since="C++11"> <DocLink dest="/cpp/language/classes/data_members" section="member-initialization">default member initializers</DocLink> or</Revision> <DocLink dest="/cpp/language/initialization/default_initialization">default-initializations</DocLink> used to initialize the corresponding member <DocLink dest="/cpp/language/basic_concepts/objects" section="subobjects">subobjects</DocLink>.
+- For all base classes whose type names are absent in the constructor's member initializer list, the default-initializations used to initialize the corresponding base class subobjects.
+
+<RevisionBlock since="C++11" vertical>
+  If a function definition contains a `virt-specs`, it must define a <DocLink dest="/cpp/language/classes/member_functions">member function</DocLink>.
+
+  ```cpp
+  void f() override {} // Error: not a member function
+  ```
+</RevisionBlock>
+
+<RevisionBlock since="C++20" vertical>
+  If a function definition contains a `requires-clause`, it must define a <DocLink dest="/cpp/language/templates" section="templated-entity">templated function</DocLink>.
+
+  ```cpp
+  void g() requires (sizeof(int) == 4) {} // Error: not a templated function
+  ```
+</RevisionBlock>
+
+The parameter types, as well as the return type of a function definition cannot be (possibly cv-qualified) <DocLink dest="/cpp/language/basic_concepts/incomplete_type">incomplete</DocLink> <DocLink dest="/cpp/language/classes/class">class types</DocLink><Revision since="C++11"> unless the function is defined as deleted</Revision>. The completeness check is only made in the function body, which allows <DocLink dest="/cpp/language/classes/member_functions">member functions</DocLink> to return the class in which they are defined (or its enclosing class), even if it is incomplete at the point of definition (it is complete in the function body).
+
+The parameters declared in the `declarator` of a function definition are in <DocLink dest="/cpp/language/basic_concepts/scope">scope</DocLink> within the body. If a parameter is not used in the function body, it does not need to be named (it's sufficient to use an abstract declarator):
+
+```cpp
+void print(int a, int) // second parameter is not used
+{
+  std::printf("a = %d\n", a);
+}
+```
+
+Even though top-level <DocLink dest="/cpp/language/declarations/cv">cv-qualifiers</DocLink> on the parameters are discarded in function declarations, they modify the type of the parameter as visible in the body of a function:
+
+```cpp
+void f(const int n) // declares function of type void(int)
+{
+  // but in the body, the type of “n” is const int
+}
+```
+
+<div {...autoRev({ autorevSince: "C++11" })}>
+  ### Defaulted functions :badge[C++11]
+
+  If `function-body` is of syntax (3), the function is defined as _explicitly defaulted_.
+
+  A function that is explicitly defaulted must be a <DocLink dest="/cpp/language/classes/member_functions" section="special-member-functions">special member function</DocLink><Revision since="C++23"> or <DocLink dest="/cpp/language/expressions/operator_comparison">comparison operator function</DocLink></Revision>, and it must have no <DocLink dest="/cpp/language/functions/default_arguments">default argument</DocLink>.
+
+  An explicitly defaulted special member function F1 is allowed to differ from the corresponding special member function F2 that would have been implicitly declared, as follows:
+
+  - F1 and F2 may have different `ref` and/or `except`.
+  - If F2 has a non-object parameter of type `const C&`, the corresponding non-object parameter of F1 maybe of type `C&`.
+
+  <RevisionBlock since="C++23">
+    - If F2 has an implicit object parameter of type “reference to C”, F1 may be an explicit object member function whose [explicit object parameter](#explicit-object-parameter) is of (possibly different) type “reference to C”, in which case the type of F1 would differ from the type of F2 in that the type of F1 has an additional parameter.
+  </RevisionBlock>
+
+  If the type of F1 differs from the type of F2 in a way other than as allowed by the preceding rules, then:
+
+  - If F1 is an assignment operator, and the return type of F1 differs from the return type of F2 or F1’s non-object parameter type is not a reference, the program is <Behavior kind="ill-formed">ill-formed</Behavior>.
+  - Otherwise, if F1 is explicitly defaulted on its first declaration, it is defined as deleted.
+  - Otherwise, the program is <Behavior kind="ill-formed">ill-formed</Behavior>.
+
+  A function explicitly defaulted on its first declaration is implicitly <DocLink dest="/cpp/language/declarations/inline">inline</DocLink>, and is implicitly constexpr if it can be a <DocLink dest="/cpp/language/declarations/constexpr" section="constexpr-function">constexpr function</DocLink>.
+
+  ```cpp
+  struct S {
+    S(int a = 0) = default;             // error: default argument
+    void operator=(const S&) = default; // error: non-matching return type
+    ~S() noexcept(false) = default;     // OK, different exception specification
+  private:
+    int i;
+    S(S&);            // OK, private copy constructor
+  };
+  
+  S::S(S&) = default; // OK, defines copy constructor
+  ```
+
+  Explicitly-defaulted functions and implicitly-declared functions are collectively called _defaulted_ functions. Their actual definitions will be implicitly provided, see their corresponding pages for details.
+
+  ### Deleted functions :badge[C++11]
+
+  If `function-body` is of syntax (4)<Revision since="C++26"> or (5)</Revision>, the function is defined as _explicitly deleted_.
+
+  Any use of a deleted function is <Behavior kind="ill-formed">ill-formed</Behavior> (the program will not compile). This includes calls, both explicit (with a function call operator) and implicit (a call to deleted overloaded operator, special member function, allocation function, etc), constructing a pointer or pointer-to-member to a deleted function, and even the use of a deleted function in an expression that is not <DocLink dest="/cpp/language/expressions" section="potentially-evaluated-expressions">potentially-evaluated</DocLink>.
+
+  A non-pure virtual member function can be defined as deleted, even though it is implicitly <DocLink dest="/cpp/language/basic_concepts/definition" section="odr-use">odr-used</DocLink>. A deleted function can only be overridden by deleted functions, and a non-deleted function can only be overridden by non-deleted functions.
+
+  <RevisionBlock since="C++26">
+    If `string-literal` is present, the implementation is encouraged to include the text of it as part of the resulting diagnostic message which shows the rationale for deletion or to suggest an alternative.
+  </RevisionBlock>
+
+  If the function is overloaded, <DocLink dest="/cpp/language/functions/overload_resolution">overload resolution</DocLink> takes place first, and the program is only <Behavior kind="ill-formed">ill-formed</Behavior> if the deleted function was selected:
+
+  ```cpp
+  struct T {
+    void* operator new(std::size_t) = delete;
+    void* operator new[](std::size_t) = delete("new[] is deleted"); // since C++26
+  };
+  
+  T* p = new T;     // Error: attempts to call deleted T::operator new
+  T* p = new T[5];  // Error: attempts to call deleted T::operator new[],
+                    //        emits a diagnostic message “new[] is deleted”
+  ```
+
+  The deleted definition of a function must be the first declaration in a translation unit: a previously-declared function cannot be redeclared as deleted:
+
+  ```cpp
+  struct T { T(); };
+  T::T() = delete; // Error: must be deleted on the first declaration
+  ```
+
+  ### User-provided functions :badge[C++11]
+
+  A function is _user-provided_ if it is user-declared and not explicitly defaulted or deleted on its first declaration. A user-provided explicitly-defaulted function (i.e., explicitly defaulted after its first declaration) is defined at the point where it is explicitly defaulted; if such a function is implicitly defined as deleted, the program is <Behavior kind="ill-formed">ill-formed</Behavior>. Declaring a function as defaulted after its first declaration can provide efficient execution and concise definition while enabling a stable binary interface to an evolving code base.
+
+  ```cpp
+  // All special member functions of “trivial” are
+  // defaulted on their first declarations respectively,
+  // they are not user-provided
+  struct trivial {
+    trivial() = default;
+    trivial(const trivial&) = default;
+    trivial(trivial&&) = default;
+    trivial& operator=(const trivial&) = default;
+    trivial& operator=(trivial&&) = default;
+    ~trivial() = default;
+  };
+  
+  struct nontrivial {
+    nontrivial(); // first declaration
+  };
+  
+  // not defaulted on the first declaration,
+  // it is user-provided and is defined here
+  nontrivial::nontrivial() = default;
+  ```
+
+  ### Ambiguity Resolution :badge[C++11]
+
+  In the case of an ambiguity between a function body and an <DocLink dest="/cpp/language/initialization">initializer</DocLink> beginning with `{`<Revision since="C++26"> or `=`</Revision>, the ambiguity is resolved by checking the type of the <DocLink dest="/cpp/language/declarations" section="declarators">declarator identifier</DocLink> of `noptr-declarator`:
+
+  - If the type is a function type, the ambiguous token sequence is treated as a function body.
+  - Otherwise, the ambiguous token sequence is treated as an initializer.
+
+  ```cpp
+  using T = void(); // function type
+  using U = int;    // non-function type
+  
+  T a{}; // defines a function doing nothing
+  U b{}; // value-initializes an int object
+  
+  T c = delete("hello");  // defines a function as deleted
+  U d = delete("hello");  // copy-initializes an int object with
+                          // the result of a delete expression (ill-formed)
+  ```
+
+  ### \_\_func\_\_ :badge[C++11]
+
+  Within the function body, the function-local predefined variable `__func__` is defined as if by
+
+  ```cpp
+  static const char __func__[] = "function-name";
+  ```
+
+  This variable has block scope and static storage duration:
+
+  ```cpp
+  struct S {
+    S(): s(__func__) {} // OK: initializer-list is part of function body
+    const char* s;
+  };
+  void f(const char* s = __func__); // Error: parameter-list is part of declarator
+  ```
+
+  ```cpp
+  #include <iostream>
+  
+  void Foo() { std::cout << __func__ << ' '; }
+  
+  struct Bar {
+    Bar() { std::cout << __func__ << ' '; }
+    ~Bar() { std::cout << __func__ << ' '; }
+    struct Pub { Pub() { std::cout << __func__ << ' '; } };
+  };
+  
+  int main() {
+    Foo();
+    Bar bar;
+    Bar::Pub pub;
+  }
+  ```
+
+  Possible output:
+
+  ```
+  Foo Bar Pub ~Bar
+  ```
+</div>
+
+<div {...autoRev({ autorevSince: "C++26" })}>
+  ## Function contract specifiers :badge[C++26]
+
+  Function declarations and <DocLink dest="/cpp/language/functions/lambda">lambda expressions</DocLink> can contain a sequence of _function contract specifiers_, each specifier has the following syntax:
+
+  <DeclDoc id={1}>
+    <Decl slot="decl">
+      ```cpp
+      pre /* attr (optional) */ (/* predicate */)
+      ```
+    </Decl>
+
+    Introduces a _precondition assertion_.
+  </DeclDoc>
+
+  <DeclDoc id={2}>
+    <Decl slot="decl">
+      ```cpp
+      post /* attr (optional) */ (/* predicate */)
+      ```
+    </Decl>
+
+    Introduces a _postcondition assertion_ in which the assertion does not bind to the result.
+  </DeclDoc>
+
+  <DeclDoc id={3}>
+    <Decl slot="decl">
+      ```cpp
+      post /* attr (optional) */ (/* identifier */ /* result-attr (optional) */ : /* predicate */)
+      ```
+    </Decl>
+
+    Introduces a _postcondition assertion_ in which the assertion binds to the result.
+  </DeclDoc>
+
+  <ParamDocList>
+    <ParamDoc name="attr">
+      a list of attributes appertaining to the introduced contract assertion
+    </ParamDoc>
+    <ParamDoc name="prediacte">
+      any expression (except unparenthesized <DocLink dest="/cpp/language/expressions/operator_other" section="built-in-comma-operator">comma expressions</DocLink>)
+    </ParamDoc>
+    <ParamDoc name="identifier">
+      the identifier that refers to the result
+    </ParamDoc>
+    <ParamDoc name="result-attr">
+      a list of attributes appertaining to the result binding
+    </ParamDoc>
+  </ParamDocList>
+
+  Precondition assertion and postcondition assertion are collectively called _function contract assertion_.
+
+  A function contract assertion is a <DocLink dest="/cpp/language/contracts">contract assertion</DocLink> associated with a function. The predicate of a function contract assertion is its `predicate` <DocLink dest="/cpp/language/expressions/implicit_cast" section="contextual-conversions">contextually converted</DocLink> to `bool`.
+
+  The following functions cannot be declared with function contract specifiers:
+
+  - <DocLink dest="/cpp/language/classes/virtual">virtual functions</DocLink>
+  - [deleted functions](#deleted-functions)
+  - function [defaulted](#defaulted-functions) on their first declarations
+
+  ### Precondition assertions
+
+  A precondition assertion is associated with entering a function:
+
+  ```cpp
+  int divide(int dividend, int divisor) pre(divisor != 0) {
+    return dividend / divisor;
+  }
+  
+  double square_root(double num) pre(num >= 0) {
+    return std::sqrt(num);
+  }
+  ```
+
+  ### Postcondition assertions
+
+  A postcondition assertion is associated with exiting a function normally.
+
+  If a postcondition assertion has an `identifier`, the function contract specifier introduces `identifier` as the name of a _result binding_ of the associated function. A result binding denotes the object or reference returned by invocation of that function. The type of a result binding is the return type of its associated function.
+
+  ```cpp
+  int absolute_value(int num) post(r : r >= 0) {
+      return std::abs(num);
+  }
+  
+  double sine(double num) post(r : r >= -1.0 && r <= 1.0) {
+    if (std::isnan(num) || std::isinf(num))
+      // exiting via an exception never causes contract violation
+      throw std::invalid_argument("Invalid argument");
+    return std::sin(num);
+  }
+  ```
+
+  If a postcondition assertion has an `identifier`, and the return type of the associated function is (possibly cv-qualified) `void`, the program is <Behavior kind="ill-formed">ill-formed</Behavior>:
+
+  ```cpp
+  void f() post(r : r > 0); // Error: no value can be bound to “r”
+  ```
+
+  When the declared return type of a non-templated function contains a <DocLink dest="/cpp/language/declarations/auto">placeholder type</DocLink>, a postcondition assertion with an `identifier` can only appear in a function definition:
+
+  ```cpp
+  auto g(auto&) post(r : r >= 0); // OK, “g” is a template
+  
+  auto h() post(r : r >= 0);      // Error: cannot name the return value
+  
+  auto k() post(r : r >= 0)       // OK, “k” is a definition
+  {
+    return 0;
+  }
+  ```
+
+  ### Contract consistency
+
+  A <DocLink dest="/cpp/language/declarations/conflicting_declarations" section="multiple-declarations-of-the-same-entity">redeclaration</DocLink> D of a function or function template `func` must have either no `contract-specs` or the same contract-specs as any first declaration F reachable from D. If D and F are in different translation units, a diagnostic is required only if D is attached to a named module.
+
+  If a declaration F1 is a first declaration of func in one translation unit and a declaration F2 is a first declaration of `func` in another translation unit, F1 and F2 must specify the same `contract-specs`, no diagnostic required.
+
+  Two `contract-specs`s are the same if they consist of the same function contract specifiers in the same order.
+
+  A function contract specifier C1 on a function declaration D1 is the same as a function contract specifier C2 on a function declaration D2 if all following conditions are satisfied:
+
+  - The `predicate`s of C1 and C2 would satisfy the <DocLink dest="/cpp/language/basic_concepts/definition" section="one-definition-rule">one-definition rule</DocLink> if placed in function definitions on the declarations D1 and D2 (if D1 and D2 are in different translation units, corresponding entities defined within each `predicate` behave as if there is a single entity with a single definition), respectively, except for the following renamings:
+    - The renaming of the parameters of the declared function.
+    - The renaming of template parameters of a template enclosing the declared function.
+    - The renaming of the result binding (if any).
+  - Both C1 and C2 have an `identifier` or neither have.
+
+  If this condition is not met solely due to the comparison of two lambda expressions that are contained within the `predicate`s, no diagnostic is required.
+
+  ```cpp
+  bool b1, b2;
+  
+  void f() pre (b1) pre([]{ return b2; }());
+  void f(); // OK, function contract specifiers omitted
+  void f() pre (b1) pre([]{ return b2; }()); // Error: closures have different types
+  void f() pre (b1); // Error: function contract specifiers are different
+  
+  int g() post(r : b1);
+  int g() post(b1); // Error: no result binding
+  
+  namespace N {
+    void h() pre (b1);
+    bool b1;
+    void h() pre (b1);  // Error: function contract specifiers differ
+                        //        according to the one−definition rule
+  }
+  ```
+</div>
+
+## Notes
+
+In case of ambiguity between a variable declaration using the direct-initialization syntax and a function declaration, the compiler always chooses function declaration; see <DocLink dest="/cpp/language/initialization/direct_initialization" section="notes">direct-initialization</DocLink>.
+
+<FeatureTestMacro name="__cpp_decltype_auto">
+  <FeatureTestMacroValue value="201304L" since="C++14">
+    <DocLink dest="/cpp/language/declarations/auto">decltype(auto)</DocLink>
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_return_type_deduction">
+  <FeatureTestMacroValue value="201304L" since="C++14">
+    [return type deduction](#return-type-deduction) for normal functions
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_explicit_this_parameter">
+  <FeatureTestMacroValue value="202110L" since="C++23">
+    [explicit object parameters](#explicit-object-parameter) (<DocLink dest="/cpp/language/classes/member_functions" section="explicit-object-member-functions">deducing this</DocLink>)
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_deleted_function">
+  <FeatureTestMacroValue value="202403L" since="C++26">
+    deleted function with a reason
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## Keywords
+
+<DocLink dest="/cpp/language/keywords/default">default</DocLink>, <DocLink dest="/cpp/language/keywords/delete">delete</DocLink>, <DocLink dest="/cpp/language/keywords/pre">pre</DocLink>, <DocLink dest="/cpp/language/keywords/post">post</DocLink>
+
+## Example
+
+```cpp
+#include <iostream>
+#include <string>
+ 
+// simple function with a default argument, returning nothing
+void f0(const std::string& arg = "world!") {
+  std::cout << "Hello, " << arg << '\n';
+}
+ 
+// the declaration is in namespace (file) scope
+// (the definition is provided later)
+int f1();
+ 
+// function returning a pointer to f0, pre-C++11 style
+void (*fp03())(const std::string&) {
+  return f0;
+}
+ 
+// function returning a pointer to f0, with C++11 trailing return type
+auto fp11() -> void(*)(const std::string&) {
+  return f0;
+}
+ 
+int main() {
+  f0();
+  fp03()("test!");
+  fp11()("again!");
+  int f2(std::string) noexcept; // declaration in function scope
+  std::cout << "f2(\"bad\"): " << f2("bad") << '\n';
+  std::cout << "f2(\"42\"): " << f2("42") << '\n';
+}
+ 
+// simple non-member function returning int
+int f1() {
+  return 007;
+}
+ 
+// function with an exception specification and a function try block
+int f2(std::string str) noexcept try {
+  return std::stoi(str);
+} catch (const std::exception& e) {
+  std::cerr << "stoi() failed!\n";
+  return 0;
+}
+ 
+// deleted function, an attempt to call it results in a compilation error
+void bar() = delete
+#if __cpp_deleted_function
+  ("reason")
+#endif
+;
+```
+
+Possible output:
+
+```
+stoi() failed!
+Hello, world!
+Hello, test!
+Hello, again!
+f2("bad"): 0
+f2("42"): 42
+```
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="cwg" id={135} std="C++98">
+    <Fragment slot="behavior-published">
+      member functions defined in class could not have a parameter of or return its own class because it is incomplete
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={332} std="C++98">
+    <Fragment slot="behavior-published">
+      a parameter could have cv-qualified `void` type
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={393} std="C++98">
+    <Fragment slot="behavior-published">
+      types that include pointers/references to array of unknown bound could not be parameters
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      such types are allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={452} std="C++98">
+    <Fragment slot="behavior-published">
+      member initializer list was not a part of function body
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      it is
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={577} std="C++98">
+    <Fragment slot="behavior-published">
+      dependent type void could be used to declare a function taking no parameters
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      only non-dependent `void` is allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1327} std="C++11">
+    <Fragment slot="behavior-published">
+      defaulted or deleted functions could not be specified with override or final
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1355} std="C++11">
+    <Fragment slot="behavior-published">
+      only special member functions could be user-provided
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      extended to all functions
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1394} std="C++11">
+    <Fragment slot="behavior-published">
+      deleted functions could not have any parameter of an incomplete type or return an incomplete type
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      incomplete type allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1824} std="C++98">
+    <Fragment slot="behavior-published">
+      the completeness check on parameter type and return type of a function definition could be made outside the context of the function definition
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      only check in the context of the function definition
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1877} std="C++14">
+    <Fragment slot="behavior-published">
+      return type deduction treated `return;` as `return void();`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      simply deduce the return type as `void` in this case
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2015} std="C++11">
+    <Fragment slot="behavior-published">
+      the implicit odr-use of a deleted virtual function was ill-formed
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      such odr-uses are exempt from the use prohibition
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2044} std="C++14">
+    <Fragment slot="behavior-published">
+      return type deduction on functions returning `void` would fail if the declared return type is `decltype(auto)`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      updated the deduction rule to handle this case
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2081} std="C++14">
+    <Fragment slot="behavior-published">
+      function redeclarations could use return type deduction even if the initial declaration does not
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      not allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2144} std="C++11">
+    <Fragment slot="behavior-published">
+      `{}` could be a function body or an initializer at the same place
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      differentiated by the type of the declarator identifier
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2145} std="C++98">
+    <Fragment slot="behavior-published">
+      the `declarator` in function definition could not be parenthesized
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2259} std="C++11">
+    <Fragment slot="behavior-published">
+      the ambiguity resolution rule regarding parenthesized type names did not cover lambda expressions
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      covered
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2430} std="C++98">
+    <Fragment slot="behavior-published">
+      in the definition of a member function in a class definition, the type of that class could not be the return type or parameter type due to the resolution of [CWG issue 1824](https://cplusplus.github.io/CWG/issues/1824.html)
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      only check in the function body
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2760} std="C++98">
+    <Fragment slot="behavior-published">
+      the function body of a constructor did not include the initializations not specified in the constructor's regular function body
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      also includes these initializations
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2831} std="C++20">
+    <Fragment slot="behavior-published">
+      a function definition with a `requires-clause` could define a non-templated function
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2846} std="C++23">
+    <Fragment slot="behavior-published">
+      explicit object member functions could not have out-of-class definitions
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      allowed
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2915} std="C++23">
+    <Fragment slot="behavior-published">
+      unnamed explicit object parameters could have type `void`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+</DRList>
+
+## See also
+
+<DescList>
+  <Desc>
+    <DocLink slot="item" dest="/c/language/function_declaration"> C documentation</DocLink> for **Declaring functions**
+  </Desc>
+</DescList>

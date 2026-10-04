@@ -1,0 +1,13 @@
+---
+export { default as DR } from "./DR.astro";
+---
+
+<div class="dr-list">
+  <slot />
+</div>
+
+<style is:global>
+  .dr-list > * {
+    margin-top: 0;
+  }
+</style>
