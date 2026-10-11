@@ -1,0 +1,28 @@
+---
+interface Props {
+  columns?: number;
+}
+
+const { columns = 3 } = Astro.props;
+---
+
+<div class="keyword-grid" style={`--keyword-grid-columns: ${columns};`}>
+  <slot />
+</div>
+
+<style>
+  .keyword-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--keyword-grid-columns), minmax(0, 1fr));
+    gap: 1.25rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+
+  @media (max-width: 900px) {
+    .keyword-grid {
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    }
+  }
+</style>

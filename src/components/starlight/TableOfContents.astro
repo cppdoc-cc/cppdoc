@@ -1,0 +1,40 @@
+---
+import Default from "starlight-heading-badges/components/HeadingBadgesTableOfContents.astro";
+import RevisionSelector from "@components/revision/RevisionSelector.astro";
+import type { CxxRevision, Language } from "@src/types";
+import { getRevisions } from "@src/lib/revision";
+
+const pageRevision = Astro.locals.starlightRoute.entry.data.cppdoc?.revision;
+const since = pageRevision?.since as CxxRevision | undefined;
+const until = pageRevision?.until as CxxRevision | undefined;
+
+// This may look hacky, but we now infer whether the current page is for C or
+// C++ by examining the page's path in the file system.
+const path = Astro.locals.starlightRoute.entry.filePath;
+let language: Language | undefined = undefined;
+if (pageRevision?.lang) {
+  language = pageRevision.lang as Language;
+} else if (path.includes("src/content/docs/cpp/")) {
+  language = "C++";
+} else if (path.includes("src/content/docs/c/")) {
+  language = "C";
+}
+
+const revisions = language && getRevisions(language, { since, until });
+---
+
+{
+  revisions && revisions.length > 0 && (
+    <div class="toc-revision-selector">
+      <RevisionSelector revisions={revisions} />
+    </div>
+  )
+}
+
+<Default><slot /></Default>
+
+<style>
+  .toc-revision-selector {
+    margin-bottom: 1em;
+  }
+</style>
