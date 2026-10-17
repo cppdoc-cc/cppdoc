@@ -1,0 +1,148 @@
+---
+title: The as-if rule
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Desc, DescList } from "@components/desc-list";
+import { RevisionBlock } from "@components/revision";
+import DocLink from "@components/DocLink.astro";
+
+Allows any and all code transformations that do not change the observable behavior of the program.
+
+## Explanation
+
+_Observable behavior_ of a program includes the following:
+
+<RevisionBlock until="C++11">
+  - At every <DocLink dest="/cpp/language/expressions/eval_order">sequence point</DocLink>, the values of all <DocLink dest="/cpp/language/declarations/cv">volatile</DocLink> objects are stable (previous evaluations are complete, new evaluations not started).
+</RevisionBlock>
+
+<RevisionBlock since="C++11">
+  - Accesses (reads and writes) to <DocLink dest="/cpp/language/declarations/cv">volatile</DocLink> objects occur strictly according to the semantics of the expressions in which they occur. In particular, they are <DocLink dest="/cpp/library/atomic/memory_order">not reordered</DocLink> with respect to other volatile accesses on the same thread.
+</RevisionBlock>
+
+<RevisionBlock until="C++26">
+  - At program termination, data written to files is exactly as if the program was executed as written.
+</RevisionBlock>
+
+<RevisionBlock since="C++26">
+  - Data delivered to the host environment is written into files.
+</RevisionBlock>
+
+- Prompting text which is sent to interactive devices will be shown before the program waits for input.
+- If the ISO C pragma <DocLink dest="/cpp/language/preprocessor/impl">`#pragma STDC FENV_ACCESS`</DocLink> is supported and is set to `ON`, the changes to the <DocLink dest="/cpp/library/numeric/fenv">floating-point</DocLink> environment (floating-point exceptions and rounding modes) are guaranteed to be observed by the floating-point arithmetic operators and function calls as if executed as written, except that
+  - the result of any floating-point expression other than cast and assignment may have range and precision of a floating-point type different from the type of the expression (see <DocLink dest="/cpp/library/utility/types/climits/FLT_EVAL_METHOD">FLT_EVAL_METHOD</DocLink>),
+  - notwithstanding the above, intermediate results of any floating-point expression may be calculated as if to infinite range and precision (unless <DocLink dest="/cpp/language/preprocessor/impl">`#pragma STDC FP_CONTRACT`</DocLink> is `OFF`).
+
+<RevisionBlock until="C++26">
+  The C++ compiler is permitted to perform any changes to the program as long as given the same input, the observable behavior of the program is one of the possible observable behaviors corresponding to that input.
+
+  However, if certain input will result in <DocLink dest="/cpp/language/basic_concepts/ub">undefined behavior</DocLink>, the compiler cannot guarantee any observable behavior of the program with that input, even if any operation of the observable behavior happens before any possible undefined operation.
+</RevisionBlock>
+
+<RevisionBlock since="C++26">
+  A program may contain _observable checkpoints_.
+
+  An operation OP is _undefined-free_ if for every undefined operation U, there is an observable checkpoint CP such that OP happens before CP and CP happens before U. The _defined prefix_ of the program with a given input comprises all its undefined-free operations.
+
+  The C++ compiler is permitted to perform any changes to the program as long as given the same input, the observable behavior of the defined prefix of the program is one of the possible observable behaviors corresponding to that defined prefix.
+
+  If certain input will result in <DocLink dest="/cpp/language/basic_concepts/ub">undefined behavior</DocLink>, the compiler cannot guarantee any observable behavior of the program with that input that does not belong to the defined prefix.
+</RevisionBlock>
+
+## Notes
+
+Because the compiler is (usually) unable to analyze the code of an external library to determine whether it does or does not perform I/O or volatile access, third-party library calls also aren't affected by optimization. However, standard library calls may be replaced by other calls, eliminated, or added to the program during optimization. Statically-linked third-party library code may be subject to link-time optimization.
+
+Programs with undefined behavior often change observable behavior when recompiled with different optimization settings. For example, if a test for signed integer overflow relies on the result of that overflow, e.g. `if (n + 1 < n) abort();`, [it is removed entirely by some compilers](https://blog.llvm.org/2011/05/what-every-c-programmer-should-know_14.html) because <DocLink dest="/cpp/language/expressions/operator_arithmetic" section="overflows">signed overflow is undefined behavior</DocLink> and the optimizer is free to assume it never happens and the test is redundant.
+
+<DocLink dest="/cpp/language/initialization/copy_elision">Copy elision</DocLink> is an exception from the as-if rule: the compiler may remove calls to move- and copy-constructors and the matching calls to the destructors of temporary objects even if those calls have observable side effects.
+
+<RevisionBlock since="C++14">
+  <DocLink dest="/cpp/language/expressions/new">new expression</DocLink> has another exception from the as-if rule: the compiler may remove calls to the <DocLink dest="/cpp/library/memory/new/operator_new">replaceable allocation functions</DocLink> even if a user-defined replacement is provided and has observable side-effects.
+</RevisionBlock>
+
+The count and order of floating-point exceptions can be changed by optimization as long as the state as observed by the next floating-point operation is as if no optimization took place:
+
+```cpp
+#pragma STDC FENV_ACCESS ON
+for (i = 0; i < n; ++i)
+  x + 1; // x + 1 is dead code, but may raise FP exceptions
+          // (unless the optimizer can prove otherwise). However, executing it n times
+          // will raise the same exception over and over. So this can be optimized to:
+if (0 < n)
+  x + 1;
+```
+
+## Example
+
+```cpp
+int& preinc(int& n) { return ++n; }
+int add(int n, int m) { return n + m; }
+ 
+// volatile input to prevent constant folding
+volatile int input = 7;
+ 
+// volatile output to make the result a visible side-effect
+volatile int result;
+ 
+int main() {
+  int n = input;
+// using built-in operators would invoke undefined behavior
+//  int m = ++n + ++n;
+// but using functions makes sure the code executes as-if 
+// the functions were not overlapped
+  int m = add(preinc(n), preinc(n));
+  result = m;
+}
+```
+
+Full code of the `main()` function as produced by the GCC compiler, for different platforms:
+
+<Tabs>
+  <TabItem label="x86 (Intel)">
+    ```
+    movl    input(%rip), %eax   # eax = input
+    leal    3(%rax,%rax), %eax  # eax = 3 + eax + eax
+    movl    %eax, result(%rip)  # result = eax
+    xorl    %eax, %eax          # eax = 0 (the return value of main())
+    ret
+    ```
+  </TabItem>
+  <TabItem label="PowerPC (IBM)">
+    ```
+    lwz 9,LC..1(2)
+    li 3,0          # r3 = 0 (the return value of main())
+    lwz 11,0(9)     # r11 = input;
+    slwi 11,11,1    # r11 = r11 << 1;
+    addi 0,11,3     # r0 = r11 + 3;
+    stw 0,4(9)      # result = r0;
+    blr
+    ```
+  </TabItem>
+  <TabItem label="Sparc (Sun)">
+    ```
+    sethi   %hi(result), %g2
+    sethi   %hi(input), %g1
+    mov     0, %o0                 # o0 = 0 (the return value of main)
+    ld      [%g1+%lo(input)], %g1  # g1 = input
+    add     %g1, %g1, %g1          # g1 = g1 + g1
+    add     %g1, 3, %g1            # g1 = 3 + g1
+    st      %g1, [%g2+%lo(result)] # result = g1
+    jmp     %o7+8
+    nop
+    ```
+  </TabItem>
+</Tabs>
+
+In all cases, the side effects of `preinc()` were eliminated, and the entire `main()` function was reduced to the equivalent of `result = 2 * input + 3;`.
+
+## See also
+
+- <DocLink dest="/cpp/language/initialization/copy_elision">copy elision</DocLink>
+
+<DescList>
+  <Desc>
+    <DocLink slot="item" dest="/c/language/basic_concepts/as_if"> C documentation</DocLink> for **as-if rule**
+  </Desc>
+</DescList>

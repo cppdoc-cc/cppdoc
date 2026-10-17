@@ -1,0 +1,4 @@
+interface:
+  display_name: "Migrate Cppreference Page"
+  short_description: "Migrate one cppreference page into cppdoc"
+  default_prompt: "Use $migrate-cppref-page to migrate the cppreference page `cpp/memory` into this cppdoc checkout."
