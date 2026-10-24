@@ -1,0 +1,376 @@
+---
+title: Definitions and ODR
+---
+
+import { DR, DRList } from "@components/defect-report";
+import { Revision, RevisionBlock } from "@components/revision";
+import Behavior from "@components/Behavior.astro";
+import DocLink from "@components/DocLink.astro";
+import Incomplete from "@components/Incomplete.astro";
+
+_Definitions_ are <DocLink dest="/cpp/language/declarations">declarations</DocLink> that fully define the entity introduced by the declaration. Every declaration is a definition, except for the following:
+
+- A function declaration without a function body:
+
+```cpp
+int f(int); // declares, but does not define f
+```
+
+- Any declaration with an `extern` <DocLink dest="/cpp/language/declarations/storage_duration">storage class specifier</DocLink> or with a <DocLink dest="/cpp/language/declarations/language_linkage">language linkage</DocLink> specifier (such as `extern "C"`) without an initializer:
+
+```cpp
+extern const int a;     // declares, but does not define a
+extern const int b = 1; // defines b
+```
+
+- Declaration of a<Revision since="C++17"> non-inline</Revision> <DocLink dest="/cpp/language/classes/static">static data member</DocLink> inside a class definition:
+
+```cpp
+struct S {
+  int n;               // defines S::n
+  static int i;        // declares, but does not define S::i
+  inline static int x; // defines S::x
+};                     // defines S
+ 
+int S::i;                // defines S::i
+```
+
+<RevisionBlock since="C++17" traits={[{ trait: "deprecated", since: "C++17" }]} vertical>
+  - Namespace scope declaration of a static data member that was defined within the class with the <DocLink dest="/cpp/language/declarations/constexpr">constexpr</DocLink> specifier:
+
+  ```cpp
+  struct S {
+    static constexpr int x = 42; // implicitly inline, defines S::x
+  };
+  
+  constexpr int S::x; // declares S::x, not a redefinition
+  ```
+</RevisionBlock>
+
+- Declaration of a class name (by <DocLink dest="/cpp/language/classes/class" section="forward-declaration">forward declaration</DocLink> or by the use of the elaborated type specifier in another declaration):
+
+```cpp
+struct S;             // declares, but does not define S
+
+class Y f(class T p); // declares, but does not define Y and T (and also f and p)
+```
+
+<RevisionBlock since="C++11" vertical>
+  - An <DocLink dest="/cpp/language/declarations/enum">opaque declaration</DocLink> of an enumeration:
+  
+  ```cpp
+  enum Color : int; // declares, but does not define Color
+  ```
+</RevisionBlock>
+
+- Declaration of a <DocLink dest="/cpp/language/templates/template_parameters">template parameter</DocLink>:
+
+```cpp
+template<typename T> // declares, but does not define T
+```
+
+- A parameter declaration in a function declaration that isn't a definition:
+
+```cpp
+int f(int x); // declares, but does not define f and x
+ 
+int f(int x) { // defines f and x
+  return x + a;
+}
+```
+
+- A <DocLink dest="/cpp/language/declarations/typedef">typedef</DocLink> declaration:
+
+```cpp
+typedef S S2; // declares, but does not define S2 (S may be incomplete)
+```
+
+<RevisionBlock since="C++11" vertical>
+  - An <DocLink dest="/cpp/language/declarations/type_alias">alias-declaration</DocLink>:
+
+  ```cpp
+  using S2 = S; // declares, but does not define S2 (S may be incomplete)
+  ```
+</RevisionBlock>
+
+- A <DocLink dest="/cpp/language/classes/using_declaration">using-declaration</DocLink>:
+
+```cpp
+using N::d; // declares, but does not define d
+```
+
+<RevisionBlock since="C++17">
+  - Declaration of a <DocLink dest="/cpp/language/templates/ctad" section="explicit-deduction-guides">deduction guide</DocLink> (does not define any entities)
+</RevisionBlock>
+
+<RevisionBlock since="C++11">
+  - A <DocLink dest="/cpp/language/declarations/static_assert">static_assert</DocLink> declaration (does not define any entities)
+  - An <DocLink dest="/cpp/language/declarations">attribute declaration</DocLink> (does not define any entities)
+</RevisionBlock>
+
+- An <DocLink dest="/cpp/language/declarations">empty declaration</DocLink> (does not define any entities)
+- A <DocLink dest="/cpp/language/declarations/namespace" section="using-directives">using-directive</DocLink> (does not define any entities)
+
+<RevisionBlock since="C++11" vertical>
+  - An <DocLink dest="/cpp/language/templates/class_template" section="class-template-instantiation">explicit instantiation declaration</DocLink> (an "extern template"):
+
+  ```cpp
+  extern template
+  f<int, char>; // declares, but does not define f<int, char>
+  ```
+</RevisionBlock>
+
+- An <DocLink dest="/cpp/language/templates/template_specialization">explicit specialization</DocLink> whose declaration is not a definition:
+
+```cpp
+template<>
+struct A<int>; // declares, but does not define A<int>
+```
+
+An <DocLink dest="/cpp/language/declarations/asm">asm declaration</DocLink> does not define any entities, but it is classified as a definition.
+
+Where necessary, the compiler may implicitly define the <DocLink dest="/cpp/language/classes/default_constructor">default constructor</DocLink>, <DocLink dest="/cpp/language/classes/copy_constructor">copy constructor</DocLink>, <DocLink dest="/cpp/language/classes/move_constructor">move constructor</DocLink>, <DocLink dest="/cpp/language/classes/as_operator">copy assignment operator</DocLink>, <DocLink dest="/cpp/language/classes/move_operator">move assignment operator</DocLink>, and the <DocLink dest="/cpp/language/classes/destructor">destructor</DocLink>.
+
+If the definition of any object results in an object of <DocLink dest="/cpp/language/basic_concepts/incomplete_type">incomplete type</DocLink> or <DocLink dest="/cpp/language/classes/abstract_class">abstract class type</DocLink>, the program is <Behavior kind="ill-formed">ill-formed</Behavior>.
+
+## One Definition Rule
+
+Only one definition of any variable, function, class type, enumeration type<Revision since="C++20">, <DocLink dest="/cpp/language/templates/constraints">concept</DocLink></Revision> or template is allowed in any one translation unit (some of these may have multiple declarations, but only one definition is allowed).
+
+One and only one definition of every non-<DocLink dest="/cpp/language/declarations/inline">inline</DocLink> function or variable that is _odr-used_ (see below) is required to appear in the entire program (including any standard and user-defined libraries). The compiler is not required to diagnose this violation, but the behavior of the program that violates it is <Behavior kind="undef">undefined</Behavior>.
+
+For an inline function<Revision since="C++17"> or inline variable</Revision>, a definition is required in every translation unit where it is _odr-used_.
+
+For a class, a definition is required wherever the class is used in a way that requires it to be <DocLink dest="/cpp/language/basic_concepts/incomplete_type">complete</DocLink>.
+
+There can be more than one definition in a program of each of the following: class type, enumeration type, inline function<Revision since="C++17">, inline variable</Revision>, <DocLink dest="/cpp/language/templates" section="templated-entity">templated entity</DocLink> (template or member of template, but not full <DocLink dest="/cpp/language/templates/template_specialization">template specialization</DocLink>), as long as all following conditions are satisfied:
+
+- Each definition appears in a different translation unit.
+
+<RevisionBlock since="C++20">
+  - The definitions are not <DocLink dest="/cpp/language/basic_concepts/modules">attached to a named module</DocLink>.
+</RevisionBlock>
+
+- Each definition consists of the same sequence of <DocLink dest="/cpp/language/basic_concepts/translation_phases" section="tokens">tokens</DocLink> (typically, appears in the same header).
+- Name lookup from within each definition finds the same entities (after <DocLink dest="/cpp/language/functions/overload_resolution">overload resolution</DocLink>), except that:
+  - Constants with internal or no linkage may refer to different objects as long as they are not odr-used and have the same values in every definition.
+
+  <RevisionBlock since="C++11">
+    - <DocLink dest="/cpp/language/functions/lambda">Lambda expressions</DocLink> that are not in a default argument<Revision since="C++20"> or a default template argument</Revision> are uniquely identified by the sequence of tokens used to define them.
+  </RevisionBlock>
+
+- Overloaded operators, including conversion, allocation, and deallocation functions refer to the same function from each definition (unless referring to one defined within the definition).
+- Corresponding entities have the same language linkage in each definition (e.g. the include file is not inside an `extern "C"` block).
+- If a const object is <DocLink dest="/cpp/language/initialization/constant_initialization">constant-initialized</DocLink> in any of the definitions, it is constant-initialized in each definition.
+- The rules above apply to every default argument used in each definition.
+- If the definition is for a class with an implicitly-declared constructor, every translation unit where it is odr-used must call the same constructor for the base and members.
+
+<RevisionBlock since="C++20">
+  - If the definition is for a class with a defaulted <DocLink dest="/cpp/language/expressions/default_comparisons">three-way comparison</DocLink>, every translation unit where it is odr-used must call the same comparison operator for the base and members.
+</RevisionBlock>
+
+- If the definition is for a template, then all these requirements apply to both names at the point of definition and dependent names at the point of instantiation.
+
+If all these requirements are satisfied, the program behaves as if there is only one definition in the entire program. Otherwise, the program is <Behavior kind="ifndr">ill-formed, no diagnostic required</Behavior>.
+
+Note: in C, there is no program-wide ODR for types, and even extern declarations of the same variable in different translation units may have different types <DocLink dest="/c/language/basic_concepts/compatible_type" section="compatible-types">as long as they are compatible</DocLink>. In C++, the source-code tokens used in declarations of the same type must be the same as described above: if one .cpp file defines `struct S { int x; };` and the other .cpp file defines `struct S { int y; }`;, the behavior of the program that links them together is <Behavior kind="undef">undefined</Behavior>. This is usually resolved with <DocLink dest="/cpp/language/declarations/namespace">unnamed namespaces</DocLink>.
+
+### Naming an entity
+
+A variable is _named_ by an expression if the expression is an identifier expression that denotes it.
+
+A function is _named_ by an expression or conversion in following cases:
+
+- A function whose name appears as an expression or conversion (including named function, overloaded operator, <DocLink dest="/cpp/language/expressions/cast_operator">user-defined conversion</DocLink>, user-defined placement forms of <DocLink dest="/cpp/library/memory/new/operator_new">operator new</DocLink>, non-default initialization) is named by that expression if it is selected by overload resolution, except when it is an unqualified pure virtual member function or a pointer-to-member to a pure virtual function.
+- An <DocLink dest="/cpp/library/memory/new/operator_new">allocation</DocLink> or <DocLink dest="/cpp/library/memory/new/operator_delete">deallocation</DocLink> function for a class is named by a <DocLink dest="/cpp/language/expressions/new">new expression</DocLink> appearing in an expression.
+- A deallocation function for a class is named by a <DocLink dest="/cpp/language/expressions/delete">delete expression</DocLink> appearing in an expression.
+- A constructor selected to copy or move an object is considered to be named by the expression or conversion even if <DocLink dest="/cpp/language/initialization/copy_elision">copy elision</DocLink> takes place.<Revision since="C++17"> Using a prvalue in some contexts does not copy or move an object, see <DocLink dest="/cpp/language/initialization/copy_elision">mandatory elision</DocLink>.</Revision>
+
+A potentially evaluated expression or conversion odr-uses a function if it names it.
+
+<RevisionBlock since="C++11">
+  A potentially constant evaluated expression or conversion that names a constexpr function makes it <DocLink dest="/cpp/language/expressions/constant_expression" section="functions-and-variables-needed-for-constant-evaluation">needed for constant evaluation</DocLink>, which triggers definition of a defaulted function or instantiation of a function template specialization, even if the expression is unevaluated.
+</RevisionBlock>
+
+### Potential results
+
+The set of _potential results_ of an expression `E` is a (possibly empty) set of identifier expressions that appear within `E`, combined as follows:
+
+- If `E` is an <DocLink dest="/cpp/language/expressions" section="primary-expressions">identifier expression</DocLink>, the expression E is its only potential result.
+- If `E` is a subscript expression (`E1[E2]`) where one of the operands is an array, the potential results of that operand is included in the set.
+- If `E` is a class member access expression of the form `E1.E2` or `E1.template E2` naming a non-static data member, the potential results of `E1` is included in the set.
+- If `E` is a class member access expression naming a static data member, the identifier expression designating the data member is included in the set.
+- If `E` is a pointer-to-member access expression of the form `E1.*E2` or `E1.*template E2` whose second operand is a constant expression, the potential results of E1 are included in the set.
+- If `E` is an expression in parentheses (`(E1)`), the potential results of E1 are included in the set.
+- If `E` is a glvalue conditional expression (`E1 ? E2 : E3`, where `E2` and `E3` are glvalues), the union of the potential results of `E2` and `E3` are both included in the set.
+- If `E` is a comma expression (`E1, E2`), the potential results of `E2` are in the set of potential results.
+- Otherwise, the set is empty.
+
+### ODR-use (informal definition)
+
+<span id="odr-use" />
+
+An object is odr-used if its value is read (unless it is a compile time constant) or written, its address is taken, or a reference is bound to it,
+
+A reference is odr-used if it is used and its referent is not known at compile time,
+
+A function is odr-used if a function call to it is made or its address is taken.
+
+If an entity is odr-used, its definition must exist somewhere in the program; a violation of that is usually a link-time error.
+
+```cpp
+struct S {
+  static const int x = 0; // static data member
+  // a definition outside of class is required if it is odr-used
+};
+ 
+const int& f(const int& r);
+ 
+int n = b ? (1, S::x) // S::x is not odr-used here
+          : f(S::x);  // S::x is odr-used here: a definition is required
+```
+
+### ODR-use (formal definition)
+
+A variable `x` that is named by a <DocLink dest="/cpp/language/expressions" section="potentially-evaluated-expressions">potentially-evaluated expression</DocLink> `expr` that appears at a point P is odr-used by `expr`, unless any of the following conditions is satisfied:
+
+- `x` is a reference that is <DocLink dest="/cpp/language/expressions/constant_expression" section="usable-in-constant-expressions">usable in constant expressions</DocLink> at P.
+- <Revision until="C++26">`x` is not a reference and </Revision>`expr` is an element of the set of potential results of an expression `E`, and any of the following conditions is satisfied:
+  - `E` is a <DocLink dest="/cpp/language/expressions" section="discarded-value-expressions">discarded-value expression</DocLink>, and no lvalue-to-rvalue conversion is applied to it.
+  - `x` is a<Revision since="C++26"> non-volatile</Revision> object that is usable in constant expressions at P and has no mutable subobjects, and any of the following conditions is satisfied:
+    <RevisionBlock since="C++26">
+      - `E` is a <DocLink dest="/cpp/language/expressions/operator_member_access">class member access expression</DocLink> naming a <DocLink dest="/cpp/language/classes/data_members">non-static data member</DocLink> of reference type and whose object expression has non-volatile-qualified type.
+    </RevisionBlock>
+    - `E` has non-volatile-qualified non-class type, and the lvalue-to-rvalue conversion is applied to it.
+
+```cpp
+struct S { static const int x = 1; }; // applying lvalue-to-rvalue conversion
+                                      // to S::x yields a constant expression
+
+int f() {
+  S::x;         // discarded-value expression does not odr-use S::x
+ 
+  return S::x;  // expression where lvalue-to-rvalue conversion
+                // applies does not odr-use S::x
+}
+```
+
+`*this` is odr-used if `this` appears as a potentially-evaluated expression (including the implicit `this` in a non-static member function call expression).
+
+<RevisionBlock since="C++17">
+  A <DocLink dest="/cpp/language/declarations/structured_binding">structured binding</DocLink> is odr-used if it appears as a potentially-evaluated expression.
+</RevisionBlock>
+
+A function is odr-used in following cases:
+
+- A function is odr-used if it is named by (see below) a potentially-evaluated expression or conversion.
+- A <DocLink dest="/cpp/language/classes/virtual">virtual member function</DocLink> is odr-used if it is not a pure virtual member function (addresses of virtual member functions are required to construct the vtable).
+- A non-placement allocation or deallocation function for a class is odr-used by the definition of a constructor of that class.
+- A non-placement deallocation function for a class is odr-used by the definition of the destructor of that class, or by being selected by the lookup at the point of definition of a virtual destructor.
+- An assignment operator in a class T that is a member or base of another class U is odr-used by an implicitly-defined copy-assignment or move-assignment functions of U.
+- A constructor (including default constructors) for a class is odr-used by the <DocLink dest="/cpp/language/initialization">initialization</DocLink> that selects it.
+- A destructor for a class is odr-used if it is <DocLink dest="/cpp/language/classes/destructor" section="potentially-invoked-destructor">potentially invoked</DocLink>.
+
+<Incomplete reason="list of all situations where odr-use makes a difference" />
+
+## Defect reports
+
+<DRList>
+  <DR kind="cwg" id={261} std="C++98">
+    <Fragment slot="behavior-published">
+      a deallocation function for a polymorphic class might be odr-used even if there were no relevant new or delete expressions in the program
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      supplemented the odr-use cases to cover constructors and destructors
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={678} std="C++98">
+    <Fragment slot="behavior-published">
+      an entity could have definitions with different language linkages
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      the behavior is undefined in this case
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={1472} std="C++98">
+    <Fragment slot="behavior-published">
+      reference variables which satisfy the requirements for appearing in a constant expression were odr-used even if the lvalue-to-rvalue conversion is immediately applied
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      they are not odr-used in this case
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={1614} std="C++98">
+    <Fragment slot="behavior-published">
+      taking address of a pure virtual function odr-used it
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      	the function is not odr-used
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={1741} std="C++98">
+    <Fragment slot="behavior-published">
+      constant objects that are immediately lvalue-to-rvalue converted in potentially-evaluated expressions were odr-used	
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      they are not odr-used
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={1926} std="C++98">
+    <Fragment slot="behavior-published">
+      array subscript expressions did not propagate potential results	
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      they propagate
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={2242} std="C++98">
+    <Fragment slot="behavior-published">
+      it was unclear whether a const object that is only constant-initialized in part of its definitions violates ODR
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      ODR is not violated; the object is constant-initialized in this case
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={2300} std="C++11">
+    <Fragment slot="behavior-published">
+      lambda expressions in different translation units could never have the same closure type
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      the closure type can be the same under one definition rule
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={2353} std="C++98">
+    <Fragment slot="behavior-published">
+      a static data member was not a potential result of a member access expression accessing it
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      it is
+    </Fragment>
+  </DR>
+  <DR kind="cwg" id={2433} std="C++14">
+    <Fragment slot="behavior-published">
+      a variable template could not have multiple definitions in a program
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      it can
+    </Fragment>
+  </DR>
+</DRList>
+
+## References
+
+- C++23 standard (ISO/IEC 14882:2024):
+  - 6.3 One definition rule [basic.def.odr]
+- C++20 standard (ISO/IEC 14882:2020):
+  - 6.3 One definition rule [basic.def.odr]
+- C++17 standard (ISO/IEC 14882:2017):
+  - 6.2 One definition rule [basic.def.odr]
+- C++14 standard (ISO/IEC 14882:2014):
+  - 3.2 One definition rule [basic.def.odr]
+- C++11 standard (ISO/IEC 14882:2011):
+  - 3.2 One definition rule [basic.def.odr]
+- C++03 standard (ISO/IEC 14882:2003):
+  - 3.2 One definition rule [basic.def.odr]
+- C++98 standard (ISO/IEC 14882:1998):
+  - 3.2 One definition rule [basic.def.odr]

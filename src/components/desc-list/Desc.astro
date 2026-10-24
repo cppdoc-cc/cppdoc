@@ -1,0 +1,46 @@
+---
+import { autoRev, type AutorevProps } from "@components/revision";
+
+interface Props extends AutorevProps {
+  kind?: string;
+}
+
+const { kind } = Astro.props;
+const hasKind = kind !== undefined;
+---
+
+<div class="desc" {...autoRev(Astro.props)}>
+  <div class="desc-items">
+    <slot name="item" />
+  </div>
+  <div class="desc-content">
+    <slot />
+    {hasKind ? <div class="desc-kind">({kind})</div> : <></>}
+  </div>
+</div>
+
+<style>
+  .desc {
+    display: grid;
+    grid-column: span 2;
+    grid-template-columns: subgrid;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    margin: 0;
+    padding-top: calc(var(--sl-content-gap-y) * 0.35);
+    padding-bottom: calc(var(--sl-content-gap-y) * 0.35);
+  }
+
+  .desc.autorev-hidden {
+    display: none;
+  }
+
+  .desc > .desc-content {
+    margin: 0;
+  }
+
+  .desc > .desc-content > .desc-kind {
+    font-size: var(--cppdoc-font-size-desc-kind);
+    color: var(--cppdoc-color-desc-kind);
+    margin: 0;
+  }
+</style>
