@@ -1,0 +1,502 @@
+---
+title: Modules
+cppdoc:
+  revision:
+    lang: C++
+    since: C++20
+---
+
+import Behavior from "@components/Behavior.astro";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import DocLink from "@components/DocLink.astro";
+import { DR, DRList } from "@components/defect-report";
+import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+
+Most C++ projects use multiple translation units, and so they need to share <DocLink dest="/cpp/language/declarations">declarations</DocLink> and <DocLink dest="/cpp/language/basic_concepts/definition">definitions</DocLink> across those units. The usage of <DocLink dest="/cpp/library/standard_library">headers</DocLink> is prominent for this purpose, an example being the <DocLink dest="/cpp/library/standard_library">standard library</DocLink> whose declarations can be provided by including the corresponding header.
+
+Modules are a language feature to share declarations and definitions across translation units. They are an alternative to some use cases of headers.
+
+Modules are orthogonal to <DocLink dest="/cpp/language/declarations/namespace">namespaces</DocLink>.
+
+```cpp
+// helloworld.cpp
+export module helloworld; // module declaration
+ 
+import <iostream>;        // import declaration
+ 
+export void hello() {     // export declaration
+  std::cout << "Hello world!\n";
+}
+```
+
+```cpp
+// main.cpp
+import helloworld;  // import declaration
+ 
+int main() {
+  hello();
+}
+```
+
+## Syntax
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    export/*$opt*/ module /*$s:module-name*/ /*$s:module-partition*//*$opt*/ /*$s:attr*//*$opt*/;
+    ```
+  </Decl>
+
+  Module declaration. Declares that the current translation unit is a _module unit_.
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    export /*$s:declaration*/
+    ```
+  </Decl>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    export { /*$s:declaration-seq*//*$opt*/ }
+    ```
+  </Decl>
+
+  Export declaration. Export all namespace-scope declarations in `declaration` or `declaration-seq`.
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    export/*$opt*/ import /*$s:module-name*/ /*$s:attr*//*$opt*/;
+    ```
+  </Decl>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    export/*$opt*/ import /*$s:module-partition*/ /*$s:attr*//*$opt*/;
+    ```
+  </Decl>
+  <Decl slot="decl">
+    ```cpp cxx-mark
+    export/*$opt*/ import /*$s:header-name*/ /*$s:attr*//*$opt*/;
+    ```
+  </Decl>
+
+  Import declaration. Import a module unit/module partition/header unit.
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    module;
+    ```
+  </Decl>
+
+  Starts a [global module fragment](#global-module-fragment).
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```cpp
+    module : private;
+    ```
+  </Decl>
+
+  Starts a [private module fragment](#private-module-fragment).
+</DeclDoc>
+
+## Module declarations
+
+A translation unit may have a module declaration, in which case it is considered a module unit. The module declaration, if provided, must be the first declaration of the translation unit (excepted the global module fragment, which is covered later on). Each module unit is associated to a module name (and optionally a partition), provided in the module declaration.
+
+```cpp cxx-mark
+export/*$opt*/ module /*$s:module-name*/ /*$s:module-partition*//*$opt*/ /*$s:attr*//*$opt*/;
+```
+
+The module name consists of one or more identifiers separated by dots (for example: `mymodule`, `mymodule.mysubmodule`, `mymodule2`, etc.). Dots have no intrinsic meaning, however they are used informally to represent hierarchy.
+
+If any identifier in the module name or module partition is defined as an <DocLink dest="/cpp/language/preprocessor/replace">object-like macro</DocLink>, the program is ill-formed.
+
+A _named module_ is the collection of module units with the same module name.
+
+Module units whose declaration has the keyword export are termed _module interface units_; all other module units are termed _module implementation units_. 
+
+For every named module, there must be exactly one module interface unit that specifies no module partition; this module unit is termed the _primary module interface unit_. Its exported content will be available when importing the corresponding named module.
+
+```cpp
+// (each line represents a separate translation unit)
+ 
+export module A;   // declares the primary module interface unit for named module 'A'
+module A;          // declares a module implementation unit for named module 'A'
+module A;          // declares another module implementation unit for named module 'A'
+export module A.B; // declares the primary module interface unit for named module 'A.B'
+module A.B;        // declares a module implementation unit for named module 'A.B'
+```
+
+## Exporting declarations and definitions
+
+Module interface units can export declarations (including definitions), which can be imported by other translation units. To export a declaration, either prefix it with the export keyword, or else place it inside an export block.
+
+```cpp cxx-mark
+export /*$s:declaration*/
+```
+
+```cpp cxx-mark
+export { /*$s:declaration-seq*//*$opt*/ }
+```
+
+```cpp
+export module A; // declares the primary module interface unit for named module 'A'
+ 
+// hello() will be visible by translations units importing 'A'
+export char const* hello() { return "hello"; } 
+ 
+// world() will NOT be visible.
+char const* world() { return "world"; }
+ 
+// Both one() and zero() will be visible.
+export {
+  int one()  { return 1; }
+  int zero() { return 0; }
+}
+ 
+// Exporting namespaces also works: hi::english() and hi::french() will be visible.
+export namespace hi {
+  char const* english() { return "Hi!"; }
+  char const* french()  { return "Salut!"; }
+}
+```
+
+## Importing modules and header units
+
+Modules are imported via an _import declaration_:
+
+```cpp cxx-mark
+export/*$opt*/ import /*$s:module-name*/ /*$s:attr*//*$opt*/;
+```
+
+All declarations and definitions exported in the module interface units of the given named module will be available in the translation unit using the import declaration.
+
+Import declarations can be exported in a module interface unit. That is, if module B export-imports A, then importing B will also make visible all exports from A.
+
+In module units, all import declarations (including export-imports) must be grouped after the module declaration and before all other declarations. 
+
+```cpp
+// A.cpp
+// Primary module interface unit of 'A'
+export module A;
+ 
+export char const* hello() { return "hello"; }
+```
+
+```cpp
+// B.cpp
+// Primary module interface unit of 'B'
+export module B;
+ 
+export import A;
+ 
+export char const* world() { return "world"; }
+```
+
+```cpp
+// main.cpp
+// not a module unit
+#include <iostream>
+import B;
+
+int main() {
+  std::cout << hello() << ' ' << world() << '\n';
+}
+```
+
+<DocLink dest="/cpp/language/preprocessor/include">`#include`</DocLink> should not be used in a module unit (outside the _global module fragment_), because all included declarations and definitions would be considered part of the module. Instead, headers can also be imported as _header units_ with an _import declaration_:
+
+```cpp cxx-mark
+export/*$opt*/ import /*$s:header-name*/ /*$s:attr*//*$opt*/;
+```
+
+A header unit is a separate translation unit synthesized from a header. Importing a header unit will make accessible all its definitions and declarations. Preprocessor macros are also accessible (because import declarations are recognized by the preprocessor).
+
+However, contrary to `#include`, preprocessing macros already defined at the point of the import declaration will not affect the processing of the header. This may be inconvenient in some cases (some headers use preprocessing macros as a form of configuration), in which case the usage of _global module fragment_ is needed.
+
+```cpp
+// A.cpp
+// primary module interface unit of 'A'
+export module A;
+ 
+import <iostream>;
+export import <string_view>;
+ 
+export void print(std::string_view message) {
+  std::cout << message << std::endl;
+}
+```
+
+```cpp
+// main.cpp
+// not a module unit
+import A;
+ 
+int main() {
+  std::string_view message = "Hello, world!";
+  print(message);
+}
+```
+
+## Global module fragment
+
+Module units can be prefixed by a global module fragment, which can be used to include headers when importing the headers is not possible (notably when the header uses preprocessing macros as configuration).
+
+```cpp cxx-mark
+module;
+/*$s:preprocessing-directives*//*$opt*/
+/*$s:module-declaration*/
+```
+
+If a module-unit has a global module fragment, then its first declaration must be `module;`. Then, only <DocLink dest="/cpp/language/preprocessor">preprocessing directives</DocLink> can appear in the global module fragment. Then, a standard module declaration marks the end of the global module fragment and the start of the module content.
+
+```cpp
+// A.cpp
+// primary module interface unit of 'A'
+module;
+ 
+// Defining _POSIX_C_SOURCE adds functions to standard headers,
+// according to the POSIX standard.
+#define _POSIX_C_SOURCE 200809L
+#include <stdlib.h>
+ 
+export module A;
+ 
+import <ctime>;
+ 
+// Only for demonstration (bad source of randomness).
+// Use C++ <random> instead.
+export double weak_random() {
+  std::timespec ts;
+  std::timespec_get(&ts, TIME_UTC); // from <ctime>
+
+  // Provided in <stdlib.h> according to the POSIX standard.
+  srand48(ts.tv_nsec);
+
+  // drand48() returns a random number between 0 and 1.
+  return drand48();
+}
+```
+
+```cpp
+// main.cpp
+// not a module unit
+import <iostream>;
+import A;
+ 
+int main() {
+  std::cout << "Random value between 0 and 1: " << weak_random() << '\n';
+}
+```
+
+## Private module fragment
+
+Primary module interface unit can be suffixed by a _private module fragment_, which allows a module to be represented as a single translation unit without making all of the contents of the module reachable to importers.
+
+```cpp cxx-mark
+module : private;
+/*$s:declaration-seq*//*$opt*/
+```
+
+_Private module fragment_ ends the portion of the module interface unit that can affect the behavior of other translation units. If a module unit contains a _private module fragment_, it will be the only module unit of its module.
+
+```cpp
+export module foo;
+ 
+export int f();
+ 
+module : private; // ends the portion of the module interface unit that
+                  // can affect the behavior of other translation units
+                  // starts a private module fragment
+ 
+int f() {         // definition not reachable from importers of foo
+  return 42;
+}
+```
+
+## Module partitions
+
+A module can have _module partition units_. They are module units whose module declarations include a module partition, which starts with a colon `:` and is placed after the module name.
+
+```cpp
+export module A:B; // Declares a module interface unit for module 'A', partition ':B'.
+```
+
+A module partition represents exactly one module unit (two module units cannot designate the same module partition). They are visible only from inside the named module (translation units outside the named module cannot import a module partition directly).
+
+A module partition can be imported by module units of the same named module.
+
+```cpp cxx-mark
+export/*$opt*/ import /*$s:module-partition*/ /*$s:attr*//*$opt*/;
+```
+
+```cpp
+// A-B.cpp
+export module A:B;
+// ...
+```
+
+```cpp
+// A-C.cpp
+module A:C;
+// ...
+```
+
+```cpp
+// A.cpp
+export module A;
+ 
+import :C;
+export import :B;
+ 
+// ...
+```
+
+All definitions and declarations in a module partition are visible by the importing module unit, whether exported or not.
+
+Module partitions can be module interface units (when their module declarations have `export`). They must be export-imported by the primary module interface unit, and their exported statements will be visible when the module is imported.
+
+```cpp cxx-mark
+export/*$opt*/ import /*$s:module-partition*/ /*$s:attr*//*$opt*/;
+```
+
+```cpp
+// A.cpp
+export module A;     // primary module interface unit
+ 
+export import :B;    // Hello() is visible when importing 'A'.
+import :C;           // WorldImpl() is now visible only for 'A.cpp'.
+// export import :C; // ERROR: Cannot export a module implementation unit.
+ 
+// World() is visible by any translation unit importing 'A'.
+export char const* World() {
+  return WorldImpl();
+}
+```
+
+```cpp
+// A-B.cpp
+export module A:B; // partition module interface unit
+ 
+// Hello() is visible by any translation unit importing 'A'.
+export char const* Hello() { return "Hello"; }
+```
+
+```cpp
+// A-C.cpp 
+module A:C; // partition module implementation unit
+ 
+// WorldImpl() is visible by any module unit of 'A' importing ':C'.
+char const* WorldImpl() { return "World"; }
+```
+
+```cpp
+// main.cpp 
+import A;
+import <iostream>;
+ 
+int main() {
+  std::cout << Hello() << ' ' << World() << '\n';
+  // WorldImpl(); // ERROR: WorldImpl() is not visible.
+}
+```
+
+## Module ownership
+
+In general, if a declaration appears after the module declaration in a module unit, it is _attached_ to that module.
+
+If a declaration of an entity is attached to a named module, that entity can only be defined in that module. All declarations of such an entity must be attached to the same module.
+
+If a declaration is attached to a named module, and it is not exported, the declared name has <DocLink dest="/cpp/language/declarations/storage_duration">module linkage</DocLink>.
+
+```cpp
+export module lib_A;
+ 
+int f() { return 0; } // f has module linkage
+export int x = f();   // x equals 0
+```
+
+```cpp
+export module lib_B;
+ 
+int f() { return 1; } // OK, f in lib_A and f in lib_B refer to different entities
+export int y = f(); // y equals 1
+```
+
+If <DocLink dest="/cpp/language/declarations/conflicting_declarations">two declarations of an entity</DocLink> are attached to different modules, the program is <Behavior kind="ifndr">ill-formed; no diagnostic is required</Behavior> if neither is reachable from the other.
+
+```cpp
+// decls.h
+int f(); // #1, attached to the global module
+int g(); // #2, attached to the global module
+```
+
+```cpp
+// M.cpp
+// Module interface of M
+module;
+#include "decls.h"
+export module M;
+export using ::f; // OK, does not declare an entity, exports #1
+int g();          // Error: matches #2, but attached to M
+export int h();   // #3
+export int k();   // #4
+```
+
+```cpp
+// Foo.cpp
+import M;
+static int h();   // Error: matches #3
+int k();          // Error: matches #4
+```
+
+The following declarations are not attached to any named module (and thus the declared entity can be defined outside the module):
+
+- <DocLink dest="/cpp/language/declarations/namespace">namespace definitions</DocLink> with external linkage;
+- declarations within a <DocLink dest="/cpp/language/declarations/language_linkage">language linkage</DocLink> specification.
+
+```cpp
+export module lib_A;
+ 
+namespace ns {  // ns is not attached to lib_A.
+    export extern "C++" int f(); // f is not attached to lib_A.
+           extern "C++" int g(); // g is not attached to lib_A.
+    export              int h(); // h is attached to lib_A.
+}
+// ns::h must be defined in lib_A, but ns::f and ns::g can be defined elsewhere
+// (e.g. in a traditional source file).
+```
+
+## Notes
+
+<FeatureTestMacro name="__cpp_modules">
+  <FeatureTestMacroValue value="201907L" since="C++20">
+    Modules — core language support
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+<FeatureTestMacro name="__cpp_lib_modules">
+  <FeatureTestMacroValue value="202207L" since="C++23">
+    Standard library modules `std` and `std.compat`
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+
+## Defect reports
+
+
+<DRList>
+  <DR kind="cwg" id={2732} std="C++20">
+    <Fragment slot="behavior-published">
+      it was unclear whether importable headers can react to preprocessor state from the point of import
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      no reaction
+    </Fragment>
+  </DR>
+</DRList>

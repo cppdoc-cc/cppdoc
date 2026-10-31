@@ -1,0 +1,25 @@
+---
+import type { RevisionInfo } from "@src/components/revision/types";
+
+interface Props extends RevisionInfo {
+  as: string;
+}
+
+const { since, traits, until, removed } = Astro.props as Props;
+const As = Astro.props.as;
+---
+
+{since && <As class="revision-tag"> (since {since})</As>}
+{traits?.map(({ trait, since }) => (
+  <As class="revision-tag"> ({trait} in {since})</As>
+))}
+{until && <As class="revision-tag"> (until {until})</As>}
+{removed && <As class="revision-tag"> (removed in {removed})</As>}
+
+<style>
+  .revision-tag {
+    font-size: var(--cppdoc-font-size-revision);
+    color: var(--cppdoc-color-revision);
+    margin: 0;
+  }
+</style>

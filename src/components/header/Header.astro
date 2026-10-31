@@ -1,0 +1,34 @@
+---
+import type { Language } from "@src/types";
+import DocLink from "../DocLink.astro";
+
+export interface Props {
+  lang: Language;
+  name: string;
+  displayName?: string;
+  nolink?: boolean;
+}
+
+const { lang, name, displayName, nolink } = Astro.props;
+const langPrefix = lang == "C" ? "/c" : "/cpp";
+const dest = `${langPrefix}/library/headers/${name}`;
+
+const extension = lang === "C" ? ".h" : "";
+const text = displayName ?? `<${name}${extension}>`;
+
+const As = nolink ? Fragment : DocLink;
+const asProps = nolink ? {} : { dest };
+---
+
+<As {...asProps}>
+  <code class="cppdoc-header">{text}</code>
+</As>
+
+<style>
+  code.cppdoc-header {
+    background-color: revert;
+    font-size: 1em;
+    padding-left: 0;
+    padding-right: 0;
+  }
+</style>

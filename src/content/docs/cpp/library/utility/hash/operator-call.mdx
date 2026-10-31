@@ -1,0 +1,83 @@
+---
+title: std::hash::operator()
+cppdoc:
+  revision:
+    since: C++11
+---
+
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+
+Specializations of `std::hash` should define an `operator()` that:
+
+- Takes a single argument key of type `Key`.
+- Returns a value of type `std::size_t` that represents the hash value of key.
+- For two parameters `k1` and `k2` that are equal, `std::hash<Key>()(k1) == std::hash<Key>()(k2)`.
+- For two different parameters `k1` and `k2` that are not equal, the probability that `std::hash<Key>()(k1) == std::hash<Key>()(k2)` should be very small, approaching `1.0 / std::numeric_limits<size_t>::max()`.
+
+
+## Parameters
+<ParamDocList>
+  <ParamDoc name="key">
+    the object to be hashed
+  </ParamDoc>
+</ParamDocList>
+
+## Return value
+A `std::size_t` representing the hash value.
+
+## Exceptions
+Hash functions should not throw exceptions.
+
+## Example
+The following code shows how to specialize the std::hash template for a custom class. The hash function uses Fowler–Noll–Vo hash algorithm.
+
+```cpp
+#include <cstdint>
+#include <functional>
+#include <iostream>
+#include <string>
+ 
+struct Employee
+{
+    std::string name;
+    std::uint64_t ID;
+};
+ 
+namespace std
+{
+    template <>
+    class hash<Employee>
+    {
+    public:
+        std::uint64_t operator()(const Employee& employee) const
+        {
+             // computes the hash of an employee using a variant
+             // of the Fowler-Noll-Vo hash function
+             constexpr std::uint64_t prime{0x100000001B3};
+             std::uint64_t result{0xcbf29ce484222325};
+ 
+             for (std::uint64_t i{}, ie = employee.name.size(); i != ie; ++i)
+                 result = (result * prime) ^ employee.name[i];
+ 
+             return result ^ (employee.ID << 1);
+         }
+    };
+}
+ 
+int main()
+{
+    Employee employee;
+    employee.name = "Zaphod Beeblebrox";
+    employee.ID = 42;
+ 
+    std::hash<Employee> hash_fn;
+    std::cout << hash_fn(employee) << '\n';
+}
+```
+
+Output:
+
+```cpp
+12615575401975788567
+```
+
