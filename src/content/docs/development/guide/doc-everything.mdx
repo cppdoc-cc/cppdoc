@@ -1,0 +1,568 @@
+---
+title: Documenting Everything
+sidebar:
+  order: 3
+---
+
+import { Aside, Card, Code } from "@astrojs/starlight/components";
+import Behavior from "@components/Behavior.astro";
+import { CHeader, CppHeader } from "@components/header";
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { Desc, DescList } from "@components/desc-list";
+import DocLink from "@components/DocLink.astro";
+import { DR, DRList } from "@components/defect-report";
+import { FeatureTestMacro, FeatureTestMacroValue } from "@components/feature-test-macro";
+import Incomplete from "@components/Incomplete.astro";
+import Missing from "@components/Missing.astro";
+import NamedReq from "@components/NamedReq.astro"
+import { ParamDoc, ParamDocList } from "@components/param-doc";
+import { RevisionBlock } from "@components/revision";
+
+This page contains guidelines for creating documents for various language or library entities.
+
+## Behavior
+
+The `Behavior` component gives highlight colors to its content, which could be used for emphasizing keywords related to program behaviors.
+
+```mdx
+import Behavior from "@components/Behavior.astro";
+
+It is <Behavior kind="well-def">well-defined</Behavior> to do this.
+
+It is <Behavior kind="impl-def">implementation-defined</Behavior>
+how this is achieved.
+
+It is <Behavior kind="unspec">unspecified</Behavior>
+which function argument will be evaluated first.
+
+The behavior is <Behavior kind="undef">undefined</Behavior>
+to add two signed integers that overflows the result.
+
+It is <Behavior kind="ill-formed">ill-formed</Behavior>
+to use an undefined identifier.
+
+The program is
+<Behavior kind="ifndr">ill-formed no diagnostics required</Behavior>
+if it violates the one-definition rule.
+```
+
+<Card title="Preview">
+  It is <Behavior kind="well-def">well-defined</Behavior> to do this.
+
+  It is <Behavior kind="impl-def">implementation-defined</Behavior> how this is achieved.
+
+  It is <Behavior kind="unspec">unspecified</Behavior> which function argument will be evaluated first.
+
+  The behavior is <Behavior kind="undef">undefined</Behavior> to add two signed integers that overflows the result.
+
+  It is <Behavior kind="ill-formed">ill-formed</Behavior> to use an undefined identifier.
+
+  The program is <Behavior kind="ifndr">ill-formed no diagnostics required</Behavior> if it violates the one-definition rule.
+</Card>
+
+## Declaration
+
+### Basic Usage
+
+The `DeclDoc` component gives brief introduction to a C/C++ declaration.
+
+import declDocExample1 from "@src/assets/examples/development/guide/decl-doc-1.mdx?raw";
+
+<Code code={declDocExample1} lang="mdx" />
+
+<Card title="Preview">
+  <DeclDoc>
+    <Decl slot="decl">
+      ```cpp
+      int main() { /* body */ }
+      ```
+    </Decl>
+
+    A `main` function running independently of environment-provided arguments.
+  </DeclDoc>
+</Card>
+
+A `DeclDoc` component can contain multiple `Decl` as well:
+
+import declDocExample2 from "@src/assets/examples/development/guide/decl-doc-2.mdx?raw";
+
+<Code code={declDocExample2} lang="mdx" />
+
+<Card title="Preview">
+  <DeclDoc>
+    <Decl slot="decl">
+      ```cpp
+      int main() { /* body */ }
+      ```
+    </Decl>
+    <Decl slot="decl">
+      ```cpp
+      int main(int argc, char *argv[]) { /* body */ }
+      ```
+    </Decl>
+
+    A `main` function is the entry point of a program.
+  </DeclDoc>
+</Card>
+
+### Specifying Revisions
+
+You could specify revisions for each declaration with the `RevisionBlock` component:
+
+import declDocExample3 from "@src/assets/examples/development/guide/decl-doc-3.mdx?raw";
+
+<Code code={declDocExample3} lang="mdx" />
+
+<Card title="Preview">
+  <DeclDoc autorevSince="C++11">
+    <Decl slot="decl">
+      <RevisionBlock since="C++11" until="C++14" noborder>
+        ```cpp
+        template <typename T>
+        typename std::remove_reference<T>::type&& move(T&& t) noexcept;
+        ```
+      </RevisionBlock>
+    </Decl>
+    <Decl slot="decl">
+      <RevisionBlock since="C++14" noborder>
+        ```cpp
+        template <class T>
+        constexpr std::remove_reference_t<T>&& move(T&& t) noexcept;
+        ```
+      </RevisionBlock>
+    </Decl>
+
+    `std::move` is used to _indicate_ that an object `t` may be "moved from", i.
+    e. allowing the efficient transfer of resources from `t` to another object.
+  </DeclDoc>
+</Card>
+
+<Aside type="tip">
+  Don't forget the `autorevSince` attribute on the `DeclDoc` component! Presence of this attribute allows [autorev](./revision#autorev) to automatically show and hide the `DeclDoc` component according to the user-selected revision.
+</Aside>
+
+## Code block inline markers
+
+Special comments can be embedded within Markdown code blocks to specify part of codes has special meanings. Enable this feature by adding `cxx-mark` after the language name of code block's opening fence:
+
+import cxxMarkExample1 from "@src/assets/examples/development/guide/cxx-mark-1.mdx?raw";
+
+<Code code={cxxMarkExample1} lang="mdx" />
+
+<Card title="Preview">
+  ```cpp cxx-mark
+  // syntax of for statement
+  /*$s:attr*//*$opt*/ for ( /*$s:init-statement*/ /*$s:condition*//*$opt*/ ; /*$s:expression*//*$opt*/ ) /*$s:statement*/
+
+  // exposition only alias template of conditionally const type
+  template< bool Const, class T >
+  using /*$e:maybe-const*/ = std::conditional_t<Const, const T, T>;
+  ```
+</Card>
+
+Three kinds of markers are supported:
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```
+    /*$s:something*/
+    ```
+  </Decl>
+
+  Marks part of code to be a syntax notation.
+
+  Rendered as:
+
+  ```cpp cxx-mark
+  /*$s:something*/
+  ```
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```
+    /*$e:something*/
+    ```
+  </Decl>
+
+  Marks part of code to be exposition only.
+
+  Rendered as:
+
+  ```cpp cxx-mark
+  /*$e:something*/
+  ```
+</DeclDoc>
+
+<DeclDoc>
+  <Decl slot="decl">
+    ```
+    something/*$opt*/
+    ```
+  </Decl>
+
+  Mark the previous part of code (often a syntax notation) to be optional.
+
+  Rendered as:
+
+  ```cpp cxx-mark
+  something/*$opt*/
+  ```
+</DeclDoc>
+
+## Description list
+
+### Basic Usage
+
+The `DescList` component is a general component for displaying a list of items and their descriptions. It could be used for listing headers, functions, classes, members, etc. while giving each of them a brief introduction.
+
+```mdx
+import { DescList, Desc } from "@components/desc-list";
+
+<DescList>
+  <Desc>
+    <CHeader slot="item" name="assert" />
+    Conditionally compiled macro that compares its argument to zero
+  </Desc>
+
+  <Desc>
+    <CHeader slot="item" name="ctype" />
+    Functions to determine the type contained in character data
+  </Desc>
+  
+  <Desc>
+    <CHeader slot="item" name="errno" />
+    Macros reporting error conditions
+  </Desc>
+</DescList>
+```
+
+<Card title="Preview">
+  <DescList>
+    <Desc>
+      <CHeader slot="item" name="assert" />
+      Conditionally compiled macro that compares its argument to zero
+    </Desc>
+  
+    <Desc>
+      <CHeader slot="item" name="ctype" />
+      Functions to determine the type contained in character data
+    </Desc>
+    
+    <Desc>
+      <CHeader slot="item" name="errno" />
+      Macros reporting error conditions
+    </Desc>
+  </DescList>
+</Card>
+
+### Specifying Revisions
+
+You could attach revision information to each description list item with a combination of `RevisionBlock` and autorev attributes.
+
+```mdx
+import { CHeader } from "@components/header";
+import { Desc, DescList } from "@components/desc-list";
+import { RevisionBlock } from "@components/revision";
+
+<DescList>
+  <Desc>
+    <CHeader slot="item" name="assert" />
+    Conditionally compiled macro that compares its argument to zero
+  </Desc>
+
+  <Desc autorevSince="C99">
+    <RevisionBlock slot="item" noborder since="C99" vertical>
+      <CHeader name="complex" />
+    </RevisionBlock>
+    Complex number arithmetic
+  </Desc>
+  
+  <Desc>
+    <CHeader slot="item" name="ctype" />
+    Functions to determine the type contained in character data
+  </Desc>
+</DescList>
+```
+
+<Card title="Preview">
+  <DescList>
+    <Desc>
+      <CHeader slot="item" name="assert" />
+      Conditionally compiled macro that compares its argument to zero
+    </Desc>
+
+    <Desc autorevSince="C99">
+      <RevisionBlock slot="item" noborder since="C99" vertical>
+        <CHeader name="complex" />
+      </RevisionBlock>
+      Complex number arithmetic
+    </Desc>
+    
+    <Desc>
+      <CHeader slot="item" name="ctype" />
+      Functions to determine the type contained in character data
+    </Desc>
+  </DescList>
+</Card>
+
+<Aside type="tip">
+  We strongly recommend you to specify the `vertical` attribute on the `RevisionBlock` component inside a `Decl`. This would render to a more mobile-friendly output.
+</Aside>
+
+<Aside type="tip">
+  Don't forget the `autorevSince` attribute on the `Desc` component! Presence of this attribute allows [autorev](./revision#autorev) to automatically show and hide the `Desc` component according to the user-selected revision.
+</Aside>
+
+## Parameters
+
+The `ParamDocList` component can be used to document function or template parameters.
+
+```mdx
+<ParamDocList>
+  <ParamDoc name="argc">
+    Non-negative value representing the number of arguments passed to the program.
+  </ParamDoc>
+  <ParamDoc name="argv">
+    Pointer to the first element of an array of `argc + 1` pointers.
+  </ParamDoc>
+</ParamDocList>
+```
+
+<Card title="Preview">
+  <ParamDocList>
+    <ParamDoc name="argc">
+      Non-negative value representing the number of arguments passed to the program.
+    </ParamDoc>
+    <ParamDoc name="argv">
+      Pointer to the first element of an array of `argc + 1` pointers.
+    </ParamDoc>
+  </ParamDocList>
+</Card>
+
+## Links
+
+### Link to Another CppDoc Page
+
+The `DocLink` component allows you to render an inline link to a specified CppDoc page. The path to the target page must be an absolute path.
+
+```mdx
+import DocLink from "@components/DocLink.astro";
+
+Check out
+<DocLink dest="/cpp/library/utilities/move">this page</DocLink>
+for more information about `std::move`.
+```
+
+<Card title="Preview">
+  Check out <DocLink dest="/cpp/library/utilities/move">this page</DocLink> for more information about `std::move`.
+</Card>
+
+By setting the `section` attribute, you can link to a specific section (or any HTML elements with corresponding `id` attribute) of a CppDoc page.
+
+```mdx
+import DocLink from "@components/DocLink.astro";
+
+<DocLink
+  dest="/cpp/library/standard_library"
+  section="standard-library-hardening">Standard library hardening</DocLink>
+allows turning some instances of undefined behavior in the standard library
+into a contract violation.
+```
+
+<Card title="Preview">
+  <DocLink
+    dest="/cpp/library/standard_library"
+    section="standard-library-hardening">Standard library hardening</DocLink>
+  allows turning some instances of undefined behavior in the standard library
+  into a contract violation.
+</Card>
+
+<Aside type="tip">
+  If the specified page does not exist yet, the `DocLink` component will render as a plain text span without a link.
+</Aside>
+
+### Link to Header
+
+The `CHeader` and the `CppHeader` component renders an inline link to the documentation page of a header file.
+
+```mdx
+import { CHeader, CppHeader } from "@components/header";
+
+<CHeader name="stdio" /> is a C standard library header.
+Entities in it can be used in a C++ program by including the header
+<CppHeader name="cstdio" />.
+
+<CppHeader name="vector" /> is a C++ standard library header.
+```
+
+<Card title="Preview">
+  <CHeader name="stdio" /> is a C standard library header. Entities in it can be used in a C++ program by including the header <CppHeader name="cstdio" />.
+
+  <CppHeader name="vector" /> is a C++ standard library header.
+</Card>
+
+<Aside type="tip">
+  If documentation for the specified header does not exist yet, the `CHeader` and the `CppHeader` component will render the header name as plain text without a link.
+</Aside>
+
+### Link to Named Requirement
+
+The `NamedReq` component renders an inline link to the documentation page of a named requirement.
+
+```mdx
+import NamedReq from "@components/NamedReq.astro";
+
+A <NamedReq name="FunctionObject" /> type is the type of an object
+that can be used on the left of the function call operator.
+```
+
+<Card title="Preview">
+  A <NamedReq name="FunctionObject" /> type is the type of an object
+  that can be used on the left of the function call operator.
+</Card>
+
+You can set the `bold` attribute to `true`, to make the requirement name appear in bold.
+
+```mdx
+import NamedReq from "@components/NamedReq.astro";
+
+A <NamedReq name="FunctionObject" bold /> type is the type of an object
+that can be used on the left of the function call operator.
+```
+
+<Card title="Preview">
+  A <NamedReq name="FunctionObject" bold /> type is the type of an object
+  that can be used on the left of the function call operator.
+</Card>
+
+<Aside type="tip">
+  If documentation for the specified named requirement does not exist yet, the `NamedReq` component will render the requirement name as plain text without a link.
+</Aside>
+
+## Feature Test Macros
+
+The `FeatureTestMacro` component renders to a box that shows information about a feature test macro.
+
+```mdx
+import {
+  FeatureTestMacro,
+  FeatureTestMacroValue
+} from "@components/feature-test-macro";
+
+<FeatureTestMacro name="__cpp_consteval">
+  <FeatureTestMacroValue value="201811L" since="C++20">
+    Immediate functions
+  </FeatureTestMacroValue>
+  <FeatureTestMacroValue value="202211L" since="C++23">
+    Making `consteval` propagate up
+  </FeatureTestMacroValue>
+</FeatureTestMacro>
+```
+
+<Card title="Preview">
+  <FeatureTestMacro name="__cpp_consteval">
+    <FeatureTestMacroValue value="201811L" since="C++20">
+      Immediate functions
+    </FeatureTestMacroValue>
+    <FeatureTestMacroValue value="202211L" since="C++23">
+      Making `consteval` propagate up
+    </FeatureTestMacroValue>
+  </FeatureTestMacro>
+</Card>
+
+## Defect Reports
+
+The `DRList` component shows a list of defect reports (DRs). Each defect report is rendered by a `DR` component.
+
+```mdx
+import { DR, DRList } from "@components/defect-report";
+
+<DRList>
+  <DR kind="cwg" id={1003} std="C++98">
+    <Fragment slot="behavior-published">
+      supported parameter names of `main` were overly restricted
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      all valid parameter names are supported
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={1886} std="C++98">
+    <Fragment slot="behavior-published">
+      the `main` function could be declared with a language linkage
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+
+  <DR kind="cwg" id={2479} std="C++20">
+    <Fragment slot="behavior-published">
+      the `main` function could be declared `consteval`
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      prohibited
+    </Fragment>
+  </DR>
+</DRList>
+```
+
+<Card title="Preview">
+  <DRList>
+    <DR kind="cwg" id={1003} std="C++98">
+      <Fragment slot="behavior-published">
+        supported parameter names of `main` were overly restricted
+      </Fragment>
+      <Fragment slot="correct-behavior">
+        all valid parameter names are supported
+      </Fragment>
+    </DR>
+
+    <DR kind="cwg" id={1886} std="C++98">
+      <Fragment slot="behavior-published">
+        the `main` function could be declared with a language linkage
+      </Fragment>
+      <Fragment slot="correct-behavior">
+        prohibited
+      </Fragment>
+    </DR>
+
+    <DR kind="cwg" id={2479} std="C++20">
+      <Fragment slot="behavior-published">
+        the `main` function could be declared `consteval`
+      </Fragment>
+      <Fragment slot="correct-behavior">
+        prohibited
+      </Fragment>
+    </DR>
+  </DRList>
+</Card>
+
+## Incomplete Sections
+
+The `Incomplete` component marks a section to be incomplete.
+
+```mdx
+import { Incomplete } from "@components/Incomplete.astro";
+
+<Incomplete reason="more examples" />
+```
+
+<Card title="Preview">
+  <Incomplete reason="more examples" />
+</Card>
+
+## Missing Content
+
+The `Missing` component could be used for marking content that is still missing.
+
+```mdx
+import { Missing } from "@components/missing";
+
+See <Missing>this page</Missing> for more information.
+```
+
+<Card title="Preview">
+  See <Missing>this page</Missing> for more information.
+</Card>
