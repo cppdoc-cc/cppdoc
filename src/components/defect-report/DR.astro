@@ -1,0 +1,48 @@
+---
+import type { DRKind, CxxRevision } from "@src/types";
+
+interface Props {
+  kind: DRKind;
+  id: number;
+  std: CxxRevision;
+}
+
+const { kind, id, std } = Astro.props;
+const name = kind === "cwg" ? `CWG ${id}` : `LWG ${id}`;
+const title = `${name} (${std})`
+const url =
+  kind === "cwg"
+    ? `https://cplusplus.github.io/CWG/issues/${id}.html`
+    : `https://cplusplus.github.io/LWG/issues/${id}.html`;
+---
+
+<details>
+  <summary>{title}</summary>
+
+  <table class="dr-info">
+    <tbody>
+      <tr>
+        <th>Link</th>
+        <td><a href={url} target="_blank">{url}</a></td>
+      </tr>
+      <tr>
+        <th>Applied to</th>
+        <td>{std}</td>
+      </tr>
+      <tr>
+        <th>Behavior as published</th>
+        <td><slot name="behavior-published" /></td>
+      </tr>
+      <tr>
+        <th>Correct behavior</th>
+        <td><slot name="correct-behavior" /></td>
+      </tr>
+    </tbody>
+  </table>
+</details>
+
+<style>
+  .dr-info {
+    margin: 0;
+  }
+</style>

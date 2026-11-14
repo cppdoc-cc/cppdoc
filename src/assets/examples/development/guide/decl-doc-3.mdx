@@ -1,0 +1,24 @@
+import { Decl, DeclDoc } from "@components/decl-doc";
+import { RevisionBlock } from "@components/revision";
+
+<DeclDoc autorevSince="C++11">
+  <Decl slot="decl">
+    <RevisionBlock since="C++11" until="C++14" noborder>
+      ```cpp
+      template <typename T>
+      typename std::remove_reference<T>::type&& move(T&& t) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+  <Decl slot="decl">
+    <RevisionBlock since="C++14" noborder>
+      ```cpp
+      template <class T>
+      constexpr std::remove_reference_t<T>&& move(T&& t) noexcept;
+      ```
+    </RevisionBlock>
+  </Decl>
+
+  `std::move` is used to _indicate_ that an object `t` may be "moved from", i.
+  e. allowing the efficient transfer of resources from `t` to another object.
+</DeclDoc>
