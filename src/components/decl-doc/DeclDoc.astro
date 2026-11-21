@@ -1,0 +1,45 @@
+---
+import { autoRev, type AutorevProps } from "@components/revision/autorev";
+import AutoCollapse from "../AutoCollapse.astro";
+
+interface Props extends AutorevProps {
+  id?: number;
+}
+
+const { id } = Astro.props;
+const hasId = id !== undefined;
+---
+
+<div class="decl-doc" {...autoRev(Astro.props)}>
+  {hasId ? (
+    <div class="decl-id">Declaration #{id}</div>
+  ) : <></>}
+  <slot name="decl" />
+  <div class="doc">
+    <AutoCollapse maxHeight={200}>
+      <slot />
+    </AutoCollapse>
+  </div>
+</div>
+
+<style>
+  .decl-doc {
+    border: 2px solid var(--sl-color-gray-5);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    overflow: hidden;
+  }
+
+  .decl-doc > .decl-id {
+    text-align: center;
+    font-size: 0.9em;
+    color: var(--sl-color-gray-3);
+    margin: 0;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+
+  .decl-doc > .doc {
+    margin: 0;
+    padding: 1em;
+  }
+</style>

@@ -1,0 +1,235 @@
+---
+title: Revision-Specific Content
+sidebar:
+  order: 2
+---
+
+import { Aside, Card } from "@astrojs/starlight/components";
+import { Revision, RevisionBlock } from "@components/revision";
+
+CppDoc hosts documentation for all historic revisions of the C and C++ programming languages. This guide helps you create CppDoc content for multiple C/C++ revisions while keeping it easily readable by our readers.
+
+## Revision-Specific Spans
+
+### Basic Usage
+
+The `Revision` component renders to an inline-level `<span>` that contains revision-specific content.
+
+```mdx {4}
+import { Revision } from "@components/revision";
+
+Some words here.
+<Revision since="C++20">This is introduced in C++20.</Revision>
+Some more words here.
+```
+
+<Card title="Preview">
+  Some words here. <Revision since="C++20">This is introduced in C++20.</Revision> Some more words here.
+</Card>
+
+The `until` attribute specifies the revision from which the content is removed from the language standard:
+
+```mdx {4}
+import { Revision } from "@components/revision";
+
+Some words here.
+<Revision until="C++20">This is removed in C++20.</Revision>
+Some more words here.
+```
+
+<Card title="Preview">
+  Some words here. <Revision until="C++20">This is removed in C++20.</Revision> Some more words here.
+</Card>
+
+You can specify `since` and `until` attributes simultaneously for content that applies to a range of revisions:
+
+```mdx {4}
+import { Revision } from "@components/revision";
+
+Some words here.
+<Revision since="C++11" until="C++20">This applies from C++11 to C++17.</Revision>
+Some more words here.
+```
+
+<Card title="Preview">
+  Some words here. <Revision since="C++11" until="C++20">This applies from C++11 to C++17.</Revision> Some more words here.
+</Card>
+
+In some context, it may be more fluent to use "removed" rather than "until". You can achieve this by changing the `until` attribute to `removed`:
+
+```mdx {4}
+import { Revision } from "@components/revision";
+
+Some words here.
+<Revision removed="C++20">This is removed in C++20.</Revision>
+Some more words here.
+```
+
+<Card title="Preview">
+  Some words here. <Revision removed="C++20">This is removed in C++20.</Revision>Some more words here.
+</Card>
+
+### Traits
+
+Some content may have _traits_ since a specific revision. For example, a wording may be depracated since a specific revision. Here, "deprecated" is a trait. You can specify arbitrary numbers of traits to the `Revision` component:
+
+```mdx {4-9}
+import { Revision } from "@components/revision";
+
+Some words here.
+<Revision
+  since="C++11"
+  traits={[{ trait: "deprecated", since: "C++17" }]}
+>
+  This is introduced in C++11 and deprecated since C++17.
+</Revision>
+Some more words here.
+```
+
+<Card title="Preview">
+  Some words here.<Revision since="C++11" traits={[{ trait: "deprecated", since: "C++17" }]}>This is introduced in C++11 and deprecated since C++17.</Revision> Some more words here.
+</Card>
+
+## Revision-Specific Blocks
+
+### Basic Usage
+
+The `RevisionBlock` component renders to a block-level `<div>` that contains revision-specific content. Its basic usage is the same as the `Revision` component.
+
+```mdx {5-7,9-16}
+import { RevisionBlock } from "@components/revision";
+
+Some words in this paragraph.
+
+<RevisionBlock since="C++11" until="C++20">
+  This paragraph applies from C++11 to C++17.
+</RevisionBlock>
+
+<RevisionBlock
+  since="C++11"
+  traits={[{ trait: "deprecated", since: "C++20" }]}
+  removed="C++26"
+>
+  This paragraph is introduced in C++11, deprecated in C++20, and removed in
+  C++26.
+</RevisionBlock>
+
+Some more paragraphs.
+```
+
+<Card title="Preview">
+  Some words in this paragraph.
+
+  <RevisionBlock since="C++11" until="C++20">
+    This paragraph applies from C++11 to C++17.
+  </RevisionBlock>
+
+  <RevisionBlock
+    since="C++11"
+    traits={[{ trait: "deprecated", since: "C++20" }]}
+    removed="C++26"
+  >
+    This paragraph is introduced in C++11, deprecated in C++20, and removed in
+    C++26.
+  </RevisionBlock>
+
+  Some more paragraphs.
+</Card>
+
+### Vertical Layout
+
+By default, `RevisionBlock` has a left-to-right layout: the content sits at the left, and the revision information sits at the right. In addition, you can set the layout direction of `RevisionBlock` to top-to-bottom by setting the `vertical` attribute to `true`:
+
+```mdx {2}
+<RevisionBlock
+  vertical
+  since="C++11"
+  traits={[{ trait: "deprecated", since: "C++20" }]}
+  removed="C++26"
+>
+  This paragraph is introduced in C++11, deprecated in C++20, and removed in
+  C++26.
+</RevisionBlock>
+```
+
+<Card title="Preview">
+  <RevisionBlock
+    vertical
+    since="C++11"
+    traits={[{ trait: "deprecated", since: "C++20" }]}
+    removed="C++26"
+  >
+    This paragraph is introduced in C++11, deprecated in C++20, and removed in
+    C++26.
+  </RevisionBlock>
+</Card>
+
+This layout is useful when embedding revision-related content into a [description list](./doc-everything#description-list).
+
+## Revision-Specific Sections
+
+<Aside type="caution">
+  Not finished yet.
+</Aside>
+
+## Autorev
+
+CppDoc users could pin CppDoc content to a specific revision by selecting from the dropdown list above the table-of-contents area on each page. For example, if the user selects and pins its view to C++17, it will hide all content that does not apply to C++17.
+
+The `Revision` and the `RevisionBlock` components work out-of-the-box with this feature. Besides, you can opt-in to this feature for arbitrary HTML elements by attaching revision information to them.
+
+### Specifying revision info for pages
+
+Each page could advertise its applied revision through its frontmatter. The advertised revision range will be picked up by the revision selector on the page to show the user a list of applicable revisions it could pin to. For example, this frontmatter indicates the content in the page applies from C++11 to C++17:
+
+```mdx
+---
+title: My page
+cppdoc:
+  revision:
+    lang: C++
+    since: C++11
+    until: C++20
+---
+```
+
+Both of `since` and `until` are optional in the frontmatter.
+
+### Attach revision info to arbitrary HTML elements
+
+The `autoRev` helper function returns an object that contains a collection of HTML element attributes that, when applied to an HTML element, let autorev show and hide the HTML element according to the selected revision:
+
+```mdx
+import { autoRev } from "@components/revision";
+
+<div {...autoRev({ autorevSince: "C++11", autorevUntil: "C++20" })}>
+  This div will display only when user selects C++11, C++14, or C++17.
+</div>
+```
+
+<Aside type="caution">
+  Autorev hides an HTML element by adding the CSS class `autorev-hidden` to the element. A default CSS rule is provided to set `display: none` for elements with this class. However, in circumstances where this default CSS rule does not apply due to CSS specificity issues, you should add corresponding CSS rules manually to make sure your element is hidden properly.
+</Aside>
+
+### Advanced usage
+
+In rare circumstances you may want to listen for revision changes and perform actions accordingly. This could be achieved by subscribing to the `selectedRevision` [nanostore](https://github.com/nanostores/nanostores) state:
+
+```astro
+---
+---
+
+<div>
+  Your content here.
+</div>
+
+<script>
+  import { selectedRevision } from "@components/revision/store";
+
+  selectedRevision.subscribe((rev) => {
+    // Do something with the currently selected revision `rev`.
+    // Note that `rev` would be `null` when the user does not pin its view to
+    // any specific revision.
+  });
+</script>
+```

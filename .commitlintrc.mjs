@@ -1,0 +1,42 @@
+/** @type { import('cz-git').UserConfig } */
+export default {
+  rules: {
+    // @see: https://commitlint.js.org/#/reference-rules
+  },
+  prompt: {
+    alias: { fd: "docs: fix typos" },
+    useEmoji: false,
+    emojiAlign: "center",
+    useAI: false,
+    aiNumber: 1,
+    themeColorCode: "",
+    scopes: ["docs:c", "docs:cpp", "docs:development", "components:*"],
+    allowCustomScopes: true,
+    allowEmptyScopes: true,
+    customScopesAlign: "bottom",
+    customScopesAlias: "custom",
+    emptyScopesAlias: "empty",
+    upperCaseSubject: null,
+    markBreakingChangeMode: false,
+    allowBreakingChanges: ["feat", "fix"],
+    breaklineNumber: 100,
+    breaklineChar: "|",
+    skipQuestions: [],
+    issuePrefixes: [
+      { value: "closed", name: "closed:   ISSUES has been processed" },
+    ],
+    customIssuePrefixAlign: "top",
+    emptyIssuePrefixAlias: "skip",
+    customIssuePrefixAlias: "custom",
+    allowCustomIssuePrefix: true,
+    allowEmptyIssuePrefix: true,
+    confirmColorize: true,
+    scopeOverrides: undefined,
+    defaultBody: "",
+    defaultIssues: "",
+    defaultScope: "",
+    defaultSubject: "",
+    enableMultipleScopes: true,
+    scopeEnumSeparator: ",",
+  },
+};
