@@ -1,0 +1,72 @@
+---
+title: Preprocessor
+---
+
+import { Desc, DescList, DocLink } from '@components/index';
+import { Revision, RevisionBlock } from "@components/revision";
+import { DR, DRList } from "@components/defect-report";
+
+The preprocessor is executed at <DocLink dest="/cpp/language/translation_phases" anchor="Phase_4">translation phase 4</DocLink>, before the compilation. The result of preprocessing is a single file which is then passed to the actual compiler.
+
+## Directives
+
+The preprocessing directives control the behavior of the preprocessor. Each directive occupies one line and has the following format:
+
+*   the `#` character.
+*   a sequence of:
+    *   a standard-defined directive name (listed [below](#Capabilities)) followed by the corresponding arguments, or
+     *   one or more <DocLink dest="/cpp/language/translation_phases" anchor="Phase_3">preprocessing tokens</DocLink> where the beginning token is not a standard-defined directive name, in this case the directive is conditionally-supported with implementation-defined semantics <Revision until="C++23">(e.g. a common extension is the directive `#warning` which emits a user-defined message during compilation)</Revision>, or
+    *   nothing, in this case the directive has no effect.
+*   a line break.
+
+<Revision since="C++20">The <DocLink dest="/cpp/language/modules">module and import directives</DocLink> are also preprocessing directives.</Revision>
+
+Preprocessing directives must not come from macro expansion.
+
+```cpp
+#define EMPTY
+EMPTY   #   include <file.h> // not a preprocessing directive
+```
+
+## Capabilities
+
+The preprocessor has the source file translation capabilities:
+
+*   **<DocLink dest="/cpp/preprocessor/conditional">conditionally</DocLink>** compile parts of source file (controlled by directive `#if`, `#ifdef`, `#ifndef`, `#else`, <Revision since="C++23">`#elif`, `#elifdef`, `#elifndef`</Revision>, and `#endif`).
+*   **<DocLink dest="/cpp/preprocessor/replace">replace</DocLink>** text macros while possibly concatenating or quoting identifiers (controlled by directives `#define` and `#undef`, and operators `#` and `##`).
+*   **<DocLink dest="/cpp/preprocessor/include">include</DocLink>** other files (controlled by directive `#include` <Revision since="C++23">and checked with `__has_include` </Revision>).
+*   cause an **<DocLink dest="/cpp/preprocessor/error">error</DocLink>** <Revision since="C++17">or **<DocLink dest="/cpp/preprocessor/error">warning</DocLink>** </Revision> (controlled by directive `#error` <Revision since="C++23">or `#warning` respectively</Revision>).
+
+The following aspects of the preprocessor can be controlled:
+
+*   **<DocLink dest="/cpp/preprocessor/impl">implementation-defined</DocLink>** behavior (controlled by directive `#pragma` <Revision since="C++11">and operator `_Pragma` </Revision>). In addition, some compilers support (to varying degrees) the operator `__pragma` as an extension.
+*   **<DocLink dest="/cpp/preprocessor/line">file name and line information</DocLink>** available to the preprocessor (controlled by directive `#line`).
+
+## Defect reports
+
+The following behavior-changing defect reports were applied retroactively to previously published C++ standards.
+
+<DRList>
+  <DR kind="cwg" id={2001} std="C++98">
+    <Fragment slot="behavior-published">
+      the behavior of using non-standard-defined directives was not clear
+    </Fragment>
+    <Fragment slot="correct-behavior">
+      made conditionally-supported
+    </Fragment>
+  </DR>
+</DRList>
+
+## See also
+
+<DescList>
+<Desc>
+<DocLink slot="item" dest="/cpp/preprocessor/replace" anchor="Predefined_macros">C++ documentation</DocLink> for <span>Predefined Macro Symbols</span>
+</Desc>
+<Desc>
+<DocLink slot="item" dest="/cpp/symbol_index/macro">C++ documentation</DocLink> for <span>Macro Symbol Index</span>
+</Desc>
+<Desc>
+<DocLink slot="item" dest="/c/preprocessor">C documentation</DocLink> for <span>preprocessor</span>
+</Desc>
+</DescList>

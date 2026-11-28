@@ -1,0 +1,73 @@
+:root[data-theme="light"] {
+  --sl-color-green: hsl(var(--sl-hue-green) 50% 40%);
+}
+
+:root {
+  --cppdoc-color-revision: var(--sl-color-green);
+  --cppdoc-font-size-revision: 0.8em;
+
+  --cppdoc-color-desc-kind: var(--sl-color-green);
+  --cppdoc-font-size-desc-kind: 0.8em;
+
+  --cppdoc-color-missing-link: #cc6633;
+  --cppdoc-color-well-def: var(--sl-color-green);
+  --cppdoc-color-impl-def: var(--sl-color-blue);
+  --cppdoc-color-unspec: var(--sl-color-orange);
+  --cppdoc-color-undef: var(--sl-color-red);
+  --cppdoc-color-ill-formed: var(--sl-color-red);
+  --cppdoc-color-ifndr: var(--sl-color-red);
+
+  --cppdoc-color-cxx-mark-exposition: #ff0000;
+  --cppdoc-color-cxx-mark-optional: var(--sl-color-green);
+
+  --sl-sidebar-width: 22rem;
+}
+
+.sl-markdown-content code {
+  font-size: 0.9em;
+  border-radius: 2px;
+}
+
+.sl-markdown-content pre > code {
+  font-size: 1em;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #e6f3ff;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #87ceeb;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4682b4;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background-color: #1e3a5f;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background-color: #5b9bd5;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #87ceeb #e6f3ff;
+}
+
+:root[data-theme="dark"] * {
+  scrollbar-color: #4a90e2 #1e3a5f;
+}

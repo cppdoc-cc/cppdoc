@@ -1,0 +1,13 @@
+---
+import { Aside } from "@astrojs/starlight/components";
+
+interface Props {
+  reason: string;
+}
+
+const { reason } = Astro.props;
+---
+
+<Aside title="This section is incomplete">
+  Reason: {reason}
+</Aside>
